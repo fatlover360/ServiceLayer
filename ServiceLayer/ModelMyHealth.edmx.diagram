@@ -5,7 +5,11 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="ecd834a41da4447fa436536a207f90b8" Name="Diagram1" >
-        <EntityTypeShape EntityType="ModelMyHealth.Utente" Width="1.5" PointX="6.375" PointY="2.875" />
+        <EntityTypeShape EntityType="ModelMyHealth.Utente" Width="1.5" PointX="4" PointY="2.125" />
+        <EntityTypeShape EntityType="ModelMyHealth.Alerta" Width="1.5" PointX="10.75" PointY="2.25" />
+        <EntityTypeShape EntityType="ModelMyHealth.DadoClinico" Width="1.5" PointX="7.25" PointY="2.125" />
+        <AssociationConnector Association="ModelMyHealth.UtenteDadoClinico" />
+        <AssociationConnector Association="ModelMyHealth.DadoClinicoAlerta" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

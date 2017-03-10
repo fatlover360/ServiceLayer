@@ -26,5 +26,7 @@ namespace ServiceLayer
         }
     
         public virtual DbSet<Utente> Utente { get; set; }
+        public virtual DbSet<Alerta> Alertas1 { get; set; }
+        public virtual DbSet<DadoClinico> DadoClinicoes { get; set; }
     }
 }

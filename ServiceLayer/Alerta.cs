@@ -12,22 +12,20 @@ namespace ServiceLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Utente
+    public partial class Alerta
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Utente()
+        public Alerta()
         {
-            this.DadoClinicoes = new HashSet<DadoClinico>();
+            this.DadoClinico = new HashSet<DadoClinico>();
         }
     
         public int Id { get; set; }
-        public string PrimeiroNome { get; set; }
-        public string UltimoNome { get; set; }
-        public string Telefone { get; set; }
-        public string Email { get; set; }
-        public System.DateTime DataNascimento { get; set; }
+        public string Tipo { get; set; }
+        public string ValorMinimo { get; set; }
+        public string ValorMaximo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DadoClinico> DadoClinicoes { get; set; }
+        public virtual ICollection<DadoClinico> DadoClinico { get; set; }
     }
 }

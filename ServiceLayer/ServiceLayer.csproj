@@ -114,6 +114,12 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alerta.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DadoClinico.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
     <Compile Include="ModelMyHealth.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -25,18 +25,58 @@
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ModelMyHealth" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
         <EntityContainer Name="ModelMyHealthContainer" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Utente" EntityType="ModelMyHealth.Utente" />
+          <EntitySet Name="Alertas1" EntityType="ModelMyHealth.Alerta" />
+          <EntitySet Name="DadoClinicoes" EntityType="ModelMyHealth.DadoClinico" />
+          <AssociationSet Name="UtenteDadoClinico" Association="ModelMyHealth.UtenteDadoClinico">
+            <End Role="Utente" EntitySet="Utente" />
+            <End Role="DadoClinico" EntitySet="DadoClinicoes" />
+          </AssociationSet>
+          <AssociationSet Name="DadoClinicoAlerta" Association="ModelMyHealth.DadoClinicoAlerta">
+            <End Role="DadoClinico" EntitySet="DadoClinicoes" />
+            <End Role="Alerta" EntitySet="Alertas1" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Utente">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Nome" Type="String" Nullable="false" />
-          <Property Name="PressaoSanguinea" Type="String" Nullable="true" />
-          <Property Name="SaturacaoOxigenio" Type="String" Nullable="true" />
-          <Property Name="FrequenciaCardiaca" Type="String" Nullable="true" />
-          <Property Name="SNS" Type="Int64" Nullable="false" />
+          <Property Name="PrimeiroNome" Type="String" Nullable="false" />
+          <Property Name="UltimoNome" Type="String" Nullable="false" />
+          <Property Name="Telefone" Type="String" Nullable="false" />
+          <Property Name="Email" Type="String" Nullable="false" />
+          <Property Name="DataNascimento" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="DadoClinicoes" Relationship="ModelMyHealth.UtenteDadoClinico" FromRole="Utente" ToRole="DadoClinico" />
         </EntityType>
+        <EntityType Name="Alerta">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tipo" Type="String" Nullable="false" />
+          <Property Name="ValorMinimo" Type="String" Nullable="false" />
+          <Property Name="ValorMaximo" Type="String" Nullable="false" />
+          <NavigationProperty Name="DadoClinico" Relationship="ModelMyHealth.DadoClinicoAlerta" FromRole="Alerta" ToRole="DadoClinico" />
+        </EntityType>
+        <EntityType Name="DadoClinico">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Data" Type="String" Nullable="false" />
+          <Property Name="Hora" Type="String" Nullable="false" />
+          <NavigationProperty Name="Utente" Relationship="ModelMyHealth.UtenteDadoClinico" FromRole="DadoClinico" ToRole="Utente" />
+          <Property Name="Valor" Type="String" Nullable="false" />
+          <NavigationProperty Name="Alertas" Relationship="ModelMyHealth.DadoClinicoAlerta" FromRole="DadoClinico" ToRole="Alerta" />
+        </EntityType>
+        <Association Name="UtenteDadoClinico">
+          <End Type="ModelMyHealth.Utente" Role="Utente" Multiplicity="1" />
+          <End Type="ModelMyHealth.DadoClinico" Role="DadoClinico" Multiplicity="*" />
+        </Association>
+        <Association Name="DadoClinicoAlerta">
+          <End Type="ModelMyHealth.DadoClinico" Role="DadoClinico" Multiplicity="*" />
+          <End Type="ModelMyHealth.Alerta" Role="Alerta" Multiplicity="0..1" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -47,11 +87,8 @@
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Utente)">
         <MappingFragment StoreEntitySet="Utente">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Nome" ColumnName="Nome" />
-          <ScalarProperty Name="PressaoSanguinea" ColumnName="PressaoSanguinea" />
-          <ScalarProperty Name="SaturacaoOxigenio" ColumnName="SaturacaoOxigenio" />
-          <ScalarProperty Name="FrequenciaCardiaca" ColumnName="FrequenciaCardiaca" />
-          <ScalarProperty Name="SNS" ColumnName="SNS" />
+          <ScalarProperty Name="PrimeiroNome" ColumnName="Nome" />
+          <ScalarProperty Name="UltimoNome" ColumnName="FrequenciaCardiaca" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
