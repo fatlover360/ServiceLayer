@@ -4,11 +4,22 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="ModelMyHealth.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
-        <EntityContainer Name="ModelMyHealthTargetContainer" >
-        </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+    <Schema Namespace="ModelMyHealth.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ModelMyHealthStoreContainer">
+    <EntitySet Name="Utente" EntityType="ModelMyHealth.Store.Utente" store:Type="Tables" Schema="dbo" />
+  </EntityContainer>
+  <EntityType Name="Utente">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PressaoSanguinea" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="SaturacaoOxigenio" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="FrequenciaCardiaca" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="SNS" Type="bigint" Nullable="false" />
+  </EntityType>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ModelMyHealth" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
@@ -24,18 +35,28 @@
           <Property Name="PressaoSanguinea" Type="String" Nullable="true" />
           <Property Name="SaturacaoOxigenio" Type="String" Nullable="true" />
           <Property Name="FrequenciaCardiaca" Type="String" Nullable="true" />
+          <Property Name="SNS" Type="Int64" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
-        <Alias Key="Model" Value="ModelMyHealth" />
-        <Alias Key="Target" Value="ModelMyHealth.Store" />
-        <EntityContainerMapping CdmEntityContainer="ModelMyHealthContainer" StorageEntityContainer="ModelMyHealthTargetContainer">
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ModelMyHealthStoreContainer" CdmEntityContainer="ModelMyHealthContainer">
+    <EntitySetMapping Name="Utente">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Utente)">
+        <MappingFragment StoreEntitySet="Utente">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+          <ScalarProperty Name="PressaoSanguinea" ColumnName="PressaoSanguinea" />
+          <ScalarProperty Name="SaturacaoOxigenio" ColumnName="SaturacaoOxigenio" />
+          <ScalarProperty Name="FrequenciaCardiaca" ColumnName="FrequenciaCardiaca" />
+          <ScalarProperty Name="SNS" ColumnName="SNS" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -49,6 +70,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
