@@ -56,6 +56,6 @@ C:\Git\ServiceLayer\ServiceLayer\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\Git\ServiceLayer\ServiceLayer\bin\Microsoft.AI.Web.xml
 C:\Git\ServiceLayer\ServiceLayer\bin\Microsoft.AI.WindowsServer.xml
 C:\Git\ServiceLayer\ServiceLayer\bin\Microsoft.ApplicationInsights.xml
-C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.csprojResolveAssemblyReference.cache
 C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.dll
 C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.pdb
+C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.csprojResolveAssemblyReference.cache

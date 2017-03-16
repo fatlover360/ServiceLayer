@@ -146,6 +146,9 @@
     </Compile>
     <Compile Include="IServiceHealth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TipoAlerta.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
     <Compile Include="Utente.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>

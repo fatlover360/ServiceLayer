@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="ModelMyHealthStoreContainer" CdmEntityContainer="ModelMyHealthContainer">
-    <EntitySetMapping Name="Utente">
+    <EntitySetMapping Name="UtenteSet">
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Utente)">
-        <MappingFragment StoreEntitySet="Utente">
+        <MappingFragment StoreEntitySet="UtenteSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Nome" ColumnName="Nome" />
           <ScalarProperty Name="Apelido" ColumnName="Apelido" />
@@ -21,11 +21,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Alerta">
+    <EntitySetMapping Name="AlertaSet">
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Alerta)">
-        <MappingFragment StoreEntitySet="Alerta">
+        <MappingFragment StoreEntitySet="AlertaSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Tipo" ColumnName="Tipo" />
           <ScalarProperty Name="ValorMinimo" ColumnName="ValorMinimo" />
           <ScalarProperty Name="ValorMaximo" ColumnName="ValorMaximo" />
           <ScalarProperty Name="ValorCriticoMinimo" ColumnName="ValorCriticoMinimo" />
@@ -33,9 +32,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="FrequenciaCardiacaValores">
+    <EntitySetMapping Name="FrequenciaCardiacaValoresSet">
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.FrequenciaCardiacaValores)">
-        <MappingFragment StoreEntitySet="FrequenciaCardiacaValores">
+        <MappingFragment StoreEntitySet="FrequenciaCardiacaValoresSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Data" ColumnName="Data" />
           <ScalarProperty Name="Hora" ColumnName="Hora" />
@@ -43,9 +42,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="SaturacaoValores">
+    <EntitySetMapping Name="SaturacaoValoresSet">
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.SaturacaoValores)">
-        <MappingFragment StoreEntitySet="SaturacaoValores">
+        <MappingFragment StoreEntitySet="SaturacaoValoresSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Data" ColumnName="Data" />
           <ScalarProperty Name="Hora" ColumnName="Hora" />
@@ -53,9 +52,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="PressaoSanguineaValores">
+    <EntitySetMapping Name="PressaoSanguineaValoresSet">
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.PressaoSanguineaValores)">
-        <MappingFragment StoreEntitySet="PressaoSanguineaValores">
+        <MappingFragment StoreEntitySet="PressaoSanguineaValoresSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Data" ColumnName="Data" />
           <ScalarProperty Name="Hora" ColumnName="Hora" />
@@ -64,7 +63,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="UtenteFrequenciaCardiacaValores" TypeName="ModelMyHealth.UtenteFrequenciaCardiacaValores" StoreEntitySet="FrequenciaCardiacaValores">
+    <EntitySetMapping Name="TipoAlertaSet">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.TipoAlerta)">
+        <MappingFragment StoreEntitySet="TipoAlertaSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="UtenteFrequenciaCardiacaValores" TypeName="ModelMyHealth.UtenteFrequenciaCardiacaValores" StoreEntitySet="FrequenciaCardiacaValoresSet">
       <EndProperty Name="Utente">
         <ScalarProperty Name="Id" ColumnName="Utente_Id" />
       </EndProperty>
@@ -72,7 +79,7 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="UtenteSaturacaoValores" TypeName="ModelMyHealth.UtenteSaturacaoValores" StoreEntitySet="SaturacaoValores">
+    <AssociationSetMapping Name="UtenteSaturacaoValores" TypeName="ModelMyHealth.UtenteSaturacaoValores" StoreEntitySet="SaturacaoValoresSet">
       <EndProperty Name="Utente">
         <ScalarProperty Name="Id" ColumnName="Utente_Id" />
       </EndProperty>
@@ -80,7 +87,7 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="UtentePressaoSanguineaValores" TypeName="ModelMyHealth.UtentePressaoSanguineaValores" StoreEntitySet="PressaoSanguineaValores">
+    <AssociationSetMapping Name="UtentePressaoSanguineaValores" TypeName="ModelMyHealth.UtentePressaoSanguineaValores" StoreEntitySet="PressaoSanguineaValoresSet">
       <EndProperty Name="Utente">
         <ScalarProperty Name="Id" ColumnName="Utente_Id" />
       </EndProperty>
@@ -88,7 +95,7 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="FrequenciaCardiacaValoresAlerta" TypeName="ModelMyHealth.FrequenciaCardiacaValoresAlerta" StoreEntitySet="FrequenciaCardiacaValores">
+    <AssociationSetMapping Name="FrequenciaCardiacaValoresAlerta" TypeName="ModelMyHealth.FrequenciaCardiacaValoresAlerta" StoreEntitySet="FrequenciaCardiacaValoresSet">
       <EndProperty Name="Alerta">
         <ScalarProperty Name="Id" ColumnName="Alertas_Id" />
       </EndProperty>
@@ -96,7 +103,7 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="SaturacaoValoresAlerta" TypeName="ModelMyHealth.SaturacaoValoresAlerta" StoreEntitySet="SaturacaoValores">
+    <AssociationSetMapping Name="SaturacaoValoresAlerta" TypeName="ModelMyHealth.SaturacaoValoresAlerta" StoreEntitySet="SaturacaoValoresSet">
       <EndProperty Name="Alerta">
         <ScalarProperty Name="Id" ColumnName="Alertas_Id" />
       </EndProperty>
@@ -104,11 +111,19 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="PressaoSanguineaValoresAlerta" TypeName="ModelMyHealth.PressaoSanguineaValoresAlerta" StoreEntitySet="PressaoSanguineaValores">
+    <AssociationSetMapping Name="PressaoSanguineaValoresAlerta" TypeName="ModelMyHealth.PressaoSanguineaValoresAlerta" StoreEntitySet="PressaoSanguineaValoresSet">
       <EndProperty Name="Alerta">
         <ScalarProperty Name="Id" ColumnName="Alertas_Id" />
       </EndProperty>
       <EndProperty Name="PressaoSanguineaValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AlertaTipoAlerta" TypeName="ModelMyHealth.AlertaTipoAlerta" StoreEntitySet="AlertaSet">
+      <EndProperty Name="TipoAlerta">
+        <ScalarProperty Name="Id" ColumnName="TipoAlertas_Id" />
+      </EndProperty>
+      <EndProperty Name="Alerta">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>

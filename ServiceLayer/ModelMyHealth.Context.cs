@@ -25,10 +25,11 @@ namespace ServiceLayer
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Utente> Utente { get; set; }
-        public virtual DbSet<Alerta> Alerta { get; set; }
-        public virtual DbSet<FrequenciaCardiacaValores> FrequenciaCardiacaValores { get; set; }
-        public virtual DbSet<SaturacaoValores> SaturacaoValores { get; set; }
-        public virtual DbSet<PressaoSanguineaValores> PressaoSanguineaValores { get; set; }
+        public virtual DbSet<Utente> UtenteSet { get; set; }
+        public virtual DbSet<Alerta> AlertaSet { get; set; }
+        public virtual DbSet<FrequenciaCardiacaValores> FrequenciaCardiacaValoresSet { get; set; }
+        public virtual DbSet<SaturacaoValores> SaturacaoValoresSet { get; set; }
+        public virtual DbSet<PressaoSanguineaValores> PressaoSanguineaValoresSet { get; set; }
+        public virtual DbSet<TipoAlerta> TipoAlertaSet { get; set; }
     }
 }

@@ -16,6 +16,8 @@
         <AssociationConnector Association="ModelMyHealth.FrequenciaCardiacaValoresAlerta" />
         <AssociationConnector Association="ModelMyHealth.SaturacaoValoresAlerta" />
         <AssociationConnector Association="ModelMyHealth.PressaoSanguineaValoresAlerta" />
+        <EntityTypeShape EntityType="ModelMyHealth.TipoAlerta" Width="1.5" PointX="6.875" PointY="12.5" />
+        <AssociationConnector Association="ModelMyHealth.AlertaTipoAlerta" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -56,6 +56,9 @@ namespace ServiceLayer
         Alert GetAlert(string type);
 
         [OperationContract]
+        List<Alert> GetAlertList();
+
+        [OperationContract]
         bool InsertAlert(Alert _alert);
 
         [OperationContract]

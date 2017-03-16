@@ -23,7 +23,6 @@ namespace ServiceLayer
         }
     
         public int Id { get; set; }
-        public string Tipo { get; set; }
         public int ValorMinimo { get; set; }
         public int ValorMaximo { get; set; }
         public int ValorCriticoMinimo { get; set; }
@@ -35,5 +34,6 @@ namespace ServiceLayer
         public virtual ICollection<SaturacaoValores> SaturacaoValore { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PressaoSanguineaValores> PressaoSanguineaValore { get; set; }
+        public virtual TipoAlerta TipoAlertas { get; set; }
     }
 }

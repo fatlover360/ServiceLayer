@@ -1,34 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ModelMyHealth" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
   <EntityContainer Name="ModelMyHealthContainer" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="Utente" EntityType="ModelMyHealth.Utente" />
-    <EntitySet Name="Alerta" EntityType="ModelMyHealth.Alerta" />
-    <EntitySet Name="FrequenciaCardiacaValores" EntityType="ModelMyHealth.FrequenciaCardiacaValores" />
-    <EntitySet Name="SaturacaoValores" EntityType="ModelMyHealth.SaturacaoValores" />
-    <EntitySet Name="PressaoSanguineaValores" EntityType="ModelMyHealth.PressaoSanguineaValores" />
+    <EntitySet Name="UtenteSet" EntityType="ModelMyHealth.Utente" />
+    <EntitySet Name="AlertaSet" EntityType="ModelMyHealth.Alerta" />
+    <EntitySet Name="FrequenciaCardiacaValoresSet" EntityType="ModelMyHealth.FrequenciaCardiacaValores" />
+    <EntitySet Name="SaturacaoValoresSet" EntityType="ModelMyHealth.SaturacaoValores" />
+    <EntitySet Name="PressaoSanguineaValoresSet" EntityType="ModelMyHealth.PressaoSanguineaValores" />
     <AssociationSet Name="UtenteFrequenciaCardiacaValores" Association="ModelMyHealth.UtenteFrequenciaCardiacaValores">
-      <End Role="Utente" EntitySet="Utente" />
-      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValores" />
+      <End Role="Utente" EntitySet="UtenteSet" />
+      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValoresSet" />
     </AssociationSet>
     <AssociationSet Name="UtenteSaturacaoValores" Association="ModelMyHealth.UtenteSaturacaoValores">
-      <End Role="Utente" EntitySet="Utente" />
-      <End Role="SaturacaoValores" EntitySet="SaturacaoValores" />
+      <End Role="Utente" EntitySet="UtenteSet" />
+      <End Role="SaturacaoValores" EntitySet="SaturacaoValoresSet" />
     </AssociationSet>
     <AssociationSet Name="UtentePressaoSanguineaValores" Association="ModelMyHealth.UtentePressaoSanguineaValores">
-      <End Role="Utente" EntitySet="Utente" />
-      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValores" />
+      <End Role="Utente" EntitySet="UtenteSet" />
+      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValoresSet" />
     </AssociationSet>
     <AssociationSet Name="FrequenciaCardiacaValoresAlerta" Association="ModelMyHealth.FrequenciaCardiacaValoresAlerta">
-      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValores" />
-      <End Role="Alerta" EntitySet="Alerta" />
+      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValoresSet" />
+      <End Role="Alerta" EntitySet="AlertaSet" />
     </AssociationSet>
     <AssociationSet Name="SaturacaoValoresAlerta" Association="ModelMyHealth.SaturacaoValoresAlerta">
-      <End Role="SaturacaoValores" EntitySet="SaturacaoValores" />
-      <End Role="Alerta" EntitySet="Alerta" />
+      <End Role="SaturacaoValores" EntitySet="SaturacaoValoresSet" />
+      <End Role="Alerta" EntitySet="AlertaSet" />
     </AssociationSet>
     <AssociationSet Name="PressaoSanguineaValoresAlerta" Association="ModelMyHealth.PressaoSanguineaValoresAlerta">
-      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValores" />
-      <End Role="Alerta" EntitySet="Alerta" />
+      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValoresSet" />
+      <End Role="Alerta" EntitySet="AlertaSet" />
+    </AssociationSet>
+    <EntitySet Name="TipoAlertaSet" EntityType="ModelMyHealth.TipoAlerta" />
+    <AssociationSet Name="AlertaTipoAlerta" Association="ModelMyHealth.AlertaTipoAlerta">
+      <End Role="Alerta" EntitySet="AlertaSet" />
+      <End Role="TipoAlerta" EntitySet="TipoAlertaSet" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Utente">
@@ -58,7 +63,6 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Tipo" Type="String" Nullable="false" />
     <Property Name="ValorMinimo" Type="Int32" Nullable="false" />
     <Property Name="ValorMaximo" Type="Int32" Nullable="false" />
     <Property Name="ValorCriticoMinimo" Type="Int32" Nullable="false" />
@@ -66,6 +70,7 @@
     <NavigationProperty Name="FrequenciaCardiacaValore" Relationship="ModelMyHealth.FrequenciaCardiacaValoresAlerta" FromRole="Alerta" ToRole="FrequenciaCardiacaValores" />
     <NavigationProperty Name="SaturacaoValore" Relationship="ModelMyHealth.SaturacaoValoresAlerta" FromRole="Alerta" ToRole="SaturacaoValores" />
     <NavigationProperty Name="PressaoSanguineaValore" Relationship="ModelMyHealth.PressaoSanguineaValoresAlerta" FromRole="Alerta" ToRole="PressaoSanguineaValores" />
+    <NavigationProperty Name="TipoAlertas" Relationship="ModelMyHealth.AlertaTipoAlerta" FromRole="Alerta" ToRole="TipoAlerta" />
   </EntityType>
   <EntityType Name="FrequenciaCardiacaValores">
     <Key>
@@ -124,5 +129,17 @@
   <Association Name="PressaoSanguineaValoresAlerta">
     <End Type="ModelMyHealth.PressaoSanguineaValores" Role="PressaoSanguineaValores" Multiplicity="*" />
     <End Type="ModelMyHealth.Alerta" Role="Alerta" Multiplicity="1" />
+  </Association>
+  <EntityType Name="TipoAlerta">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nome" Type="String" Nullable="false" />
+    <NavigationProperty Name="Alerta" Relationship="ModelMyHealth.AlertaTipoAlerta" FromRole="TipoAlerta" ToRole="Alerta" />
+  </EntityType>
+  <Association Name="AlertaTipoAlerta">
+    <End Type="ModelMyHealth.Alerta" Role="Alerta" Multiplicity="0..1" />
+    <End Type="ModelMyHealth.TipoAlerta" Role="TipoAlerta" Multiplicity="1" />
   </Association>
 </Schema>
