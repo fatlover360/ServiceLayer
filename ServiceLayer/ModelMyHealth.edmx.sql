@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/16/2017 10:31:26
--- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayer\ModelMyHealth.edmx
+-- Date Created: 03/16/2017 16:29:03
+-- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayer\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -11,6 +11,49 @@ GO
 USE [MyHealthDB];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
+GO
+
+-- --------------------------------------------------
+-- Dropping existing FOREIGN KEY constraints
+-- --------------------------------------------------
+
+IF OBJECT_ID(N'[dbo].[FK_UtenteFrequenciaCardiacaValores]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[FrequenciaCardiacaValores] DROP CONSTRAINT [FK_UtenteFrequenciaCardiacaValores];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UtenteSaturacaoValores]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SaturacaoValores] DROP CONSTRAINT [FK_UtenteSaturacaoValores];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UtentePressaoSanguineaValores]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[PressaoSanguineaValores] DROP CONSTRAINT [FK_UtentePressaoSanguineaValores];
+GO
+IF OBJECT_ID(N'[dbo].[FK_FrequenciaCardiacaValoresAlerta]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[FrequenciaCardiacaValores] DROP CONSTRAINT [FK_FrequenciaCardiacaValoresAlerta];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SaturacaoValoresAlerta]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SaturacaoValores] DROP CONSTRAINT [FK_SaturacaoValoresAlerta];
+GO
+IF OBJECT_ID(N'[dbo].[FK_PressaoSanguineaValoresAlerta]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[PressaoSanguineaValores] DROP CONSTRAINT [FK_PressaoSanguineaValoresAlerta];
+GO
+
+-- --------------------------------------------------
+-- Dropping existing tables
+-- --------------------------------------------------
+
+IF OBJECT_ID(N'[dbo].[Utente]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Utente];
+GO
+IF OBJECT_ID(N'[dbo].[Alerta]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Alerta];
+GO
+IF OBJECT_ID(N'[dbo].[FrequenciaCardiacaValores]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[FrequenciaCardiacaValores];
+GO
+IF OBJECT_ID(N'[dbo].[SaturacaoValores]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SaturacaoValores];
+GO
+IF OBJECT_ID(N'[dbo].[PressaoSanguineaValores]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[PressaoSanguineaValores];
 GO
 
 -- --------------------------------------------------
