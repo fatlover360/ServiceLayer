@@ -5,10 +5,112 @@
       <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Utente)">
         <MappingFragment StoreEntitySet="Utente">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="PrimeiroNome" ColumnName="Nome" />
-          <ScalarProperty Name="UltimoNome" ColumnName="FrequenciaCardiaca" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+          <ScalarProperty Name="Apelido" ColumnName="Apelido" />
+          <ScalarProperty Name="NIF" ColumnName="NIF" />
+          <ScalarProperty Name="Telefone" ColumnName="Telefone" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="NumeroEmergencia" ColumnName="NumeroEmergencia" />
+          <ScalarProperty Name="NomeEmergencia" ColumnName="NomeEmergencia" />
+          <ScalarProperty Name="Morada" ColumnName="Morada" />
+          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+          <ScalarProperty Name="Alergias" ColumnName="Alergias" />
+          <ScalarProperty Name="Peso" ColumnName="Peso" />
+          <ScalarProperty Name="Altura" ColumnName="Altura" />
+          <ScalarProperty Name="SNS" ColumnName="SNS" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Alerta">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Alerta)">
+        <MappingFragment StoreEntitySet="Alerta">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+          <ScalarProperty Name="ValorMinimo" ColumnName="ValorMinimo" />
+          <ScalarProperty Name="ValorMaximo" ColumnName="ValorMaximo" />
+          <ScalarProperty Name="ValorCriticoMinimo" ColumnName="ValorCriticoMinimo" />
+          <ScalarProperty Name="ValorCriticoMaximo" ColumnName="ValorCriticoMaximo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FrequenciaCardiacaValores">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.FrequenciaCardiacaValores)">
+        <MappingFragment StoreEntitySet="FrequenciaCardiacaValores">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Hora" ColumnName="Hora" />
+          <ScalarProperty Name="Frequencia" ColumnName="Frequencia" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SaturacaoValores">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.SaturacaoValores)">
+        <MappingFragment StoreEntitySet="SaturacaoValores">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Hora" ColumnName="Hora" />
+          <ScalarProperty Name="Saturacao" ColumnName="Saturacao" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PressaoSanguineaValores">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.PressaoSanguineaValores)">
+        <MappingFragment StoreEntitySet="PressaoSanguineaValores">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Hora" ColumnName="Hora" />
+          <ScalarProperty Name="Distolica" ColumnName="Distolica" />
+          <ScalarProperty Name="Sistolica" ColumnName="Sistolica" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="UtenteFrequenciaCardiacaValores" TypeName="ModelMyHealth.UtenteFrequenciaCardiacaValores" StoreEntitySet="FrequenciaCardiacaValores">
+      <EndProperty Name="Utente">
+        <ScalarProperty Name="Id" ColumnName="Utente_Id" />
+      </EndProperty>
+      <EndProperty Name="FrequenciaCardiacaValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UtenteSaturacaoValores" TypeName="ModelMyHealth.UtenteSaturacaoValores" StoreEntitySet="SaturacaoValores">
+      <EndProperty Name="Utente">
+        <ScalarProperty Name="Id" ColumnName="Utente_Id" />
+      </EndProperty>
+      <EndProperty Name="SaturacaoValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UtentePressaoSanguineaValores" TypeName="ModelMyHealth.UtentePressaoSanguineaValores" StoreEntitySet="PressaoSanguineaValores">
+      <EndProperty Name="Utente">
+        <ScalarProperty Name="Id" ColumnName="Utente_Id" />
+      </EndProperty>
+      <EndProperty Name="PressaoSanguineaValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FrequenciaCardiacaValoresAlerta" TypeName="ModelMyHealth.FrequenciaCardiacaValoresAlerta" StoreEntitySet="FrequenciaCardiacaValores">
+      <EndProperty Name="Alerta">
+        <ScalarProperty Name="Id" ColumnName="Alertas_Id" />
+      </EndProperty>
+      <EndProperty Name="FrequenciaCardiacaValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SaturacaoValoresAlerta" TypeName="ModelMyHealth.SaturacaoValoresAlerta" StoreEntitySet="SaturacaoValores">
+      <EndProperty Name="Alerta">
+        <ScalarProperty Name="Id" ColumnName="Alertas_Id" />
+      </EndProperty>
+      <EndProperty Name="SaturacaoValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PressaoSanguineaValoresAlerta" TypeName="ModelMyHealth.PressaoSanguineaValoresAlerta" StoreEntitySet="PressaoSanguineaValores">
+      <EndProperty Name="Alerta">
+        <ScalarProperty Name="Id" ColumnName="Alertas_Id" />
+      </EndProperty>
+      <EndProperty Name="PressaoSanguineaValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping>

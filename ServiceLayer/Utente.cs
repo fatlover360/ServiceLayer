@@ -17,17 +17,31 @@ namespace ServiceLayer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Utente()
         {
-            this.DadoClinicoes = new HashSet<DadoClinico>();
+            this.FrequenciaCardiacaValores = new HashSet<FrequenciaCardiacaValores>();
+            this.SaturacaoValores = new HashSet<SaturacaoValores>();
+            this.PressaoSanguineaValores = new HashSet<PressaoSanguineaValores>();
         }
     
         public int Id { get; set; }
-        public string PrimeiroNome { get; set; }
-        public string UltimoNome { get; set; }
+        public string Nome { get; set; }
+        public string Apelido { get; set; }
+        public int NIF { get; set; }
         public string Telefone { get; set; }
         public string Email { get; set; }
-        public System.DateTime DataNascimento { get; set; }
+        public string NumeroEmergencia { get; set; }
+        public string NomeEmergencia { get; set; }
+        public string Morada { get; set; }
+        public string Sexo { get; set; }
+        public string Alergias { get; set; }
+        public Nullable<double> Peso { get; set; }
+        public Nullable<int> Altura { get; set; }
+        public int SNS { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DadoClinico> DadoClinicoes { get; set; }
+        public virtual ICollection<FrequenciaCardiacaValores> FrequenciaCardiacaValores { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SaturacaoValores> SaturacaoValores { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PressaoSanguineaValores> PressaoSanguineaValores { get; set; }
     }
 }
