@@ -17,15 +17,23 @@ namespace ServiceLayer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Alerta()
         {
-            this.DadoClinico = new HashSet<DadoClinico>();
+            this.FrequenciaCardiacaValore = new HashSet<FrequenciaCardiacaValores>();
+            this.SaturacaoValore = new HashSet<SaturacaoValores>();
+            this.PressaoSanguineaValore = new HashSet<PressaoSanguineaValores>();
         }
     
         public int Id { get; set; }
         public string Tipo { get; set; }
-        public string ValorMinimo { get; set; }
-        public string ValorMaximo { get; set; }
+        public int ValorMinimo { get; set; }
+        public int ValorMaximo { get; set; }
+        public int ValorCriticoMinimo { get; set; }
+        public int ValorCriticoMaximo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DadoClinico> DadoClinico { get; set; }
+        public virtual ICollection<FrequenciaCardiacaValores> FrequenciaCardiacaValore { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SaturacaoValores> SaturacaoValore { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PressaoSanguineaValores> PressaoSanguineaValore { get; set; }
     }
 }

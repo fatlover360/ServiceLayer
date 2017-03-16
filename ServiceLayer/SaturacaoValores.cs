@@ -12,12 +12,12 @@ namespace ServiceLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class DadoClinico
+    public partial class SaturacaoValores
     {
         public int Id { get; set; }
-        public string Data { get; set; }
-        public string Hora { get; set; }
-        public string Valor { get; set; }
+        public System.DateTime Data { get; set; }
+        public System.TimeSpan Hora { get; set; }
+        public int Saturacao { get; set; }
     
         public virtual Utente Utente { get; set; }
         public virtual Alerta Alertas { get; set; }

@@ -1,4 +1,170 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="ModelMyHealth.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
-  <EntityContainer Name="ModelMyHealthTargetContainer" />
+<Schema Namespace="ModelMyHealth.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ModelMyHealthStoreContainer">
+    <EntitySet Name="Utente" EntityType="ModelMyHealth.Store.Utente" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Alerta" EntityType="ModelMyHealth.Store.Alerta" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FrequenciaCardiacaValores" EntityType="ModelMyHealth.Store.FrequenciaCardiacaValores" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SaturacaoValores" EntityType="ModelMyHealth.Store.SaturacaoValores" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PressaoSanguineaValores" EntityType="ModelMyHealth.Store.PressaoSanguineaValores" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="UtenteFrequenciaCardiacaValores" Association="ModelMyHealth.Store.UtenteFrequenciaCardiacaValores">
+      <End Role="Utente" EntitySet="Utente" />
+      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValores" />
+    </AssociationSet>
+    <AssociationSet Name="UtenteSaturacaoValores" Association="ModelMyHealth.Store.UtenteSaturacaoValores">
+      <End Role="Utente" EntitySet="Utente" />
+      <End Role="SaturacaoValores" EntitySet="SaturacaoValores" />
+    </AssociationSet>
+    <AssociationSet Name="UtentePressaoSanguineaValores" Association="ModelMyHealth.Store.UtentePressaoSanguineaValores">
+      <End Role="Utente" EntitySet="Utente" />
+      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValores" />
+    </AssociationSet>
+    <AssociationSet Name="FrequenciaCardiacaValoresAlerta" Association="ModelMyHealth.Store.FrequenciaCardiacaValoresAlerta">
+      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValores" />
+      <End Role="Alerta" EntitySet="Alerta" />
+    </AssociationSet>
+    <AssociationSet Name="SaturacaoValoresAlerta" Association="ModelMyHealth.Store.SaturacaoValoresAlerta">
+      <End Role="SaturacaoValores" EntitySet="SaturacaoValores" />
+      <End Role="Alerta" EntitySet="Alerta" />
+    </AssociationSet>
+    <AssociationSet Name="PressaoSanguineaValoresAlerta" Association="ModelMyHealth.Store.PressaoSanguineaValoresAlerta">
+      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValores" />
+      <End Role="Alerta" EntitySet="Alerta" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Utente">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Apelido" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NIF" Type="int" Nullable="false" />
+    <Property Name="Telefone" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="NumeroEmergencia" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NomeEmergencia" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Morada" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Sexo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Alergias" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Peso" Type="float" Nullable="true" />
+    <Property Name="Altura" Type="int" Nullable="true" />
+    <Property Name="SNS" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Alerta">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Tipo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ValorMinimo" Type="int" Nullable="false" />
+    <Property Name="ValorMaximo" Type="int" Nullable="false" />
+    <Property Name="ValorCriticoMinimo" Type="int" Nullable="false" />
+    <Property Name="ValorCriticoMaximo" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FrequenciaCardiacaValores">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Data" Type="datetime" Nullable="false" />
+    <Property Name="Hora" Type="time" Nullable="false" />
+    <Property Name="Frequencia" Type="int" Nullable="false" />
+    <Property Name="Utente_Id" Type="int" Nullable="false" />
+    <Property Name="Alertas_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SaturacaoValores">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Data" Type="datetime" Nullable="false" />
+    <Property Name="Hora" Type="time" Nullable="false" />
+    <Property Name="Saturacao" Type="int" Nullable="false" />
+    <Property Name="Utente_Id" Type="int" Nullable="false" />
+    <Property Name="Alertas_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PressaoSanguineaValores">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Data" Type="datetime" Nullable="false" />
+    <Property Name="Hora" Type="time" Nullable="false" />
+    <Property Name="Distolica" Type="int" Nullable="false" />
+    <Property Name="Sistolica" Type="int" Nullable="false" />
+    <Property Name="Utente_Id" Type="int" Nullable="false" />
+    <Property Name="Alertas_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="UtenteFrequenciaCardiacaValores">
+    <End Role="Utente" Type="ModelMyHealth.Store.Utente" Multiplicity="1" />
+    <End Role="FrequenciaCardiacaValores" Type="ModelMyHealth.Store.FrequenciaCardiacaValores" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Utente">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="FrequenciaCardiacaValores">
+        <PropertyRef Name="Utente_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UtenteSaturacaoValores">
+    <End Role="Utente" Type="ModelMyHealth.Store.Utente" Multiplicity="1" />
+    <End Role="SaturacaoValores" Type="ModelMyHealth.Store.SaturacaoValores" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Utente">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SaturacaoValores">
+        <PropertyRef Name="Utente_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UtentePressaoSanguineaValores">
+    <End Role="Utente" Type="ModelMyHealth.Store.Utente" Multiplicity="1" />
+    <End Role="PressaoSanguineaValores" Type="ModelMyHealth.Store.PressaoSanguineaValores" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Utente">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PressaoSanguineaValores">
+        <PropertyRef Name="Utente_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FrequenciaCardiacaValoresAlerta">
+    <End Role="FrequenciaCardiacaValores" Type="ModelMyHealth.Store.FrequenciaCardiacaValores" Multiplicity="*" />
+    <End Role="Alerta" Type="ModelMyHealth.Store.Alerta" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Alerta">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="FrequenciaCardiacaValores">
+        <PropertyRef Name="Alertas_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SaturacaoValoresAlerta">
+    <End Role="SaturacaoValores" Type="ModelMyHealth.Store.SaturacaoValores" Multiplicity="*" />
+    <End Role="Alerta" Type="ModelMyHealth.Store.Alerta" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Alerta">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SaturacaoValores">
+        <PropertyRef Name="Alertas_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="PressaoSanguineaValoresAlerta">
+    <End Role="PressaoSanguineaValores" Type="ModelMyHealth.Store.PressaoSanguineaValores" Multiplicity="*" />
+    <End Role="Alerta" Type="ModelMyHealth.Store.Alerta" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Alerta">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PressaoSanguineaValores">
+        <PropertyRef Name="Alertas_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

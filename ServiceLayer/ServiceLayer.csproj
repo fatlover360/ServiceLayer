@@ -42,11 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -117,7 +117,7 @@
     <Compile Include="Alerta.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
-    <Compile Include="DadoClinico.cs">
+    <Compile Include="FrequenciaCardiacaValores.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelMyHealth.Context.cs">
@@ -135,10 +135,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelMyHealth.edmx</DependentUpon>
     </Compile>
+    <Compile Include="PressaoSanguineaValores.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SaturacaoValores.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
     <Compile Include="ServiceHealth.svc.cs">
       <DependentUpon>ServiceHealth.svc</DependentUpon>
     </Compile>
-    <Compile Include="IServiceHeath.cs" />
+    <Compile Include="IServiceHealth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utente.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
