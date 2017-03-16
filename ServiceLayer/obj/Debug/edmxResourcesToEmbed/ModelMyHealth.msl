@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
-  <Alias Key="Model" Value="ModelMyHealth" />
-  <Alias Key="Target" Value="ModelMyHealth.Store" />
-  <EntityContainerMapping CdmEntityContainer="ModelMyHealthContainer" StorageEntityContainer="ModelMyHealthTargetContainer" />
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ModelMyHealthStoreContainer" CdmEntityContainer="ModelMyHealthContainer">
+    <EntitySetMapping Name="Utente">
+      <EntityTypeMapping TypeName="IsTypeOf(ModelMyHealth.Utente)">
+        <MappingFragment StoreEntitySet="Utente">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="PrimeiroNome" ColumnName="Nome" />
+          <ScalarProperty Name="UltimoNome" ColumnName="FrequenciaCardiaca" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
 </Mapping>
