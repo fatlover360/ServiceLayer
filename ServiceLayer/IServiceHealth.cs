@@ -82,78 +82,91 @@ namespace ServiceLayer
         private int height;
         private int sns;
 
+        [DataMember]
         public string Name
         {
             get { return name; }
             set { name = value; }
         }
 
+        [DataMember]
         public string Surname
         {
             get { return surname; }
             set { surname = value; }
         }
 
+        [DataMember]
         public int Nif
         {
             get { return nif; } 
             set { nif = value; }
         }
 
+        [DataMember]
         public string Phone
         {
             get { return phone; } 
             set { phone = value; }
         }
 
+        [DataMember]
         public string Email
         {
             get { return email; } 
             set { email = value; }
         }
 
+        [DataMember]
         public string EmergencyNumber
         {
             get { return emergencyNumber; } 
             set { emergencyNumber = value; }
         }
 
+        [DataMember]
         public string EmergencyName
         {
             get { return emergencyName; } 
             set { emergencyName = value; }
         }
 
+        [DataMember]
         public string Sex
         {
             get { return sex; } 
             set { sex = value; }
         }
 
+        [DataMember]
         public string Adress
         {
             get { return adress; } 
             set { adress = value; }
         }
 
+        [DataMember]
         public string Alergies
         {
             get { return alergies; }
             set { alergies = value; }
         }
 
+        [DataMember]
         public double Weight
         {
             get { return weight; } 
             set { weight = value; }
         }
 
+        [DataMember]
         public int Height
         {
             get { return height; } 
             set { height = value; }
         }
 
+        [DataMember]
         public int Sns
         {
             get { return sns; } 
@@ -289,30 +302,35 @@ namespace ServiceLayer
         private int minimumCriticalValue;
         private int maximumCriticalValue;
 
+        [DataMember]
         public string Type
         {
             get { return type; }
             set { type = value; }
         }
 
+        [DataMember]
         public int MinimumValue
         {
             get { return minimumValue; } 
             set { minimumValue = value; }
         }
 
+        [DataMember]
         public int MaximumValue
         {
             get { return maximumValue; } 
             set { maximumValue = value; }
         }
 
+        [DataMember]
         public int MinimumCriticalValue
         {
             get { return minimumCriticalValue; }
             set { minimumCriticalValue = value; }
         }
 
+        [DataMember]
         public int MaximumCriticalValue
         {
             get { return maximumCriticalValue; } 
