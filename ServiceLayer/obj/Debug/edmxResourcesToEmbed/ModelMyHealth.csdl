@@ -47,9 +47,9 @@
     <Property Name="Nome" Type="String" Nullable="false" />
     <Property Name="Apelido" Type="String" Nullable="false" />
     <Property Name="NIF" Type="Int32" Nullable="false" />
-    <Property Name="Telefone" Type="String" Nullable="true" />
+    <Property Name="Telefone" Type="Int32" Nullable="true" />
     <Property Name="Email" Type="String" Nullable="true" />
-    <Property Name="NumeroEmergencia" Type="String" Nullable="false" />
+    <Property Name="NumeroEmergencia" Type="Int32" Nullable="false" />
     <Property Name="NomeEmergencia" Type="String" Nullable="true" />
     <Property Name="Morada" Type="String" Nullable="true" />
     <Property Name="Sexo" Type="String" Nullable="false" />
@@ -57,6 +57,7 @@
     <Property Name="Peso" Type="Double" Nullable="true" />
     <Property Name="Altura" Type="Int32" Nullable="true" />
     <Property Name="SNS" Type="Int32" Nullable="false" />
+    <Property Name="DataNascimento" Type="DateTime" Nullable="false" />
   </EntityType>
   <EntityType Name="Alerta">
     <Key>

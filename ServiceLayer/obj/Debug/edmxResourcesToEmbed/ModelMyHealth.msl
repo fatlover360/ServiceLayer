@@ -18,6 +18,7 @@
           <ScalarProperty Name="Peso" ColumnName="Peso" />
           <ScalarProperty Name="Altura" ColumnName="Altura" />
           <ScalarProperty Name="SNS" ColumnName="SNS" />
+          <ScalarProperty Name="DataNascimento" ColumnName="DataNascimento" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

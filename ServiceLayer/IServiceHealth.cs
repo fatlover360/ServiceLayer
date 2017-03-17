@@ -33,10 +33,7 @@ namespace ServiceLayer
 
         [OperationContract]
         bool UpdatePatient(Patient patient);
-
-        [OperationContract]
-        bool DeletePatient(Patient patient);
-
+        
         [OperationContract]
         Patient GetPatient(int sns);
 

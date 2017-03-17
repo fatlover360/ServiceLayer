@@ -44,9 +44,9 @@
     <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Apelido" Type="nvarchar(max)" Nullable="false" />
     <Property Name="NIF" Type="int" Nullable="false" />
-    <Property Name="Telefone" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Telefone" Type="int" Nullable="true" />
     <Property Name="Email" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="NumeroEmergencia" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NumeroEmergencia" Type="int" Nullable="false" />
     <Property Name="NomeEmergencia" Type="nvarchar(max)" Nullable="true" />
     <Property Name="Morada" Type="nvarchar(max)" Nullable="true" />
     <Property Name="Sexo" Type="nvarchar(max)" Nullable="false" />
@@ -54,6 +54,7 @@
     <Property Name="Peso" Type="float" Nullable="true" />
     <Property Name="Altura" Type="int" Nullable="true" />
     <Property Name="SNS" Type="int" Nullable="false" />
+    <Property Name="DataNascimento" Type="datetime" Nullable="false" />
   </EntityType>
   <EntityType Name="AlertaSet">
     <Key>

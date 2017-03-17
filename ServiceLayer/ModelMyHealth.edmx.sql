@@ -293,3 +293,14 @@ GO
 -- Script has ended
 -- --------------------------------------------------
 
+SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (1, N'HR')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (2, N'SPO2')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (3, N'BP')
+SET IDENTITY_INSERT [dbo].[TipoAlertaSet] OFF
+
+SET IDENTITY_INSERT [dbo].[AlertaSet] ON
+    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (1, 60, 120, 30, 180, 1)
+    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (2, 90, 100, 80, 100, 2)
+    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (3, 90, 180, 60, 190, 3)
+SET IDENTITY_INSERT [dbo].[AlertaSet] OFF
