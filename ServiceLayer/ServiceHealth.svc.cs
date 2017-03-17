@@ -285,50 +285,7 @@ namespace ServiceLayer
                 }
             }
         }
-
-        public bool DeletePatient(Patient patient)
-        {
-            using (ModelMyHealthContainer context = new ModelMyHealthContainer())
-            {
-                try
-                {
-                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
-
-                    if (ut == null)
-                        return false;
-
-                    context.UtenteSet.Remove(ut);
-                    context.SaveChanges();
-
-                    return true;
-                }
-                catch (ArgumentNullException)
-                {
-                    return false;
-                }
-                catch (DbUpdateException)
-                {
-                    return false;
-                }
-                catch (DbEntityValidationException)
-                {
-                    return false;
-                }
-                catch (NotSupportedException)
-                {
-                    return false;
-                }
-                catch (ObjectDisposedException)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException)
-                {
-                    return false;
-                }
-            }
-        }
-
+        
         public Patient GetPatient(int sns)
         {
             using (ModelMyHealthContainer context = new ModelMyHealthContainer())
@@ -708,6 +665,5 @@ namespace ServiceLayer
         }
 
         #endregion
-
     }
 }

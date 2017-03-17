@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/17/2017 08:54:18
--- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayer\ModelMyHealth.edmx
+-- Date Created: 03/17/2017 08:46:04
+-- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayer\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -77,12 +77,14 @@ CREATE TABLE [dbo].[UtenteSet] (
     [NumeroEmergencia] int  NOT NULL,
     [NomeEmergencia] nvarchar(max)  NULL,
     [Morada] nvarchar(max)  NULL,
-    [Sexo] nvarchar(max)  NOT NULL,
+    [Sexo] nvarchar(1)  NOT NULL,
     [Alergias] nvarchar(max)  NULL,
     [Peso] float  NULL,
     [Altura] int  NULL,
     [SNS] int  NOT NULL,
-    [DataNascimento] datetime  NOT NULL
+    [DataNascimento] datetime  NOT NULL,
+	UNIQUE (NIF),
+	UNIQUE (SNS)
 );
 GO
 
@@ -290,3 +292,15 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
+
+SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (1, N'HR')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (2, N'SPO2')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (3, N'BP')
+SET IDENTITY_INSERT [dbo].[TipoAlertaSet] OFF
+
+SET IDENTITY_INSERT [dbo].[AlertaSet] ON
+    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (1, 60, 120, 30, 180, 1)
+    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (2, 90, 100, 80, 100, 2)
+    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (3, 90, 180, 60, 190, 3)
+SET IDENTITY_INSERT [dbo].[AlertaSet] OFF
