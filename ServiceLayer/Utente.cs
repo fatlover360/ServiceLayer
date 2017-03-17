@@ -26,9 +26,9 @@ namespace ServiceLayer
         public string Nome { get; set; }
         public string Apelido { get; set; }
         public int NIF { get; set; }
-        public string Telefone { get; set; }
+        public Nullable<int> Telefone { get; set; }
         public string Email { get; set; }
-        public string NumeroEmergencia { get; set; }
+        public int NumeroEmergencia { get; set; }
         public string NomeEmergencia { get; set; }
         public string Morada { get; set; }
         public string Sexo { get; set; }
@@ -36,6 +36,7 @@ namespace ServiceLayer
         public Nullable<double> Peso { get; set; }
         public Nullable<int> Altura { get; set; }
         public int SNS { get; set; }
+        public System.DateTime DataNascimento { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FrequenciaCardiacaValores> FrequenciaCardiacaValores { get; set; }

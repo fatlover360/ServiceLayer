@@ -73,12 +73,13 @@ namespace ServiceLayer
     {
         private string name;
         private string surname;
+        private DateTime birthDate;
         private int nif;
-        private string phone;
+        private int phone;
         private string email;
-        private string emergencyNumber;
+        private int emergencyNumber;
         private string emergencyName;
-        private string sex;
+        private string gender;
         private string adress;
         private string alergies;
         private double weight;
@@ -100,6 +101,13 @@ namespace ServiceLayer
         }
 
         [DataMember]
+        public DateTime BirthDate
+        {
+            get { return birthDate; }
+            set { birthDate = value; }
+        }
+
+        [DataMember]
         public int Nif
         {
             get { return nif; } 
@@ -107,7 +115,7 @@ namespace ServiceLayer
         }
 
         [DataMember]
-        public string Phone
+        public int Phone
         {
             get { return phone; } 
             set { phone = value; }
@@ -121,7 +129,7 @@ namespace ServiceLayer
         }
 
         [DataMember]
-        public string EmergencyNumber
+        public int EmergencyNumber
         {
             get { return emergencyNumber; } 
             set { emergencyNumber = value; }
@@ -135,10 +143,10 @@ namespace ServiceLayer
         }
 
         [DataMember]
-        public string Sex
+        public string Gender
         {
-            get { return sex; } 
-            set { sex = value; }
+            get { return gender; } 
+            set { gender = value; }
         }
 
         [DataMember]
