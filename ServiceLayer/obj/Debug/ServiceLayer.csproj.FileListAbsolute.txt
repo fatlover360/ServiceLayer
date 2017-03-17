@@ -59,3 +59,7 @@ C:\Git\ServiceLayer\ServiceLayer\bin\Microsoft.ApplicationInsights.xml
 C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.dll
 C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.pdb
 C:\Git\ServiceLayer\ServiceLayer\obj\Debug\ServiceLayer.csprojResolveAssemblyReference.cache
+C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayer\bin\EntityFramework.dll
+C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayer\bin\EntityFramework.SqlServer.dll
+C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayer\bin\EntityFramework.xml
+C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayer\bin\EntityFramework.SqlServer.xml
