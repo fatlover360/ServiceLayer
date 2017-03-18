@@ -32,7 +32,7 @@ namespace ServiceLayer
         bool InsertPatient(Patient patient);
 
         [OperationContract]
-        bool UpdatePatient(Patient patient, int sns);
+        bool UpdatePatient(Patient patient);
         
         [OperationContract]
         Patient GetPatient(int sns);
