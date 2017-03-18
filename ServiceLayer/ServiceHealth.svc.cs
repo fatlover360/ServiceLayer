@@ -228,13 +228,13 @@ namespace ServiceLayer
             }
         }
 
-        public bool UpdatePatient(Patient patient)
+        public bool UpdatePatient(Patient patient, int sns)
         {
             using (ModelMyHealthContainer context = new ModelMyHealthContainer())
             {
-                try
-                {
-                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
+                //try
+                //{
+                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == sns);
 
                     if (ut == null)
                         return false;
@@ -257,31 +257,31 @@ namespace ServiceLayer
                     context.SaveChanges();
 
                     return true;
-                }
-                catch (ArgumentNullException)
-                {
-                    return false;
-                }
-                catch (DbUpdateException)
-                {
-                    return false;
-                }
-                catch (DbEntityValidationException)
-                {
-                    return false;
-                }
-                catch (NotSupportedException)
-                {
-                    return false;
-                }
-                catch (ObjectDisposedException)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException)
-                {
-                    return false;
-                }
+                //}
+                //catch (ArgumentNullException)
+                //{
+                //    return false;
+                //}
+                //catch (DbUpdateException)
+                //{
+                //    return false;
+                //}
+                //catch (DbEntityValidationException)
+                //{
+                //    return false;
+                //}
+                //catch (NotSupportedException)
+                //{
+                //    return false;
+                //}
+                //catch (ObjectDisposedException)
+                //{
+                //    return false;
+                //}
+                //catch (InvalidOperationException)
+                //{
+                //    return false;
+                //}
             }
         }
         
