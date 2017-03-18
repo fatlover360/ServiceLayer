@@ -7,10 +7,10 @@ using System.Linq;
 namespace ServiceLayer
 {
     //lets go
-    public class ServiceHealth : IServiceHealthUser, IServiceHealthAlert
+    public class ServiceHealth : IServiceHealth, IServiceHealthAlert
     {
 
-        #region IServiceHealthUser
+        #region IServiceHealth
 
         public bool ValidatePatient(int sns)
         {
