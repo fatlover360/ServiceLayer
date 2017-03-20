@@ -324,7 +324,7 @@
           <NavigationProperty Name="PressaoSanguineaValoresSets" Relationship="MyHealthDBModel.FK_UtentePressaoSanguineaValores" FromRole="UtenteSet" ToRole="PressaoSanguineaValoresSet" />
           <NavigationProperty Name="SaturacaoValoresSets" Relationship="MyHealthDBModel.FK_UtenteSaturacaoValores" FromRole="UtenteSet" ToRole="SaturacaoValoresSet" />
           <Property Name="Ativo" Type="Boolean" Nullable="false" />
-          <Property Name="CodigoPaisTelefone" Type="String" Nullable="false" />
+          <Property Name="CodigoPaisTelefone" Type="String" Nullable="true" />
           <Property Name="CodigoPaisNumeroEmergencia" Type="String" Nullable="false" />
         </EntityType>
         <Association Name="FK_AlertaTipoAlerta">

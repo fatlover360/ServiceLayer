@@ -194,8 +194,10 @@ namespace ServiceLayerNew
                     ut.NIF = patient.Nif;
                     ut.DataNascimento = patient.BirthDate;
                     ut.Telefone = patient.Phone;
+                    ut.CodigoPaisTelefone = patient.PhoneCountryCode;
                     ut.Email = patient.Email;
                     ut.NumeroEmergencia = patient.EmergencyNumber;
+                    ut.CodigoPaisNumeroEmergencia = patient.EmergencyNumberCountryCode;
                     ut.NomeEmergencia = patient.EmergencyName;
                     ut.Sexo = patient.Gender;
                     ut.Morada = patient.Adress;
@@ -241,6 +243,7 @@ namespace ServiceLayerNew
 
                     if (ut == null)
                         return false;
+
                     ut.Ativo = patient.Ativo;
                     context.SaveChanges();
 

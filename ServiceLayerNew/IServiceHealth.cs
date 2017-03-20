@@ -76,8 +76,10 @@ namespace ServiceLayerNew
         private DateTime birthDate;
         private int nif;
         private int phone;
+        private string phoneCountryCode;
         private string email;
         private int emergencyNumber;
+        private string emergencyNumberCountryCode;
         private string emergencyName;
         private string gender;
         private string adress;
@@ -123,6 +125,13 @@ namespace ServiceLayerNew
         }
 
         [DataMember]
+        public string PhoneCountryCode
+        {
+            get { return phoneCountryCode; }
+            set { phoneCountryCode = value; }
+        }
+
+        [DataMember]
         public string Email
         {
             get { return email; }
@@ -134,6 +143,13 @@ namespace ServiceLayerNew
         {
             get { return emergencyNumber; }
             set { emergencyNumber = value; }
+        }
+
+        [DataMember]
+        public string EmergencyNumberCountryCode
+        {
+            get { return emergencyNumberCountryCode; }
+            set { emergencyNumberCountryCode = value; }
         }
 
         [DataMember]
