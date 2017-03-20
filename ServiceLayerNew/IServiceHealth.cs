@@ -35,7 +35,7 @@ namespace ServiceLayerNew
         bool UpdatePatient(Patient patient, int sns);
 
         [OperationContract]
-        bool UpdateStatePatient(Patient patient, int sns);
+        bool UpdateStatePatient(Patient patient);
 
         [OperationContract]
         Patient GetPatient(int sns);
