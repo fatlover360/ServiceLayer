@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f85b9c8c3e934072bc148555faa5dc43" Name="Diagram1" ZoomLevel="64" >
+      <Diagram DiagramId="f85b9c8c3e934072bc148555faa5dc43" Name="Diagram1" ZoomLevel="82" >
         <EntityTypeShape EntityType="MyHealthDBModel.Alerta" Width="1.5" PointX="6.75" PointY="3.75" />
         <EntityTypeShape EntityType="MyHealthDBModel.FrequenciaCardiacaValores" Width="1.5" PointX="4.125" PointY="0.5" />
         <EntityTypeShape EntityType="MyHealthDBModel.PressaoSanguineaValores" Width="1.5" PointX="3.875" PointY="6.875" />
@@ -14,8 +14,8 @@
         <AssociationConnector Association="MyHealthDBModel.FK_AlertaTipoAlerta" />
         <AssociationConnector Association="MyHealthDBModel.FK_FrequenciaCardiacaValoresAlerta" ManuallyRouted="true" >
           <ConnectorPoint PointX="7.5" PointY="3.75" />
-          <ConnectorPoint PointX="7.5" PointY="1.8606110946311427" />
-          <ConnectorPoint PointX="5.625" PointY="1.8606110946311427" />
+          <ConnectorPoint PointX="7.5" PointY="1.6450066855394283" />
+          <ConnectorPoint PointX="5.625" PointY="1.6450066855394283" />
         </AssociationConnector>
         <AssociationConnector Association="MyHealthDBModel.FK_PressaoSanguineaValoresAlerta" />
         <AssociationConnector Association="MyHealthDBModel.FK_SaturacaoValoresAlerta" />

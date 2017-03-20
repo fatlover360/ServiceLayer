@@ -213,7 +213,7 @@ namespace ServiceLayerNew
                 {
                     return false;
                 }
-                catch (DbEntityValidationException)
+                catch (DbEntityValidationException e)
                 {
                     return false;
                 }

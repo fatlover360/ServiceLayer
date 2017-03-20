@@ -37,6 +37,8 @@ namespace ServiceLayerNew
         public Nullable<int> Altura { get; set; }
         public int SNS { get; set; }
         public System.DateTime DataNascimento { get; set; }
+        public string CodigoPaisTelefone { get; set; }
+        public string CodigoPaisNumeroEmergencia { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FrequenciaCardiacaValores> FrequenciaCardiacaValoresSets { get; set; }
