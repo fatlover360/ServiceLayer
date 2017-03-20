@@ -191,7 +191,7 @@ namespace ServiceLayerNew
                     Utente ut = new Utente();
                     ut.Nome = patient.Name;
                     ut.Apelido = patient.Surname;
-                    ut.NIF = patient.Nif;
+                    ut.NIF = patient.Nif; 
                     ut.DataNascimento = patient.BirthDate;
                     ut.Telefone = patient.Phone;
                     ut.CodigoPaisTelefone = patient.PhoneCountryCode;
