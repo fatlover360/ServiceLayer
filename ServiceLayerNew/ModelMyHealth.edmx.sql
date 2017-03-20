@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/19/2017 17:28:42
--- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
+-- Date Created: 03/20/2017 14:40:50
+-- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -292,8 +292,6 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
-
-
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (1, N'HR')
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (2, N'SPO2')

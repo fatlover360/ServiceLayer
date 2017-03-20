@@ -232,13 +232,13 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool UpdatePatient(Patient patient)
+        public bool UpdatePatient(Patient patient, int sns)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
+                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == sns);
 
                     if (ut == null)
                         return false;
