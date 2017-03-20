@@ -328,6 +328,7 @@ namespace ServiceLayerNew
                     patient.Height = Convert.ToInt32(ut.Altura);
                     patient.Alergies = ut.Alergias;
                     patient.Sns = ut.SNS;
+                    patient.Ativo = ut.Ativo;
 
                     return patient;
                 }
@@ -369,6 +370,7 @@ namespace ServiceLayerNew
                         patient.Height = Convert.ToInt32(ut.Altura);
                         patient.Alergies = ut.Alergias;
                         patient.Sns = ut.SNS;
+                        patient.Ativo = ut.Ativo;
 
                         patientList.Add(patient);
                     }
