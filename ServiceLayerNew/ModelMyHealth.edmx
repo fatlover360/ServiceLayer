@@ -112,6 +112,7 @@
     <Property Name="Altura" Type="int" Nullable="true" />
     <Property Name="SNS" Type="int" Nullable="false" />
     <Property Name="DataNascimento" Type="datetime" Nullable="false" />
+    <Property Name="Ativo" Type="bit" Nullable="false" />
   </EntityType>
   <Association Name="FK_AlertaTipoAlerta">
     <End Role="TipoAlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
@@ -322,6 +323,7 @@
           <NavigationProperty Name="FrequenciaCardiacaValoresSets" Relationship="MyHealthDBModel.FK_UtenteFrequenciaCardiacaValores" FromRole="UtenteSet" ToRole="FrequenciaCardiacaValoresSet" />
           <NavigationProperty Name="PressaoSanguineaValoresSets" Relationship="MyHealthDBModel.FK_UtentePressaoSanguineaValores" FromRole="UtenteSet" ToRole="PressaoSanguineaValoresSet" />
           <NavigationProperty Name="SaturacaoValoresSets" Relationship="MyHealthDBModel.FK_UtenteSaturacaoValores" FromRole="UtenteSet" ToRole="SaturacaoValoresSet" />
+          <Property Name="Ativo" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_AlertaTipoAlerta">
           <End Type="MyHealthDBModel.TipoAlerta" Role="TipoAlertaSet" Multiplicity="1" />
@@ -488,6 +490,7 @@
           <ScalarProperty Name="Altura" ColumnName="Altura" />
           <ScalarProperty Name="SNS" ColumnName="SNS" />
           <ScalarProperty Name="DataNascimento" ColumnName="DataNascimento" />
+          <ScalarProperty Name="Ativo" ColumnName="Ativo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

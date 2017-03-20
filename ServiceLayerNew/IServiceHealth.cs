@@ -35,6 +35,9 @@ namespace ServiceLayerNew
         bool UpdatePatient(Patient patient, int sns);
 
         [OperationContract]
+        bool UpdateStatePatient(Patient patient, int sns);
+
+        [OperationContract]
         Patient GetPatient(int sns);
 
         [OperationContract]
@@ -82,6 +85,7 @@ namespace ServiceLayerNew
         private double weight;
         private int height;
         private int sns;
+        private bool ativo;
 
         [DataMember]
         public string Name
@@ -179,6 +183,13 @@ namespace ServiceLayerNew
         {
             get { return sns; }
             set { sns = value; }
+        }
+
+        [DataMember]
+        public bool Ativo
+        {
+            get { return ativo; }
+            set { ativo = value; }
         }
     }
 

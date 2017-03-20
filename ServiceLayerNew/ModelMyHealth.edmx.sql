@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/20/2017 14:40:50
+-- Date Created: 03/20/2017 15:07:11
 -- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
@@ -135,6 +135,7 @@ CREATE TABLE [dbo].[UtenteSet] (
     [Altura] int  NULL,
     [SNS] int  NOT NULL,
     [DataNascimento] datetime  NOT NULL,
+    [Ativo] bit  NOT NULL
 	UNIQUE(NIF),
 	UNIQUE(SNS)
 );
