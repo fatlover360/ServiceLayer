@@ -215,7 +215,8 @@ namespace ServiceLayerNew
                 }
                 catch (Exception x)
                 {
-                    Console.WriteLine(x.Message);
+                    Console.WriteLine(x.Message + "  " + x.GetBaseException());
+                    
                     return false;
                 }
             }
