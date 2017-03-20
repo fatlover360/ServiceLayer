@@ -211,27 +211,35 @@ namespace ServiceLayerNew
                     context.SaveChanges();
 
                     return true;
-                }
-                catch (DbUpdateException)
-                {
-                    return false;
-                }
-                catch (DbEntityValidationException e)
-                {
-                    return false;
-                }
-                catch (NotSupportedException)
-                {
-                    return false;
-                }
-                catch (ObjectDisposedException)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException)
-                {
-                    return false;
-                }
+                
+                 }
+                 catch (DbUpdateException)
+                 {
+                     return false;
+                 }
+                 catch (DbEntityValidationException e)
+                 {
+                     Console.WriteLine(e.Message + "\n");
+                     var it = e.EntityValidationErrors.GetEnumerator();
+ 
+                     while (it.MoveNext())
+                     {
+                         Console.WriteLine(it.Current);
+                     }
+                     return false;
+                 }
+                 catch (NotSupportedException)
+                 {
+                     return false;
+                 }
+                 catch (ObjectDisposedException)
+                 {
+                     return false;
+                 }
+                 catch (InvalidOperationException)
+                 {
+                     return false;
+                 }
             }
         }
 

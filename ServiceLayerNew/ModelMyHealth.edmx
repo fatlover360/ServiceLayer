@@ -105,7 +105,7 @@
     <Property Name="Email" Type="nvarchar(max)" Nullable="true" />
     <Property Name="NumeroEmergencia" Type="int" Nullable="false" />
     <Property Name="NomeEmergencia" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="Morada" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Morada" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Sexo" Type="nvarchar" Nullable="false" MaxLength="1" />
     <Property Name="Alergias" Type="nvarchar(max)" Nullable="true" />
     <Property Name="Peso" Type="float" Nullable="true" />
@@ -113,6 +113,8 @@
     <Property Name="SNS" Type="int" Nullable="false" />
     <Property Name="DataNascimento" Type="datetime" Nullable="false" />
     <Property Name="Ativo" Type="bit" Nullable="false" />
+    <Property Name="CodigoPaisTelefone" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="CodigoPaisNumeroEmergencia" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <Association Name="FK_AlertaTipoAlerta">
     <End Role="TipoAlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
@@ -493,6 +495,8 @@
           <ScalarProperty Name="SNS" ColumnName="SNS" />
           <ScalarProperty Name="DataNascimento" ColumnName="DataNascimento" />
           <ScalarProperty Name="Ativo" ColumnName="Ativo" />
+          <ScalarProperty Name="CodigoPaisTelefone" ColumnName="CodigoPaisTelefone" />
+          <ScalarProperty Name="CodigoPaisNumeroEmergencia" ColumnName="CodigoPaisNumeroEmergencia" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
