@@ -203,6 +203,7 @@ namespace ServiceLayerNew
                     ut.Altura = patient.Height;
                     ut.Alergias = patient.Alergies;
                     ut.SNS = patient.Sns;
+                    ut.Ativo = patient.Ativo;
 
                     context.UtenteSet.Add(ut);
                     context.SaveChanges();
@@ -232,13 +233,28 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool UpdatePatient(Patient patient)
+        public bool UpdateStatePatient(Patient patient)
+        {
+             using (ModelMyHealth context = new ModelMyHealth())
+            {
+                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
+
+                    if (ut == null)
+                        return false;
+                    ut.Ativo = patient.Ativo;
+                    context.SaveChanges();
+
+                    return true;
+                }
+
+        }
+        public bool UpdatePatient(Patient patient, int sns)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
+                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == sns);
 
                     if (ut == null)
                         return false;
@@ -312,6 +328,7 @@ namespace ServiceLayerNew
                     patient.Height = Convert.ToInt32(ut.Altura);
                     patient.Alergies = ut.Alergias;
                     patient.Sns = ut.SNS;
+                    patient.Ativo = ut.Ativo;
 
                     return patient;
                 }
@@ -353,6 +370,7 @@ namespace ServiceLayerNew
                         patient.Height = Convert.ToInt32(ut.Altura);
                         patient.Alergies = ut.Alergias;
                         patient.Sns = ut.SNS;
+                        patient.Ativo = ut.Ativo;
 
                         patientList.Add(patient);
                     }
