@@ -24,6 +24,8 @@ namespace ServiceLayerNew
     
         public int Id { get; set; }
         public string Nome { get; set; }
+        public int TempoMinimo { get; set; }
+        public int TempoMaximo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AvisoFrequenciaCardiaca> AvisoFrequenciaCardiacaSet { get; set; }

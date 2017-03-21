@@ -15,7 +15,7 @@ namespace ServiceLayerNew
     public partial class AvisoFrequenciaCardiaca
     {
         public int Id { get; set; }
-        public string RegistoFinal { get; set; }
+        public int RegistoFinal { get; set; }
     
         public virtual FrequenciaCardiacaValores FrequenciaCardiacaValorSet { get; set; }
         public virtual TipoAviso TipoAvisoSet { get; set; }

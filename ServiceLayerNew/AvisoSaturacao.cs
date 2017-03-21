@@ -15,7 +15,7 @@ namespace ServiceLayerNew
     public partial class AvisoSaturacao
     {
         public int Id { get; set; }
-        public string RegistoFinal { get; set; }
+        public int RegistoFinal { get; set; }
     
         public virtual SaturacaoValores SaturacaoValorSet { get; set; }
         public virtual TipoAviso TipoAvisoSet { get; set; }

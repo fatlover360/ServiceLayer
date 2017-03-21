@@ -138,7 +138,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="RegistoFinal" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RegistoFinal" Type="int" Nullable="false" />
     <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="AvisoSaturacaoSet">
@@ -146,7 +146,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="RegistoFinal" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RegistoFinal" Type="int" Nullable="false" />
     <Property Name="SaturacaoValorSet_Id" Type="int" Nullable="false" />
     <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
   </EntityType>
@@ -155,7 +155,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="RegistoFinal" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RegistoFinal" Type="int" Nullable="false" />
     <Property Name="PressaoSanguineaValorSet_Id" Type="int" Nullable="false" />
     <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
   </EntityType>
@@ -165,6 +165,8 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TempoMinimo" Type="int" Nullable="false" />
+    <Property Name="TempoMaximo" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="FK_FrequenciaCardiacaValoresAlerta">
     <End Role="AlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
@@ -535,7 +537,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="FrequenciaCardiacaValorSet" Relationship="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" FromRole="AvisoFrequenciaCardiaca" ToRole="FrequenciaCardiacaValores" />
           <NavigationProperty Name="TipoAvisoSet" Relationship="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso" FromRole="AvisoFrequenciaCardiaca" ToRole="TipoAviso" />
-          <Property Name="RegistoFinal" Type="String" Nullable="false" />
+          <Property Name="RegistoFinal" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="AvisoSaturacao">
           <Key>
@@ -544,7 +546,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="SaturacaoValorSet" Relationship="MyHealthDBModel.AvisoSaturacaoSaturacaoValores" FromRole="AvisoSaturacao" ToRole="SaturacaoValores" />
           <NavigationProperty Name="TipoAvisoSet" Relationship="MyHealthDBModel.AvisoSaturacaoTipoAviso" FromRole="AvisoSaturacao" ToRole="TipoAviso" />
-          <Property Name="RegistoFinal" Type="String" Nullable="false" />
+          <Property Name="RegistoFinal" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="AvisoPressaoSanguinea">
           <Key>
@@ -553,7 +555,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="PressaoSanguineaValorSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaPressaoSanguineaValores" FromRole="AvisoPressaoSanguinea" ToRole="PressaoSanguineaValores" />
           <NavigationProperty Name="TipoAvisoSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso" FromRole="AvisoPressaoSanguinea" ToRole="TipoAviso" />
-          <Property Name="RegistoFinal" Type="String" Nullable="false" />
+          <Property Name="RegistoFinal" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
           <End Type="MyHealthDBModel.FrequenciaCardiacaValores" Role="FrequenciaCardiacaValores" Multiplicity="1" />
@@ -576,6 +578,8 @@
           <NavigationProperty Name="AvisoFrequenciaCardiacaSet" Relationship="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso" FromRole="TipoAviso" ToRole="AvisoFrequenciaCardiaca" />
           <NavigationProperty Name="AvisoSaturacaoSet" Relationship="MyHealthDBModel.AvisoSaturacaoTipoAviso" FromRole="TipoAviso" ToRole="AvisoSaturacao" />
           <NavigationProperty Name="AvisoPressaoSanguineaSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso" FromRole="TipoAviso" ToRole="AvisoPressaoSanguinea" />
+          <Property Name="TempoMinimo" Type="Int32" Nullable="false" />
+          <Property Name="TempoMaximo" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AvisoFrequenciaCardiacaTipoAviso">
           <End Type="MyHealthDBModel.AvisoFrequenciaCardiaca" Role="AvisoFrequenciaCardiaca" Multiplicity="*" />
@@ -697,6 +701,8 @@
         <MappingFragment StoreEntitySet="TipoAvisoSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Nome" ColumnName="Nome" />
+          <ScalarProperty Name="TempoMinimo" ColumnName="TempoMinimo" />
+          <ScalarProperty Name="TempoMaximo" ColumnName="TempoMaximo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

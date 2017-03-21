@@ -14,6 +14,15 @@ namespace ServiceLayerNew
     // NOTE: In order to launch WCF Test Client for testing this service, please select ServiceHealth.svc or ServiceHealth.svc.cs at the Solution Explorer and start debugging.
     public class ServiceHealth : IServiceHealth, IServiceHealthAlert
     {
+        private enum WarningType
+        {
+            EAC,
+            EAI,
+            ECC,
+            ECI,
+            ECA
+        }
+
         #region IServiceHealth
 
         public bool ValidatePatient(int sns)
@@ -178,7 +187,7 @@ namespace ServiceLayerNew
             }
         }
 
-        #endregion
+        #endregion IServiceHealth
 
         #region IServiceHealthAlert
 
@@ -191,7 +200,7 @@ namespace ServiceLayerNew
                     Utente ut = new Utente();
                     ut.Nome = patient.Name;
                     ut.Apelido = patient.Surname;
-                    ut.NIF = patient.Nif; 
+                    ut.NIF = patient.Nif;
                     ut.DataNascimento = patient.BirthDate;
                     ut.Telefone = patient.Phone;
                     ut.CodigoPaisTelefone = patient.PhoneCountryCode;
@@ -216,7 +225,7 @@ namespace ServiceLayerNew
                 catch (Exception x)
                 {
                     Console.WriteLine(x.Message + "  " + x.GetBaseException());
-                    
+
                     return false;
                 }
             }
@@ -224,18 +233,18 @@ namespace ServiceLayerNew
 
         public bool UpdateStatePatient(Patient patient)
         {
-             using (ModelMyHealth context = new ModelMyHealth())
+            using (ModelMyHealth context = new ModelMyHealth())
             {
-                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
+                Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == patient.Sns);
 
-                    if (ut == null)
-                        return false;
+                if (ut == null)
+                    return false;
 
-                    ut.Ativo = patient.Ativo;
-                    context.SaveChanges();
+                ut.Ativo = patient.Ativo;
+                context.SaveChanges();
 
-                    return true;
-                }
+                return true;
+            }
 
         }
         public bool UpdatePatient(Patient patient, int sns)
@@ -667,6 +676,321 @@ namespace ServiceLayerNew
                     return null;
                 }
             }
+        }
+
+        #endregion IServiceHealthAlert
+
+        #region WARNIGS
+
+        private void BloodPressureWarnings(PressaoSanguineaValores psRecord)
+        {
+            int systolic = psRecord.Sistolica;
+            int diastolic = psRecord.Distolica;
+            int minimum = psRecord.AlertaSet.ValorMinimo;
+            int maximum = psRecord.AlertaSet.ValorMaximo;
+            int criticalMinimum = psRecord.AlertaSet.ValorCriticoMinimo;
+            int criticalMaximum = psRecord.AlertaSet.ValorCriticoMaximo;
+
+            #region SA - Sem Alerta
+
+            if (diastolic >= minimum && systolic <= maximum) // diastolica >= 90mmHg e sistolica <= 180mmHg
+                return;
+
+            #endregion SA
+
+            #region CA - Com Alerta
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+
+                #region ECA - Evento Critico Anytime
+
+                if (diastolic < criticalMinimum || systolic > criticalMaximum)
+                {
+                    AvisoPressaoSanguinea avPressao = new AvisoPressaoSanguinea();
+                    avPressao.PressaoSanguineaValorSet = psRecord;
+                    avPressao.RegistoFinal = psRecord.Id;
+                    avPressao.TipoAvisoSet = GetWarning(WarningType.ECA);
+
+                    context.AvisoPressaoSanguineaSet.Add(avPressao);
+                    context.SaveChanges();
+                }
+                #endregion ECA
+                else
+                {
+
+                    #region EAC - Evento Aviso Continuo 
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o EAC
+                     */
+
+                    TipoAviso eac = GetWarning(WarningType.EAC);
+                    int minimumTimeEAC = eac.TempoMinimo;
+
+                    #endregion EAC 
+
+
+                    #region EAI - Evento Aviso Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
+                     */
+
+                    TipoAviso eai = GetWarning(WarningType.EAI);
+                    int minimumTimeEAI = eai.TempoMinimo;
+                    int maximumTimeEAI = eai.TempoMaximo;
+
+                    #endregion EAI
+
+
+                    #region ECC - Evento Critico Continuo
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o ECC
+                     */
+
+                    TipoAviso ecc = GetWarning(WarningType.ECC);
+                    int minimumTimeECC = ecc.TempoMinimo;
+
+                    #endregion ECC
+
+
+                    #region ECI - Evento Critico Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
+                     */
+
+                    TipoAviso eci = GetWarning(WarningType.ECI);
+                    int minimumTimeECI = eci.TempoMinimo;
+                    int maximumTimeECI = eci.TempoMaximo;
+
+                    #endregion ECI
+                }
+            }
+
+            #endregion CA
+
+        }
+
+        private void SaturationWarnings(SaturacaoValores satRecord)
+        {
+            int saturation = satRecord.Saturacao;
+            int minimum = satRecord.AlertaSet.ValorMinimo;
+            int maximum = satRecord.AlertaSet.ValorMaximo;
+            int criticalMinimum = satRecord.AlertaSet.ValorCriticoMinimo;
+            int criticalMaximum = satRecord.AlertaSet.ValorCriticoMaximo;
+
+            #region SA - Sem Alerta
+
+            if (saturation >= minimum) // >= 90%
+                return;
+
+            #endregion SA
+
+            #region CA - Com Alerta
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+
+                #region ECA - Evento Critico Anytime
+
+                if (saturation < criticalMinimum) // < 80%
+                {
+                    AvisoSaturacao avSaturacao = new AvisoSaturacao();
+                    avSaturacao.SaturacaoValorSet = satRecord;
+                    avSaturacao.RegistoFinal = satRecord.Id;
+                    avSaturacao.TipoAvisoSet = GetWarning(WarningType.ECA);
+
+                    context.AvisoSaturacaoSet.Add(avSaturacao);
+                    context.SaveChanges();
+                }
+                #endregion ECA
+                else
+                {
+                    #region EAC - Evento Aviso Continuo 
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o EAC
+                     */
+
+                    TipoAviso eac = GetWarning(WarningType.EAC);
+                    int minimumTimeEAC = eac.TempoMinimo;
+
+                    #endregion EAC 
+
+
+                    #region EAI - Evento Aviso Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
+                     */
+
+                    TipoAviso eai = GetWarning(WarningType.EAI);
+                    int minimumTimeEAI = eai.TempoMinimo;
+                    int maximumTimeEAI = eai.TempoMaximo;
+
+                    #endregion EAI
+
+
+                    #region ECC - Evento Critico Continuo
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o ECC
+                     */
+
+                    TipoAviso ecc = GetWarning(WarningType.ECC);
+                    int minimumTimeECC = ecc.TempoMinimo;
+
+                    #endregion ECC
+
+
+                    #region ECI - Evento Critico Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
+                     */
+
+                    TipoAviso eci = GetWarning(WarningType.ECI);
+                    int minimumTimeECI = eci.TempoMinimo;
+                    int maximumTimeECI = eci.TempoMaximo;
+
+                    #endregion ECI
+                }
+            }
+
+            #endregion CA
+        }
+
+        private void HeartRateWarnings(FrequenciaCardiacaValores fcRecord)
+        {
+            int rate = fcRecord.Frequencia;
+            int minimum = fcRecord.AlertaSet.ValorMinimo;
+            int maximum = fcRecord.AlertaSet.ValorMaximo;
+            int criticalMinimum = fcRecord.AlertaSet.ValorCriticoMinimo;
+            int criticalMaximum = fcRecord.AlertaSet.ValorCriticoMaximo;
+
+            #region SA - Sem Alerta
+
+            if (rate >= minimum && rate <= maximum)// 60bpm >= rate <= 120bpm
+                return;
+
+            #endregion SA
+
+            #region CA - Com Alerta
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+
+                #region ECA - Evento Critico Anytime
+
+                if (rate < criticalMinimum || rate > criticalMaximum) // < 30bpm ou > 180bpm
+                {
+                    AvisoFrequenciaCardiaca avFrequencia = new AvisoFrequenciaCardiaca();
+                    avFrequencia.FrequenciaCardiacaValorSet = fcRecord;
+                    avFrequencia.RegistoFinal = fcRecord.Id;
+                    avFrequencia.TipoAvisoSet = GetWarning(WarningType.ECA);
+
+                    context.AvisoFrequenciaCardiacaSet.Add(avFrequencia);
+                    context.SaveChanges();
+                }
+                #endregion ECA
+                else
+                {
+
+                    #region EAC - Evento Aviso Continuo 
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o EAC
+                     */
+
+                    TipoAviso eac = GetWarning(WarningType.EAC);
+                    int minimumTimeEAC = eac.TempoMinimo;
+
+                    #endregion EAC 
+
+
+                    #region EAI - Evento Aviso Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
+                     */
+
+                    TipoAviso eai = GetWarning(WarningType.EAI);
+                    int minimumTimeEAI = eai.TempoMinimo;
+                    int maximumTimeEAI = eai.TempoMaximo;
+
+                    #endregion EAI
+
+
+                    #region ECC - Evento Critico Continuo
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o ECC
+                     */
+
+                    TipoAviso ecc = GetWarning(WarningType.ECC);
+                    int minimumTimeECC = ecc.TempoMinimo;
+
+                    #endregion ECC
+
+
+                    #region ECI - Evento Critico Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
+                     */
+
+                    TipoAviso eci = GetWarning(WarningType.ECI);
+                    int minimumTimeECI = eci.TempoMinimo;
+                    int maximumTimeECI = eci.TempoMaximo;
+
+                    #endregion ECI
+                }
+            }
+
+            #endregion CA
+        }
+
+        #endregion WARNIGS
+
+        #region Methods
+
+        private TipoAviso GetWarning(WarningType type)
+        {
+            TipoAviso av;
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                av = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(type.ToString()));
+            }
+
+            return av;
         }
 
         #endregion

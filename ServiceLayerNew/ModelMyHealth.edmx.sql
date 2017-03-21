@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/21/2017 15:00:19
+-- Date Created: 03/21/2017 17:54:33
 -- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
@@ -164,7 +164,7 @@ GO
 -- Creating table 'AvisoFrequenciaCardiacaSet'
 CREATE TABLE [dbo].[AvisoFrequenciaCardiacaSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [RegistoFinal] nvarchar(max)  NOT NULL,
+    [RegistoFinal] int  NOT NULL,
     [TipoAvisoSet_Id] int  NOT NULL
 );
 GO
@@ -172,7 +172,7 @@ GO
 -- Creating table 'AvisoSaturacaoSet'
 CREATE TABLE [dbo].[AvisoSaturacaoSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [RegistoFinal] nvarchar(max)  NOT NULL,
+    [RegistoFinal] int  NOT NULL,
     [SaturacaoValorSet_Id] int  NOT NULL,
     [TipoAvisoSet_Id] int  NOT NULL
 );
@@ -181,7 +181,7 @@ GO
 -- Creating table 'AvisoPressaoSanguineaSet'
 CREATE TABLE [dbo].[AvisoPressaoSanguineaSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [RegistoFinal] nvarchar(max)  NOT NULL,
+    [RegistoFinal] int  NOT NULL,
     [PressaoSanguineaValorSet_Id] int  NOT NULL,
     [TipoAvisoSet_Id] int  NOT NULL
 );
@@ -190,7 +190,9 @@ GO
 -- Creating table 'TipoAvisoSet'
 CREATE TABLE [dbo].[TipoAvisoSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [Nome] nvarchar(max)  NOT NULL
+    [Nome] nvarchar(max)  NOT NULL,
+    [TempoMinimo] int  NOT NULL,
+    [TempoMaximo] int  NOT NULL
 );
 GO
 
@@ -447,9 +449,9 @@ SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] OFF
 
 SET IDENTITY_INSERT [dbo].[TipoAvisoSet] ON
-	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (1, N'EAC')
-	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (2, N'EAI')
-	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (3, N'ECC')
-	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (4, N'ECI')
-	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (5, N'ECA')
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome], [TempoMinimo], [TempoMaximo]) VALUES (1, N'EAC', 10, 0)
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome], [TempoMinimo], [TempoMaximo]) VALUES (2, N'EAI', 10, 30)
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome], [TempoMinimo], [TempoMaximo]) VALUES (3, N'ECC', 60, 0)
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome], [TempoMinimo], [TempoMaximo]) VALUES (4, N'ECI', 60, 120)
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome], [TempoMinimo], [TempoMaximo]) VALUES (5, N'ECA', 0, 0)
 SET IDENTITY_INSERT [dbo].[TipoAvisoSet] OFF
