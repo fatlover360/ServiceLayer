@@ -903,12 +903,12 @@ namespace ServiceLayerNew
 
                 if (rate < criticalMinimum || rate > criticalMaximum) // < 30bpm ou > 180bpm
                 {
-                    AvisoFrequenciaCardiaca avFrequencia = new AvisoFrequenciaCardiaca();
-                    avFrequencia.FrequenciaCardiacaValorSet = fcRecord;
-                    avFrequencia.RegistoFinal = fcRecord.Id;
-                    avFrequencia.TipoAvisoSet = GetWarning(WarningType.ECA);
+                    AvisoFrequenciaCardiaca avisoFrequenciaECA = new AvisoFrequenciaCardiaca();
+                    avisoFrequenciaECA.FrequenciaCardiacaValorSet = fcRecord;
+                    avisoFrequenciaECA.RegistoFinal = fcRecord.Id;
+                    avisoFrequenciaECA.TipoAvisoSet = GetWarning(WarningType.ECA);
 
-                    context.AvisoFrequenciaCardiacaSet.Add(avFrequencia);
+                    context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECA);
                     context.SaveChanges();
                 }
                 #endregion ECA
@@ -925,6 +925,27 @@ namespace ServiceLayerNew
 
                     TipoAviso eac = GetWarning(WarningType.EAC);
                     int minimumTimeEAC = eac.TempoMinimo;
+                    DateTime dateForEAC = fcRecord.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<FrequenciaCardiacaValores> valuesForEAC = context.FrequenciaCardiacaValoresSet.
+                        Where(i => i.Data <= fcRecord.Data && i.Data >= dateForEAC).
+                        OrderByDescending(i => i.Data).ToList();
+
+                    if(!valuesForEAC.Any())
+                        return;
+
+                    FrequenciaCardiacaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Frequencia < minimum);
+
+                    if (verificationRecordEAC == null)
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaEAC = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaEAC.FrequenciaCardiacaValorSet = valuesForEAC.First();
+                        avisoFrequenciaEAC.RegistoFinal = valuesForEAC.Last().Id;
+                        avisoFrequenciaEAC.TipoAvisoSet = eac;
+
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAC);
+                        context.SaveChanges();
+                    }
 
                     #endregion EAC 
 
@@ -940,6 +961,26 @@ namespace ServiceLayerNew
                     TipoAviso eai = GetWarning(WarningType.EAI);
                     int minimumTimeEAI = eai.TempoMinimo;
                     int maximumTimeEAI = eai.TempoMaximo;
+                    DateTime dateForEAIMin = fcRecord.Data.AddMinutes(-minimumTimeEAI);
+                    DateTime dateForEAIMax = fcRecord.Data.AddMinutes(-maximumTimeEAI);
+
+                    List<FrequenciaCardiacaValores> valuesForEAI = context.FrequenciaCardiacaValoresSet.
+                        Where(i => i.Data <= dateForEAIMin && i.Data >= dateForEAIMax).
+                        OrderByDescending(i => i.Data).ToList();
+
+                    FrequenciaCardiacaValores verificationRecordEAI =
+                        valuesForEAI.FirstOrDefault(i => i.Frequencia < minimum);
+
+                    if (verificationRecordEAI == null)
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaEAI = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaEAI.FrequenciaCardiacaValorSet = valuesForEAI.First();
+                        avisoFrequenciaEAI.RegistoFinal = valuesForEAI.Last().Id;
+                        avisoFrequenciaEAI.TipoAvisoSet = eai;
+
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAI);
+                        context.SaveChanges();
+                    }
 
                     #endregion EAI
 
@@ -954,6 +995,27 @@ namespace ServiceLayerNew
 
                     TipoAviso ecc = GetWarning(WarningType.ECC);
                     int minimumTimeECC = ecc.TempoMinimo;
+                    DateTime dateForECC = fcRecord.Data.AddMinutes(-minimumTimeECC);// Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<FrequenciaCardiacaValores> valuesForECC = context.FrequenciaCardiacaValoresSet.
+                        Where(i => i.Data <= fcRecord.Data && i.Data >= dateForECC).
+                        OrderByDescending(i => i.Data).ToList();
+
+                    if (!valuesForEAC.Any())
+                        return;
+
+                    FrequenciaCardiacaValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Frequencia < minimum);
+
+                    if (verificationRecordECC == null)
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaECC = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaECC.FrequenciaCardiacaValorSet = valuesForEAC.First();
+                        avisoFrequenciaECC.RegistoFinal = valuesForEAC.Last().Id;
+                        avisoFrequenciaECC.TipoAvisoSet = eac;
+
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECC);
+                        context.SaveChanges();
+                    }
 
                     #endregion ECC
 
@@ -969,7 +1031,26 @@ namespace ServiceLayerNew
                     TipoAviso eci = GetWarning(WarningType.ECI);
                     int minimumTimeECI = eci.TempoMinimo;
                     int maximumTimeECI = eci.TempoMaximo;
+                    DateTime dateForECIMin = fcRecord.Data.AddMinutes(-minimumTimeECI);
+                    DateTime dateForECIMax = fcRecord.Data.AddMinutes(-maximumTimeECI);
 
+                    List<FrequenciaCardiacaValores> valuesForECI = context.FrequenciaCardiacaValoresSet.
+                        Where(i => i.Data <= dateForECIMin && i.Data >= dateForECIMax).
+                        OrderByDescending(i => i.Data).ToList();
+
+                    FrequenciaCardiacaValores verificationRecordECI =
+                        valuesForECI.FirstOrDefault(i => i.Frequencia < minimum);
+
+                    if (verificationRecordECI == null)
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaECI = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaECI.FrequenciaCardiacaValorSet = valuesForEAI.First();
+                        avisoFrequenciaECI.RegistoFinal = valuesForEAI.Last().Id;
+                        avisoFrequenciaECI.TipoAvisoSet = eai;
+
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECI);
+                        context.SaveChanges();
+                    }
                     #endregion ECI
                 }
             }
