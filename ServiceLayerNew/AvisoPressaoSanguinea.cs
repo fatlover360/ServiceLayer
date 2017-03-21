@@ -12,17 +12,12 @@ namespace ServiceLayerNew
     using System;
     using System.Collections.Generic;
     
-    public partial class FrequenciaCardiacaValores
+    public partial class AvisoPressaoSanguinea
     {
         public int Id { get; set; }
-        public System.DateTime Data { get; set; }
-        public System.TimeSpan Hora { get; set; }
-        public int Frequencia { get; set; }
-        public int Utente_Id { get; set; }
-        public int Alertas_Id { get; set; }
+        public string RegistoFinal { get; set; }
     
-        public virtual TipoAlerta AlertaSet { get; set; }
-        public virtual Utente UtenteSet { get; set; }
-        public virtual AvisoFrequenciaCardiaca AvisoFrequenciaCardiacaSet { get; set; }
+        public virtual PressaoSanguineaValores PressaoSanguineaValorSet { get; set; }
+        public virtual TipoAviso TipoAvisoSet { get; set; }
     }
 }

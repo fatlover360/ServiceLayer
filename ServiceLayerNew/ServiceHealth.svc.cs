@@ -40,7 +40,7 @@ namespace ServiceLayerNew
                 try
                 {
                     Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == saturation.PatientSNS);
-                    Alerta al = context.AlertaSet.FirstOrDefault(i => i.TipoAlertaSet.Nome.Equals("SPO2"));
+                    TipoAlerta al = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals("SPO2"));
 
                     SaturacaoValores saturacao = new SaturacaoValores();
                     saturacao.Data = saturation.Date;
@@ -88,7 +88,7 @@ namespace ServiceLayerNew
                 try
                 {
                     Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == bloodPressure.PatientSNS);
-                    Alerta al = context.AlertaSet.FirstOrDefault(i => i.TipoAlertaSet.Nome.Equals("BP"));
+                    TipoAlerta al = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals("BP"));
 
                     PressaoSanguineaValores pressao = new PressaoSanguineaValores();
                     pressao.Data = bloodPressure.Date;
@@ -137,7 +137,7 @@ namespace ServiceLayerNew
                 try
                 {
                     Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == heartRate.PatientSNS);
-                    Alerta al = context.AlertaSet.FirstOrDefault(i => i.TipoAlertaSet.Nome.Equals("HR"));
+                    TipoAlerta al = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals("HR"));
 
                     FrequenciaCardiacaValores frequencia = new FrequenciaCardiacaValores();
                     frequencia.Data = heartRate.Date;
@@ -465,16 +465,16 @@ namespace ServiceLayerNew
             }
         }
 
-        public Alert GetAlert(string type)
+        public AlertType GetAlert(string type)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    Alerta alerta = context.AlertaSet.FirstOrDefault(i => i.TipoAlertaSet.Nome.Equals(type));
+                    TipoAlerta alerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(type));
 
-                    Alert alert = new Alert();
-                    alert.Type = alerta.TipoAlertaSet.Nome;
+                    AlertType alert = new AlertType();
+                    alert.Type = alerta.Nome;
                     alert.MinimumValue = alerta.ValorMinimo;
                     alert.MaximumValue = alerta.ValorMaximo;
                     alert.MinimumCriticalValue = alerta.ValorCriticoMinimo;
@@ -489,31 +489,25 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool InsertAlert(Alert _alert)
+        public bool InsertAlert(AlertType alertType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta alertaVarificao = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(_alert.Type));
+                    TipoAlerta alertaVarificao = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
 
                     if (alertaVarificao != null)
                         return false;
 
                     TipoAlerta tipoAlerta = new TipoAlerta();
-                    tipoAlerta.Nome = _alert.Type;
+                    tipoAlerta.Nome = alertType.Type;
+                    tipoAlerta.ValorMaximo = alertType.MaximumValue;
+                    tipoAlerta.ValorMinimo = alertType.MinimumValue;
+                    tipoAlerta.ValorCriticoMaximo = alertType.MaximumCriticalValue;
+                    tipoAlerta.ValorCriticoMinimo = alertType.MinimumCriticalValue;
 
                     context.TipoAlertaSet.Add(tipoAlerta);
-                    context.SaveChanges();
-
-                    Alerta alerta = new Alerta();
-                    alerta.ValorMinimo = _alert.MinimumValue;
-                    alerta.ValorMaximo = _alert.MaximumValue;
-                    alerta.ValorCriticoMinimo = _alert.MinimumCriticalValue;
-                    alerta.ValorCriticoMaximo = _alert.MaximumCriticalValue;
-                    alerta.TipoAlertaSet = tipoAlerta;
-
-                    context.AlertaSet.Add(alerta);
                     context.SaveChanges();
 
                     return true;
@@ -545,23 +539,23 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool UpdateAlert(Alert _alert)
+        public bool UpdateAlert(AlertType alertType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta tipoAlerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(_alert.Type));
+                    TipoAlerta tipoAlerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
 
                     if (tipoAlerta == null)
                         return false;
 
-                    Alerta alerta = context.AlertaSet.FirstOrDefault(i => i.TipoAlertaSet.Nome.Equals(_alert.Type));
+                    TipoAlerta alerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
 
-                    alerta.ValorMinimo = _alert.MinimumValue;
-                    alerta.ValorMaximo = _alert.MaximumValue;
-                    alerta.ValorCriticoMinimo = _alert.MinimumCriticalValue;
-                    alerta.ValorCriticoMaximo = _alert.MaximumCriticalValue;
+                    alerta.ValorMinimo = alertType.MinimumValue;
+                    alerta.ValorMaximo = alertType.MaximumValue;
+                    alerta.ValorCriticoMinimo = alertType.MinimumCriticalValue;
+                    alerta.ValorCriticoMaximo = alertType.MaximumCriticalValue;
 
                     context.SaveChanges();
 
@@ -598,20 +592,20 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool DeleteAlert(Alert _alert)
+        public bool DeleteAlert(AlertType alertType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta tipoAlerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(_alert.Type));
+                    TipoAlerta tipoAlerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
 
                     if (tipoAlerta == null)
                         return false;
 
-                    Alerta alerta = context.AlertaSet.FirstOrDefault(i => i.TipoAlertaSet.Nome.Equals(_alert.Type));
+                    TipoAlerta alerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
 
-                    context.AlertaSet.Remove(alerta);
+                    context.TipoAlertaSet.Remove(alerta);
                     context.TipoAlertaSet.Remove(tipoAlerta);
                     context.SaveChanges();
 
@@ -644,26 +638,26 @@ namespace ServiceLayerNew
             }
         }
 
-        public List<Alert> GetAlertList()
+        public List<AlertType> GetAlertList()
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    List<Alert> alertList = new List<Alert>();
+                    List<AlertType> alertList = new List<AlertType>();
 
-                    var alertas = context.AlertaSet;
+                    var alertas = context.TipoAlertaSet;
 
-                    foreach (Alerta al in alertas)
+                    foreach (TipoAlerta al in alertas)
                     {
-                        Alert alert = new Alert();
-                        alert.Type = al.TipoAlertaSet.Nome;
-                        alert.MinimumValue = al.ValorMinimo;
-                        alert.MaximumValue = al.ValorMaximo;
-                        alert.MinimumCriticalValue = al.ValorCriticoMinimo;
-                        alert.MaximumCriticalValue = al.ValorCriticoMaximo;
+                        AlertType alertType = new AlertType();
+                        alertType.Type = al.Nome;
+                        alertType.MinimumValue = al.ValorMinimo;
+                        alertType.MaximumValue = al.ValorMaximo;
+                        alertType.MinimumCriticalValue = al.ValorCriticoMinimo;
+                        alertType.MaximumCriticalValue = al.ValorCriticoMaximo;
 
-                        alertList.Add(alert);
+                        alertList.Add(alertType);
                     }
 
                     return alertList;

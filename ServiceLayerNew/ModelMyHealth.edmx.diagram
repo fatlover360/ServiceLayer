@@ -4,24 +4,29 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f85b9c8c3e934072bc148555faa5dc43" Name="Diagram1" ZoomLevel="82" >
-        <EntityTypeShape EntityType="MyHealthDBModel.Alerta" Width="1.5" PointX="6.75" PointY="3.75" />
+      <Diagram DiagramId="f85b9c8c3e934072bc148555faa5dc43" Name="Diagram1" ZoomLevel="70" >
+        <EntityTypeShape EntityType="MyHealthDBModel.TipoAlerta" Width="1.5" PointX="11.75" PointY="3.875" />
         <EntityTypeShape EntityType="MyHealthDBModel.FrequenciaCardiacaValores" Width="1.5" PointX="4.125" PointY="0.5" />
-        <EntityTypeShape EntityType="MyHealthDBModel.PressaoSanguineaValores" Width="1.5" PointX="3.875" PointY="6.875" />
-        <EntityTypeShape EntityType="MyHealthDBModel.SaturacaoValores" Width="1.5" PointX="4" PointY="3.625" />
-        <EntityTypeShape EntityType="MyHealthDBModel.TipoAlerta" Width="1.5" PointX="9.625" PointY="4.5" />
+        <EntityTypeShape EntityType="MyHealthDBModel.PressaoSanguineaValores" Width="1.5" PointX="4.125" PointY="6.875" />
+        <EntityTypeShape EntityType="MyHealthDBModel.SaturacaoValores" Width="1.5" PointX="4.125" PointY="3.625" />
         <EntityTypeShape EntityType="MyHealthDBModel.Utente" Width="1.5" PointX="0.75" PointY="2.625" />
-        <AssociationConnector Association="MyHealthDBModel.FK_AlertaTipoAlerta" />
-        <AssociationConnector Association="MyHealthDBModel.FK_FrequenciaCardiacaValoresAlerta" ManuallyRouted="true" >
-          <ConnectorPoint PointX="7.5" PointY="3.75" />
-          <ConnectorPoint PointX="7.5" PointY="1.6450066855394283" />
-          <ConnectorPoint PointX="5.625" PointY="1.6450066855394283" />
+        <AssociationConnector Association="MyHealthDBModel.FK_FrequenciaCardiacaValoresAlerta" ManuallyRouted="false" >
         </AssociationConnector>
         <AssociationConnector Association="MyHealthDBModel.FK_PressaoSanguineaValoresAlerta" />
         <AssociationConnector Association="MyHealthDBModel.FK_SaturacaoValoresAlerta" />
         <AssociationConnector Association="MyHealthDBModel.FK_UtenteFrequenciaCardiacaValores" />
         <AssociationConnector Association="MyHealthDBModel.FK_UtentePressaoSanguineaValores" />
         <AssociationConnector Association="MyHealthDBModel.FK_UtenteSaturacaoValores" />
+        <EntityTypeShape EntityType="MyHealthDBModel.AvisoFrequenciaCardiaca" Width="1.5" PointX="6.5" PointY="0.5" />
+        <EntityTypeShape EntityType="MyHealthDBModel.AvisoSaturacao" Width="1.5" PointX="6.625" PointY="4.25" />
+        <EntityTypeShape EntityType="MyHealthDBModel.AvisoPressaoSanguinea" Width="1.5" PointX="6.75" PointY="6.75" />
+        <AssociationConnector Association="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" />
+        <AssociationConnector Association="MyHealthDBModel.AvisoSaturacaoSaturacaoValores" />
+        <AssociationConnector Association="MyHealthDBModel.AvisoPressaoSanguineaPressaoSanguineaValores" />
+        <EntityTypeShape EntityType="MyHealthDBModel.TipoAviso" Width="1.5" PointX="9.375" PointY="4.375" />
+        <AssociationConnector Association="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso" />
+        <AssociationConnector Association="MyHealthDBModel.AvisoSaturacaoTipoAviso" />
+        <AssociationConnector Association="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

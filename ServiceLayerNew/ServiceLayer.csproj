@@ -114,7 +114,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alerta.cs">
+    <Compile Include="AvisoFrequenciaCardiaca.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AvisoPressaoSanguinea.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AvisoSaturacao.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
     <Compile Include="FrequenciaCardiacaValores.cs">
@@ -147,6 +153,9 @@
     <Compile Include="IServiceHealth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TipoAlerta.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoAviso.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
     <Compile Include="Utente.cs">

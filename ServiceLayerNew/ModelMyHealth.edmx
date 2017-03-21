@@ -6,26 +6,25 @@
     <edmx:StorageModels>
     <Schema Namespace="MyHealthDBModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="MyHealthDBModelStoreContainer">
-    <EntitySet Name="AlertaSet" EntityType="MyHealthDBModel.Store.AlertaSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TipoAlertaSet" EntityType="MyHealthDBModel.Store.TipoAlertaSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="FrequenciaCardiacaValoresSet" EntityType="MyHealthDBModel.Store.FrequenciaCardiacaValoresSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="PressaoSanguineaValoresSet" EntityType="MyHealthDBModel.Store.PressaoSanguineaValoresSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="SaturacaoValoresSet" EntityType="MyHealthDBModel.Store.SaturacaoValoresSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="TipoAlertaSet" EntityType="MyHealthDBModel.Store.TipoAlertaSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UtenteSet" EntityType="MyHealthDBModel.Store.UtenteSet" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="FK_AlertaTipoAlerta" Association="MyHealthDBModel.Store.FK_AlertaTipoAlerta">
-      <End Role="TipoAlertaSet" EntitySet="TipoAlertaSet" />
-      <End Role="AlertaSet" EntitySet="AlertaSet" />
-    </AssociationSet>
+    <EntitySet Name="AvisoFrequenciaCardiacaSet" EntityType="MyHealthDBModel.Store.AvisoFrequenciaCardiacaSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AvisoSaturacaoSet" EntityType="MyHealthDBModel.Store.AvisoSaturacaoSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AvisoPressaoSanguineaSet" EntityType="MyHealthDBModel.Store.AvisoPressaoSanguineaSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TipoAvisoSet" EntityType="MyHealthDBModel.Store.TipoAvisoSet" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="FK_FrequenciaCardiacaValoresAlerta" Association="MyHealthDBModel.Store.FK_FrequenciaCardiacaValoresAlerta">
-      <End Role="AlertaSet" EntitySet="AlertaSet" />
+      <End Role="AlertaSet" EntitySet="TipoAlertaSet" />
       <End Role="FrequenciaCardiacaValoresSet" EntitySet="FrequenciaCardiacaValoresSet" />
     </AssociationSet>
     <AssociationSet Name="FK_PressaoSanguineaValoresAlerta" Association="MyHealthDBModel.Store.FK_PressaoSanguineaValoresAlerta">
-      <End Role="AlertaSet" EntitySet="AlertaSet" />
+      <End Role="AlertaSet" EntitySet="TipoAlertaSet" />
       <End Role="PressaoSanguineaValoresSet" EntitySet="PressaoSanguineaValoresSet" />
     </AssociationSet>
     <AssociationSet Name="FK_SaturacaoValoresAlerta" Association="MyHealthDBModel.Store.FK_SaturacaoValoresAlerta">
-      <End Role="AlertaSet" EntitySet="AlertaSet" />
+      <End Role="AlertaSet" EntitySet="TipoAlertaSet" />
       <End Role="SaturacaoValoresSet" EntitySet="SaturacaoValoresSet" />
     </AssociationSet>
     <AssociationSet Name="FK_UtenteFrequenciaCardiacaValores" Association="MyHealthDBModel.Store.FK_UtenteFrequenciaCardiacaValores">
@@ -40,8 +39,32 @@
       <End Role="UtenteSet" EntitySet="UtenteSet" />
       <End Role="SaturacaoValoresSet" EntitySet="SaturacaoValoresSet" />
     </AssociationSet>
+    <AssociationSet Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" Association="MyHealthDBModel.Store.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
+      <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValoresSet" />
+      <End Role="AvisoFrequenciaCardiaca" EntitySet="AvisoFrequenciaCardiacaSet" />
+    </AssociationSet>
+    <AssociationSet Name="AvisoSaturacaoSaturacaoValores" Association="MyHealthDBModel.Store.AvisoSaturacaoSaturacaoValores">
+      <End Role="AvisoSaturacao" EntitySet="AvisoSaturacaoSet" />
+      <End Role="SaturacaoValores" EntitySet="SaturacaoValoresSet" />
+    </AssociationSet>
+    <AssociationSet Name="AvisoPressaoSanguineaPressaoSanguineaValores" Association="MyHealthDBModel.Store.AvisoPressaoSanguineaPressaoSanguineaValores">
+      <End Role="AvisoPressaoSanguinea" EntitySet="AvisoPressaoSanguineaSet" />
+      <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValoresSet" />
+    </AssociationSet>
+    <AssociationSet Name="AvisoFrequenciaCardiacaTipoAviso" Association="MyHealthDBModel.Store.AvisoFrequenciaCardiacaTipoAviso">
+      <End Role="AvisoFrequenciaCardiaca" EntitySet="AvisoFrequenciaCardiacaSet" />
+      <End Role="TipoAviso" EntitySet="TipoAvisoSet" />
+    </AssociationSet>
+    <AssociationSet Name="AvisoSaturacaoTipoAviso" Association="MyHealthDBModel.Store.AvisoSaturacaoTipoAviso">
+      <End Role="AvisoSaturacao" EntitySet="AvisoSaturacaoSet" />
+      <End Role="TipoAviso" EntitySet="TipoAvisoSet" />
+    </AssociationSet>
+    <AssociationSet Name="AvisoPressaoSanguineaTipoAviso" Association="MyHealthDBModel.Store.AvisoPressaoSanguineaTipoAviso">
+      <End Role="AvisoPressaoSanguinea" EntitySet="AvisoPressaoSanguineaSet" />
+      <End Role="TipoAviso" EntitySet="TipoAvisoSet" />
+    </AssociationSet>
   </EntityContainer>
-  <EntityType Name="AlertaSet">
+  <EntityType Name="TipoAlertaSet">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -50,7 +73,7 @@
     <Property Name="ValorMaximo" Type="int" Nullable="false" />
     <Property Name="ValorCriticoMinimo" Type="int" Nullable="false" />
     <Property Name="ValorCriticoMaximo" Type="int" Nullable="false" />
-    <Property Name="TipoAlertas_Id" Type="int" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="FrequenciaCardiacaValoresSet">
     <Key>
@@ -62,6 +85,7 @@
     <Property Name="Frequencia" Type="int" Nullable="false" />
     <Property Name="Utente_Id" Type="int" Nullable="false" />
     <Property Name="Alertas_Id" Type="int" Nullable="false" />
+    <Property Name="AvisoFrequenciaCardiacaSet_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="PressaoSanguineaValoresSet">
     <Key>
@@ -86,13 +110,6 @@
     <Property Name="Utente_Id" Type="int" Nullable="false" />
     <Property Name="Alertas_Id" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="TipoAlertaSet">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
-  </EntityType>
   <EntityType Name="UtenteSet">
     <Key>
       <PropertyRef Name="Id" />
@@ -116,20 +133,41 @@
     <Property Name="CodigoPaisTelefone" Type="nvarchar(max)" Nullable="true" />
     <Property Name="CodigoPaisNumeroEmergencia" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
-  <Association Name="FK_AlertaTipoAlerta">
-    <End Role="TipoAlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
-    <End Role="AlertaSet" Type="MyHealthDBModel.Store.AlertaSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="TipoAlertaSet">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AlertaSet">
-        <PropertyRef Name="TipoAlertas_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
+  <EntityType Name="AvisoFrequenciaCardiacaSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RegistoFinal" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AvisoSaturacaoSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RegistoFinal" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SaturacaoValorSet_Id" Type="int" Nullable="false" />
+    <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AvisoPressaoSanguineaSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RegistoFinal" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PressaoSanguineaValorSet_Id" Type="int" Nullable="false" />
+    <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TipoAvisoSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
   <Association Name="FK_FrequenciaCardiacaValoresAlerta">
-    <End Role="AlertaSet" Type="MyHealthDBModel.Store.AlertaSet" Multiplicity="1" />
+    <End Role="AlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
     <End Role="FrequenciaCardiacaValoresSet" Type="MyHealthDBModel.Store.FrequenciaCardiacaValoresSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="AlertaSet">
@@ -141,7 +179,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_PressaoSanguineaValoresAlerta">
-    <End Role="AlertaSet" Type="MyHealthDBModel.Store.AlertaSet" Multiplicity="1" />
+    <End Role="AlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
     <End Role="PressaoSanguineaValoresSet" Type="MyHealthDBModel.Store.PressaoSanguineaValoresSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="AlertaSet">
@@ -153,7 +191,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_SaturacaoValoresAlerta">
-    <End Role="AlertaSet" Type="MyHealthDBModel.Store.AlertaSet" Multiplicity="1" />
+    <End Role="AlertaSet" Type="MyHealthDBModel.Store.TipoAlertaSet" Multiplicity="1" />
     <End Role="SaturacaoValoresSet" Type="MyHealthDBModel.Store.SaturacaoValoresSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="AlertaSet">
@@ -200,31 +238,98 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
+    <End Role="FrequenciaCardiacaValores" Type="MyHealthDBModel.Store.FrequenciaCardiacaValoresSet" Multiplicity="*" />
+    <End Role="AvisoFrequenciaCardiaca" Type="MyHealthDBModel.Store.AvisoFrequenciaCardiacaSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="AvisoFrequenciaCardiaca">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="FrequenciaCardiacaValores">
+        <PropertyRef Name="AvisoFrequenciaCardiacaSet_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AvisoSaturacaoSaturacaoValores">
+    <End Role="AvisoSaturacao" Type="MyHealthDBModel.Store.AvisoSaturacaoSet" Multiplicity="*" />
+    <End Role="SaturacaoValores" Type="MyHealthDBModel.Store.SaturacaoValoresSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="SaturacaoValores">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AvisoSaturacao">
+        <PropertyRef Name="SaturacaoValorSet_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AvisoPressaoSanguineaPressaoSanguineaValores">
+    <End Role="AvisoPressaoSanguinea" Type="MyHealthDBModel.Store.AvisoPressaoSanguineaSet" Multiplicity="*" />
+    <End Role="PressaoSanguineaValores" Type="MyHealthDBModel.Store.PressaoSanguineaValoresSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="PressaoSanguineaValores">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AvisoPressaoSanguinea">
+        <PropertyRef Name="PressaoSanguineaValorSet_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AvisoFrequenciaCardiacaTipoAviso">
+    <End Role="AvisoFrequenciaCardiaca" Type="MyHealthDBModel.Store.AvisoFrequenciaCardiacaSet" Multiplicity="*" />
+    <End Role="TipoAviso" Type="MyHealthDBModel.Store.TipoAvisoSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="TipoAviso">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AvisoFrequenciaCardiaca">
+        <PropertyRef Name="TipoAvisoSet_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AvisoSaturacaoTipoAviso">
+    <End Role="AvisoSaturacao" Type="MyHealthDBModel.Store.AvisoSaturacaoSet" Multiplicity="*" />
+    <End Role="TipoAviso" Type="MyHealthDBModel.Store.TipoAvisoSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="TipoAviso">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AvisoSaturacao">
+        <PropertyRef Name="TipoAvisoSet_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AvisoPressaoSanguineaTipoAviso">
+    <End Role="AvisoPressaoSanguinea" Type="MyHealthDBModel.Store.AvisoPressaoSanguineaSet" Multiplicity="*" />
+    <End Role="TipoAviso" Type="MyHealthDBModel.Store.TipoAvisoSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="TipoAviso">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AvisoPressaoSanguinea">
+        <PropertyRef Name="TipoAvisoSet_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MyHealthDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ModelMyHealth" annotation:LazyLoadingEnabled="true" >
-          <EntitySet Name="AlertaSet" EntityType="MyHealthDBModel.Alerta" />
+          <EntitySet Name="TipoAlertaSet" EntityType="MyHealthDBModel.TipoAlerta" />
           <EntitySet Name="FrequenciaCardiacaValoresSet" EntityType="MyHealthDBModel.FrequenciaCardiacaValores" />
           <EntitySet Name="PressaoSanguineaValoresSet" EntityType="MyHealthDBModel.PressaoSanguineaValores" />
           <EntitySet Name="SaturacaoValoresSet" EntityType="MyHealthDBModel.SaturacaoValores" />
-          <EntitySet Name="TipoAlertaSet" EntityType="MyHealthDBModel.TipoAlerta" />
           <EntitySet Name="UtenteSet" EntityType="MyHealthDBModel.Utente" />
-          <AssociationSet Name="FK_AlertaTipoAlerta" Association="MyHealthDBModel.FK_AlertaTipoAlerta">
-            <End Role="TipoAlertaSet" EntitySet="TipoAlertaSet" />
-            <End Role="AlertaSet" EntitySet="AlertaSet" />
-          </AssociationSet>
           <AssociationSet Name="FK_FrequenciaCardiacaValoresAlerta" Association="MyHealthDBModel.FK_FrequenciaCardiacaValoresAlerta">
-            <End Role="AlertaSet" EntitySet="AlertaSet" />
+            <End Role="AlertaSet" EntitySet="TipoAlertaSet" />
             <End Role="FrequenciaCardiacaValoresSet" EntitySet="FrequenciaCardiacaValoresSet" />
           </AssociationSet>
           <AssociationSet Name="FK_PressaoSanguineaValoresAlerta" Association="MyHealthDBModel.FK_PressaoSanguineaValoresAlerta">
-            <End Role="AlertaSet" EntitySet="AlertaSet" />
+            <End Role="AlertaSet" EntitySet="TipoAlertaSet" />
             <End Role="PressaoSanguineaValoresSet" EntitySet="PressaoSanguineaValoresSet" />
           </AssociationSet>
           <AssociationSet Name="FK_SaturacaoValoresAlerta" Association="MyHealthDBModel.FK_SaturacaoValoresAlerta">
-            <End Role="AlertaSet" EntitySet="AlertaSet" />
+            <End Role="AlertaSet" EntitySet="TipoAlertaSet" />
             <End Role="SaturacaoValoresSet" EntitySet="SaturacaoValoresSet" />
           </AssociationSet>
           <AssociationSet Name="FK_UtenteFrequenciaCardiacaValores" Association="MyHealthDBModel.FK_UtenteFrequenciaCardiacaValores">
@@ -239,8 +344,36 @@
             <End Role="UtenteSet" EntitySet="UtenteSet" />
             <End Role="SaturacaoValoresSet" EntitySet="SaturacaoValoresSet" />
           </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="Alerta">
+          <EntitySet Name="AvisoFrequenciaCardiacaSet" EntityType="MyHealthDBModel.AvisoFrequenciaCardiaca" />
+          <EntitySet Name="AvisoSaturacaoSet" EntityType="MyHealthDBModel.AvisoSaturacao" />
+          <EntitySet Name="AvisoPressaoSanguineaSet" EntityType="MyHealthDBModel.AvisoPressaoSanguinea" />
+          <AssociationSet Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" Association="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
+            <End Role="FrequenciaCardiacaValores" EntitySet="FrequenciaCardiacaValoresSet" />
+            <End Role="AvisoFrequenciaCardiaca" EntitySet="AvisoFrequenciaCardiacaSet" />
+          </AssociationSet>
+          <AssociationSet Name="AvisoSaturacaoSaturacaoValores" Association="MyHealthDBModel.AvisoSaturacaoSaturacaoValores">
+            <End Role="AvisoSaturacao" EntitySet="AvisoSaturacaoSet" />
+            <End Role="SaturacaoValores" EntitySet="SaturacaoValoresSet" />
+          </AssociationSet>
+          <AssociationSet Name="AvisoPressaoSanguineaPressaoSanguineaValores" Association="MyHealthDBModel.AvisoPressaoSanguineaPressaoSanguineaValores">
+            <End Role="AvisoPressaoSanguinea" EntitySet="AvisoPressaoSanguineaSet" />
+            <End Role="PressaoSanguineaValores" EntitySet="PressaoSanguineaValoresSet" />
+          </AssociationSet>
+          <EntitySet Name="TipoAvisoSet" EntityType="MyHealthDBModel.TipoAviso" />
+          <AssociationSet Name="AvisoFrequenciaCardiacaTipoAviso" Association="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso">
+            <End Role="AvisoFrequenciaCardiaca" EntitySet="AvisoFrequenciaCardiacaSet" />
+            <End Role="TipoAviso" EntitySet="TipoAvisoSet" />
+          </AssociationSet>
+          <AssociationSet Name="AvisoSaturacaoTipoAviso" Association="MyHealthDBModel.AvisoSaturacaoTipoAviso">
+            <End Role="AvisoSaturacao" EntitySet="AvisoSaturacaoSet" />
+            <End Role="TipoAviso" EntitySet="TipoAvisoSet" />
+          </AssociationSet>
+          <AssociationSet Name="AvisoPressaoSanguineaTipoAviso" Association="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso">
+            <End Role="AvisoPressaoSanguinea" EntitySet="AvisoPressaoSanguineaSet" />
+            <End Role="TipoAviso" EntitySet="TipoAvisoSet" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="TipoAlerta">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -249,11 +382,10 @@
           <Property Name="ValorMaximo" Type="Int32" Nullable="false" />
           <Property Name="ValorCriticoMinimo" Type="Int32" Nullable="false" />
           <Property Name="ValorCriticoMaximo" Type="Int32" Nullable="false" />
-          <Property Name="TipoAlertas_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TipoAlertaSet" Relationship="MyHealthDBModel.FK_AlertaTipoAlerta" FromRole="AlertaSet" ToRole="TipoAlertaSet" />
           <NavigationProperty Name="FrequenciaCardiacaValoresSets" Relationship="MyHealthDBModel.FK_FrequenciaCardiacaValoresAlerta" FromRole="AlertaSet" ToRole="FrequenciaCardiacaValoresSet" />
           <NavigationProperty Name="PressaoSanguineaValoresSets" Relationship="MyHealthDBModel.FK_PressaoSanguineaValoresAlerta" FromRole="AlertaSet" ToRole="PressaoSanguineaValoresSet" />
           <NavigationProperty Name="SaturacaoValoresSets" Relationship="MyHealthDBModel.FK_SaturacaoValoresAlerta" FromRole="AlertaSet" ToRole="SaturacaoValoresSet" />
+          <Property Name="Nome" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="FrequenciaCardiacaValores">
           <Key>
@@ -267,6 +399,7 @@
           <Property Name="Alertas_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AlertaSet" Relationship="MyHealthDBModel.FK_FrequenciaCardiacaValoresAlerta" FromRole="FrequenciaCardiacaValoresSet" ToRole="AlertaSet" />
           <NavigationProperty Name="UtenteSet" Relationship="MyHealthDBModel.FK_UtenteFrequenciaCardiacaValores" FromRole="FrequenciaCardiacaValoresSet" ToRole="UtenteSet" />
+          <NavigationProperty Name="AvisoFrequenciaCardiacaSet" Relationship="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" FromRole="FrequenciaCardiacaValores" ToRole="AvisoFrequenciaCardiaca" />
         </EntityType>
         <EntityType Name="PressaoSanguineaValores">
           <Key>
@@ -281,6 +414,7 @@
           <Property Name="Alertas_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AlertaSet" Relationship="MyHealthDBModel.FK_PressaoSanguineaValoresAlerta" FromRole="PressaoSanguineaValoresSet" ToRole="AlertaSet" />
           <NavigationProperty Name="UtenteSet" Relationship="MyHealthDBModel.FK_UtentePressaoSanguineaValores" FromRole="PressaoSanguineaValoresSet" ToRole="UtenteSet" />
+          <NavigationProperty Name="AvisoPressaoSanguineaSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaPressaoSanguineaValores" FromRole="PressaoSanguineaValores" ToRole="AvisoPressaoSanguinea" />
         </EntityType>
         <EntityType Name="SaturacaoValores">
           <Key>
@@ -294,14 +428,7 @@
           <Property Name="Alertas_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AlertaSet" Relationship="MyHealthDBModel.FK_SaturacaoValoresAlerta" FromRole="SaturacaoValoresSet" ToRole="AlertaSet" />
           <NavigationProperty Name="UtenteSet" Relationship="MyHealthDBModel.FK_UtenteSaturacaoValores" FromRole="SaturacaoValoresSet" ToRole="UtenteSet" />
-        </EntityType>
-        <EntityType Name="TipoAlerta">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Nome" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AlertaSets" Relationship="MyHealthDBModel.FK_AlertaTipoAlerta" FromRole="TipoAlertaSet" ToRole="AlertaSet" />
+          <NavigationProperty Name="AvisoSaturacaoSet" Relationship="MyHealthDBModel.AvisoSaturacaoSaturacaoValores" FromRole="SaturacaoValores" ToRole="AvisoSaturacao" />
         </EntityType>
         <EntityType Name="Utente">
           <Key>
@@ -329,20 +456,8 @@
           <Property Name="CodigoPaisTelefone" Type="String" Nullable="true" />
           <Property Name="CodigoPaisNumeroEmergencia" Type="String" Nullable="false" />
         </EntityType>
-        <Association Name="FK_AlertaTipoAlerta">
-          <End Type="MyHealthDBModel.TipoAlerta" Role="TipoAlertaSet" Multiplicity="1" />
-          <End Type="MyHealthDBModel.Alerta" Role="AlertaSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TipoAlertaSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AlertaSet">
-              <PropertyRef Name="TipoAlertas_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_FrequenciaCardiacaValoresAlerta">
-          <End Type="MyHealthDBModel.Alerta" Role="AlertaSet" Multiplicity="1" />
+          <End Type="MyHealthDBModel.TipoAlerta" Role="AlertaSet" Multiplicity="1" />
           <End Type="MyHealthDBModel.FrequenciaCardiacaValores" Role="FrequenciaCardiacaValoresSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AlertaSet">
@@ -354,7 +469,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PressaoSanguineaValoresAlerta">
-          <End Type="MyHealthDBModel.Alerta" Role="AlertaSet" Multiplicity="1" />
+          <End Type="MyHealthDBModel.TipoAlerta" Role="AlertaSet" Multiplicity="1" />
           <End Type="MyHealthDBModel.PressaoSanguineaValores" Role="PressaoSanguineaValoresSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AlertaSet">
@@ -366,7 +481,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SaturacaoValoresAlerta">
-          <End Type="MyHealthDBModel.Alerta" Role="AlertaSet" Multiplicity="1" />
+          <End Type="MyHealthDBModel.TipoAlerta" Role="AlertaSet" Multiplicity="1" />
           <End Type="MyHealthDBModel.SaturacaoValores" Role="SaturacaoValoresSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AlertaSet">
@@ -413,21 +528,82 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <EntityType Name="AvisoFrequenciaCardiaca">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="FrequenciaCardiacaValorSet" Relationship="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" FromRole="AvisoFrequenciaCardiaca" ToRole="FrequenciaCardiacaValores" />
+          <NavigationProperty Name="TipoAvisoSet" Relationship="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso" FromRole="AvisoFrequenciaCardiaca" ToRole="TipoAviso" />
+          <Property Name="RegistoFinal" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AvisoSaturacao">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="SaturacaoValorSet" Relationship="MyHealthDBModel.AvisoSaturacaoSaturacaoValores" FromRole="AvisoSaturacao" ToRole="SaturacaoValores" />
+          <NavigationProperty Name="TipoAvisoSet" Relationship="MyHealthDBModel.AvisoSaturacaoTipoAviso" FromRole="AvisoSaturacao" ToRole="TipoAviso" />
+          <Property Name="RegistoFinal" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AvisoPressaoSanguinea">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="PressaoSanguineaValorSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaPressaoSanguineaValores" FromRole="AvisoPressaoSanguinea" ToRole="PressaoSanguineaValores" />
+          <NavigationProperty Name="TipoAvisoSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso" FromRole="AvisoPressaoSanguinea" ToRole="TipoAviso" />
+          <Property Name="RegistoFinal" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
+          <End Type="MyHealthDBModel.FrequenciaCardiacaValores" Role="FrequenciaCardiacaValores" Multiplicity="1" />
+          <End Type="MyHealthDBModel.AvisoFrequenciaCardiaca" Role="AvisoFrequenciaCardiaca" Multiplicity="1" />
+        </Association>
+        <Association Name="AvisoSaturacaoSaturacaoValores">
+          <End Type="MyHealthDBModel.AvisoSaturacao" Role="AvisoSaturacao" Multiplicity="1" />
+          <End Type="MyHealthDBModel.SaturacaoValores" Role="SaturacaoValores" Multiplicity="1" />
+        </Association>
+        <Association Name="AvisoPressaoSanguineaPressaoSanguineaValores">
+          <End Type="MyHealthDBModel.AvisoPressaoSanguinea" Role="AvisoPressaoSanguinea" Multiplicity="1" />
+          <End Type="MyHealthDBModel.PressaoSanguineaValores" Role="PressaoSanguineaValores" Multiplicity="1" />
+        </Association>
+        <EntityType Name="TipoAviso">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nome" Type="String" Nullable="false" />
+          <NavigationProperty Name="AvisoFrequenciaCardiacaSet" Relationship="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso" FromRole="TipoAviso" ToRole="AvisoFrequenciaCardiaca" />
+          <NavigationProperty Name="AvisoSaturacaoSet" Relationship="MyHealthDBModel.AvisoSaturacaoTipoAviso" FromRole="TipoAviso" ToRole="AvisoSaturacao" />
+          <NavigationProperty Name="AvisoPressaoSanguineaSet" Relationship="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso" FromRole="TipoAviso" ToRole="AvisoPressaoSanguinea" />
+        </EntityType>
+        <Association Name="AvisoFrequenciaCardiacaTipoAviso">
+          <End Type="MyHealthDBModel.AvisoFrequenciaCardiaca" Role="AvisoFrequenciaCardiaca" Multiplicity="*" />
+          <End Type="MyHealthDBModel.TipoAviso" Role="TipoAviso" Multiplicity="1" />
+        </Association>
+        <Association Name="AvisoSaturacaoTipoAviso">
+          <End Type="MyHealthDBModel.AvisoSaturacao" Role="AvisoSaturacao" Multiplicity="*" />
+          <End Type="MyHealthDBModel.TipoAviso" Role="TipoAviso" Multiplicity="1" />
+        </Association>
+        <Association Name="AvisoPressaoSanguineaTipoAviso">
+          <End Type="MyHealthDBModel.AvisoPressaoSanguinea" Role="AvisoPressaoSanguinea" Multiplicity="*" />
+          <End Type="MyHealthDBModel.TipoAviso" Role="TipoAviso" Multiplicity="1" />
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="MyHealthDBModelStoreContainer" CdmEntityContainer="ModelMyHealth">
-    <EntitySetMapping Name="AlertaSet">
-      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.Alerta)">
-        <MappingFragment StoreEntitySet="AlertaSet">
+    <EntitySetMapping Name="TipoAlertaSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.TipoAlerta)">
+        <MappingFragment StoreEntitySet="TipoAlertaSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="ValorMinimo" ColumnName="ValorMinimo" />
           <ScalarProperty Name="ValorMaximo" ColumnName="ValorMaximo" />
           <ScalarProperty Name="ValorCriticoMinimo" ColumnName="ValorCriticoMinimo" />
           <ScalarProperty Name="ValorCriticoMaximo" ColumnName="ValorCriticoMaximo" />
-          <ScalarProperty Name="TipoAlertas_Id" ColumnName="TipoAlertas_Id" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -468,14 +644,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="TipoAlertaSet">
-      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.TipoAlerta)">
-        <MappingFragment StoreEntitySet="TipoAlertaSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Nome" ColumnName="Nome" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="UtenteSet">
       <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.Utente)">
         <MappingFragment StoreEntitySet="UtenteSet">
@@ -500,6 +668,86 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="AvisoFrequenciaCardiacaSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.AvisoFrequenciaCardiaca)">
+        <MappingFragment StoreEntitySet="AvisoFrequenciaCardiacaSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="RegistoFinal" ColumnName="RegistoFinal" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AvisoSaturacaoSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.AvisoSaturacao)">
+        <MappingFragment StoreEntitySet="AvisoSaturacaoSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="RegistoFinal" ColumnName="RegistoFinal" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AvisoPressaoSanguineaSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.AvisoPressaoSanguinea)">
+        <MappingFragment StoreEntitySet="AvisoPressaoSanguineaSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="RegistoFinal" ColumnName="RegistoFinal" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TipoAvisoSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MyHealthDBModel.TipoAviso)">
+        <MappingFragment StoreEntitySet="TipoAvisoSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" TypeName="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" StoreEntitySet="FrequenciaCardiacaValoresSet">
+      <EndProperty Name="AvisoFrequenciaCardiaca">
+        <ScalarProperty Name="Id" ColumnName="AvisoFrequenciaCardiacaSet_Id" />
+      </EndProperty>
+      <EndProperty Name="FrequenciaCardiacaValores">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AvisoSaturacaoSaturacaoValores" TypeName="MyHealthDBModel.AvisoSaturacaoSaturacaoValores" StoreEntitySet="AvisoSaturacaoSet">
+      <EndProperty Name="SaturacaoValores">
+        <ScalarProperty Name="Id" ColumnName="SaturacaoValorSet_Id" />
+      </EndProperty>
+      <EndProperty Name="AvisoSaturacao">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AvisoPressaoSanguineaPressaoSanguineaValores" TypeName="MyHealthDBModel.AvisoPressaoSanguineaPressaoSanguineaValores" StoreEntitySet="AvisoPressaoSanguineaSet">
+      <EndProperty Name="PressaoSanguineaValores">
+        <ScalarProperty Name="Id" ColumnName="PressaoSanguineaValorSet_Id" />
+      </EndProperty>
+      <EndProperty Name="AvisoPressaoSanguinea">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AvisoFrequenciaCardiacaTipoAviso" TypeName="MyHealthDBModel.AvisoFrequenciaCardiacaTipoAviso" StoreEntitySet="AvisoFrequenciaCardiacaSet">
+      <EndProperty Name="TipoAviso">
+        <ScalarProperty Name="Id" ColumnName="TipoAvisoSet_Id" />
+      </EndProperty>
+      <EndProperty Name="AvisoFrequenciaCardiaca">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AvisoSaturacaoTipoAviso" TypeName="MyHealthDBModel.AvisoSaturacaoTipoAviso" StoreEntitySet="AvisoSaturacaoSet">
+      <EndProperty Name="TipoAviso">
+        <ScalarProperty Name="Id" ColumnName="TipoAvisoSet_Id" />
+      </EndProperty>
+      <EndProperty Name="AvisoSaturacao">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AvisoPressaoSanguineaTipoAviso" TypeName="MyHealthDBModel.AvisoPressaoSanguineaTipoAviso" StoreEntitySet="AvisoPressaoSanguineaSet">
+      <EndProperty Name="TipoAviso">
+        <ScalarProperty Name="Id" ColumnName="TipoAvisoSet_Id" />
+      </EndProperty>
+      <EndProperty Name="AvisoPressaoSanguinea">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

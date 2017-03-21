@@ -12,28 +12,24 @@ namespace ServiceLayerNew
     using System;
     using System.Collections.Generic;
     
-    public partial class TipoAlerta
+    public partial class TipoAviso
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TipoAlerta()
+        public TipoAviso()
         {
-            this.FrequenciaCardiacaValoresSets = new HashSet<FrequenciaCardiacaValores>();
-            this.PressaoSanguineaValoresSets = new HashSet<PressaoSanguineaValores>();
-            this.SaturacaoValoresSets = new HashSet<SaturacaoValores>();
+            this.AvisoFrequenciaCardiacaSet = new HashSet<AvisoFrequenciaCardiaca>();
+            this.AvisoSaturacaoSet = new HashSet<AvisoSaturacao>();
+            this.AvisoPressaoSanguineaSet = new HashSet<AvisoPressaoSanguinea>();
         }
     
         public int Id { get; set; }
-        public int ValorMinimo { get; set; }
-        public int ValorMaximo { get; set; }
-        public int ValorCriticoMinimo { get; set; }
-        public int ValorCriticoMaximo { get; set; }
         public string Nome { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FrequenciaCardiacaValores> FrequenciaCardiacaValoresSets { get; set; }
+        public virtual ICollection<AvisoFrequenciaCardiaca> AvisoFrequenciaCardiacaSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PressaoSanguineaValores> PressaoSanguineaValoresSets { get; set; }
+        public virtual ICollection<AvisoSaturacao> AvisoSaturacaoSet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SaturacaoValores> SaturacaoValoresSets { get; set; }
+        public virtual ICollection<AvisoPressaoSanguinea> AvisoPressaoSanguineaSet { get; set; }
     }
 }

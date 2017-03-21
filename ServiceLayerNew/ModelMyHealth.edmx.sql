@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/20/2017 20:34:19
--- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
+-- Date Created: 03/21/2017 15:00:19
+-- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -17,9 +17,6 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[FK_AlertaTipoAlerta]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[AlertaSet] DROP CONSTRAINT [FK_AlertaTipoAlerta];
-GO
 IF OBJECT_ID(N'[dbo].[FK_FrequenciaCardiacaValoresAlerta]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[FrequenciaCardiacaValoresSet] DROP CONSTRAINT [FK_FrequenciaCardiacaValoresAlerta];
 GO
@@ -38,13 +35,31 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UtenteSaturacaoValores]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[SaturacaoValoresSet] DROP CONSTRAINT [FK_UtenteSaturacaoValores];
 GO
+IF OBJECT_ID(N'[dbo].[FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[FrequenciaCardiacaValoresSet] DROP CONSTRAINT [FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AvisoSaturacaoSaturacaoValores]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AvisoSaturacaoSet] DROP CONSTRAINT [FK_AvisoSaturacaoSaturacaoValores];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AvisoPressaoSanguineaPressaoSanguineaValores]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AvisoPressaoSanguineaSet] DROP CONSTRAINT [FK_AvisoPressaoSanguineaPressaoSanguineaValores];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AvisoFrequenciaCardiacaTipoAviso]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet] DROP CONSTRAINT [FK_AvisoFrequenciaCardiacaTipoAviso];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AvisoSaturacaoTipoAviso]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AvisoSaturacaoSet] DROP CONSTRAINT [FK_AvisoSaturacaoTipoAviso];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AvisoPressaoSanguineaTipoAviso]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AvisoPressaoSanguineaSet] DROP CONSTRAINT [FK_AvisoPressaoSanguineaTipoAviso];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[AlertaSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[AlertaSet];
+IF OBJECT_ID(N'[dbo].[TipoAlertaSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TipoAlertaSet];
 GO
 IF OBJECT_ID(N'[dbo].[FrequenciaCardiacaValoresSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[FrequenciaCardiacaValoresSet];
@@ -55,25 +70,34 @@ GO
 IF OBJECT_ID(N'[dbo].[SaturacaoValoresSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[SaturacaoValoresSet];
 GO
-IF OBJECT_ID(N'[dbo].[TipoAlertaSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[TipoAlertaSet];
-GO
 IF OBJECT_ID(N'[dbo].[UtenteSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UtenteSet];
+GO
+IF OBJECT_ID(N'[dbo].[AvisoFrequenciaCardiacaSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AvisoFrequenciaCardiacaSet];
+GO
+IF OBJECT_ID(N'[dbo].[AvisoSaturacaoSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AvisoSaturacaoSet];
+GO
+IF OBJECT_ID(N'[dbo].[AvisoPressaoSanguineaSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AvisoPressaoSanguineaSet];
+GO
+IF OBJECT_ID(N'[dbo].[TipoAvisoSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TipoAvisoSet];
 GO
 
 -- --------------------------------------------------
 -- Creating all tables
 -- --------------------------------------------------
 
--- Creating table 'AlertaSet'
-CREATE TABLE [dbo].[AlertaSet] (
+-- Creating table 'TipoAlertaSet'
+CREATE TABLE [dbo].[TipoAlertaSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [ValorMinimo] int  NOT NULL,
     [ValorMaximo] int  NOT NULL,
     [ValorCriticoMinimo] int  NOT NULL,
     [ValorCriticoMaximo] int  NOT NULL,
-    [TipoAlertas_Id] int  NOT NULL
+    [Nome] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -84,7 +108,8 @@ CREATE TABLE [dbo].[FrequenciaCardiacaValoresSet] (
     [Hora] time  NOT NULL,
     [Frequencia] int  NOT NULL,
     [Utente_Id] int  NOT NULL,
-    [Alertas_Id] int  NOT NULL
+    [Alertas_Id] int  NOT NULL,
+    [AvisoFrequenciaCardiacaSet_Id] int  NOT NULL
 );
 GO
 
@@ -111,13 +136,6 @@ CREATE TABLE [dbo].[SaturacaoValoresSet] (
 );
 GO
 
--- Creating table 'TipoAlertaSet'
-CREATE TABLE [dbo].[TipoAlertaSet] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [Nome] nvarchar(max)  NOT NULL
-);
-GO
-
 -- Creating table 'UtenteSet'
 CREATE TABLE [dbo].[UtenteSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -137,9 +155,42 @@ CREATE TABLE [dbo].[UtenteSet] (
     [DataNascimento] datetime  NOT NULL,
     [Ativo] bit  NOT NULL,
     [CodigoPaisTelefone] nvarchar(max)  NULL,
-    [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL
+    [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL,
 	UNIQUE(SNS),
 	UNIQUE(NIF)
+);
+GO
+
+-- Creating table 'AvisoFrequenciaCardiacaSet'
+CREATE TABLE [dbo].[AvisoFrequenciaCardiacaSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [RegistoFinal] nvarchar(max)  NOT NULL,
+    [TipoAvisoSet_Id] int  NOT NULL
+);
+GO
+
+-- Creating table 'AvisoSaturacaoSet'
+CREATE TABLE [dbo].[AvisoSaturacaoSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [RegistoFinal] nvarchar(max)  NOT NULL,
+    [SaturacaoValorSet_Id] int  NOT NULL,
+    [TipoAvisoSet_Id] int  NOT NULL
+);
+GO
+
+-- Creating table 'AvisoPressaoSanguineaSet'
+CREATE TABLE [dbo].[AvisoPressaoSanguineaSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [RegistoFinal] nvarchar(max)  NOT NULL,
+    [PressaoSanguineaValorSet_Id] int  NOT NULL,
+    [TipoAvisoSet_Id] int  NOT NULL
+);
+GO
+
+-- Creating table 'TipoAvisoSet'
+CREATE TABLE [dbo].[TipoAvisoSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Nome] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -147,9 +198,9 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
--- Creating primary key on [Id] in table 'AlertaSet'
-ALTER TABLE [dbo].[AlertaSet]
-ADD CONSTRAINT [PK_AlertaSet]
+-- Creating primary key on [Id] in table 'TipoAlertaSet'
+ALTER TABLE [dbo].[TipoAlertaSet]
+ADD CONSTRAINT [PK_TipoAlertaSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -171,15 +222,33 @@ ADD CONSTRAINT [PK_SaturacaoValoresSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'TipoAlertaSet'
-ALTER TABLE [dbo].[TipoAlertaSet]
-ADD CONSTRAINT [PK_TipoAlertaSet]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
 -- Creating primary key on [Id] in table 'UtenteSet'
 ALTER TABLE [dbo].[UtenteSet]
 ADD CONSTRAINT [PK_UtenteSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'AvisoFrequenciaCardiacaSet'
+ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet]
+ADD CONSTRAINT [PK_AvisoFrequenciaCardiacaSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'AvisoSaturacaoSet'
+ALTER TABLE [dbo].[AvisoSaturacaoSet]
+ADD CONSTRAINT [PK_AvisoSaturacaoSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'AvisoPressaoSanguineaSet'
+ALTER TABLE [dbo].[AvisoPressaoSanguineaSet]
+ADD CONSTRAINT [PK_AvisoPressaoSanguineaSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'TipoAvisoSet'
+ALTER TABLE [dbo].[TipoAvisoSet]
+ADD CONSTRAINT [PK_TipoAvisoSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -187,26 +256,11 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on [TipoAlertas_Id] in table 'AlertaSet'
-ALTER TABLE [dbo].[AlertaSet]
-ADD CONSTRAINT [FK_AlertaTipoAlerta]
-    FOREIGN KEY ([TipoAlertas_Id])
-    REFERENCES [dbo].[TipoAlertaSet]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_AlertaTipoAlerta'
-CREATE INDEX [IX_FK_AlertaTipoAlerta]
-ON [dbo].[AlertaSet]
-    ([TipoAlertas_Id]);
-GO
-
 -- Creating foreign key on [Alertas_Id] in table 'FrequenciaCardiacaValoresSet'
 ALTER TABLE [dbo].[FrequenciaCardiacaValoresSet]
 ADD CONSTRAINT [FK_FrequenciaCardiacaValoresAlerta]
     FOREIGN KEY ([Alertas_Id])
-    REFERENCES [dbo].[AlertaSet]
+    REFERENCES [dbo].[TipoAlertaSet]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
@@ -221,7 +275,7 @@ GO
 ALTER TABLE [dbo].[PressaoSanguineaValoresSet]
 ADD CONSTRAINT [FK_PressaoSanguineaValoresAlerta]
     FOREIGN KEY ([Alertas_Id])
-    REFERENCES [dbo].[AlertaSet]
+    REFERENCES [dbo].[TipoAlertaSet]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
@@ -236,7 +290,7 @@ GO
 ALTER TABLE [dbo].[SaturacaoValoresSet]
 ADD CONSTRAINT [FK_SaturacaoValoresAlerta]
     FOREIGN KEY ([Alertas_Id])
-    REFERENCES [dbo].[AlertaSet]
+    REFERENCES [dbo].[TipoAlertaSet]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
@@ -292,18 +346,110 @@ ON [dbo].[SaturacaoValoresSet]
     ([Utente_Id]);
 GO
 
+-- Creating foreign key on [AvisoFrequenciaCardiacaSet_Id] in table 'FrequenciaCardiacaValoresSet'
+ALTER TABLE [dbo].[FrequenciaCardiacaValoresSet]
+ADD CONSTRAINT [FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]
+    FOREIGN KEY ([AvisoFrequenciaCardiacaSet_Id])
+    REFERENCES [dbo].[AvisoFrequenciaCardiacaSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca'
+CREATE INDEX [IX_FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]
+ON [dbo].[FrequenciaCardiacaValoresSet]
+    ([AvisoFrequenciaCardiacaSet_Id]);
+GO
+
+-- Creating foreign key on [SaturacaoValorSet_Id] in table 'AvisoSaturacaoSet'
+ALTER TABLE [dbo].[AvisoSaturacaoSet]
+ADD CONSTRAINT [FK_AvisoSaturacaoSaturacaoValores]
+    FOREIGN KEY ([SaturacaoValorSet_Id])
+    REFERENCES [dbo].[SaturacaoValoresSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AvisoSaturacaoSaturacaoValores'
+CREATE INDEX [IX_FK_AvisoSaturacaoSaturacaoValores]
+ON [dbo].[AvisoSaturacaoSet]
+    ([SaturacaoValorSet_Id]);
+GO
+
+-- Creating foreign key on [PressaoSanguineaValorSet_Id] in table 'AvisoPressaoSanguineaSet'
+ALTER TABLE [dbo].[AvisoPressaoSanguineaSet]
+ADD CONSTRAINT [FK_AvisoPressaoSanguineaPressaoSanguineaValores]
+    FOREIGN KEY ([PressaoSanguineaValorSet_Id])
+    REFERENCES [dbo].[PressaoSanguineaValoresSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AvisoPressaoSanguineaPressaoSanguineaValores'
+CREATE INDEX [IX_FK_AvisoPressaoSanguineaPressaoSanguineaValores]
+ON [dbo].[AvisoPressaoSanguineaSet]
+    ([PressaoSanguineaValorSet_Id]);
+GO
+
+-- Creating foreign key on [TipoAvisoSet_Id] in table 'AvisoFrequenciaCardiacaSet'
+ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet]
+ADD CONSTRAINT [FK_AvisoFrequenciaCardiacaTipoAviso]
+    FOREIGN KEY ([TipoAvisoSet_Id])
+    REFERENCES [dbo].[TipoAvisoSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AvisoFrequenciaCardiacaTipoAviso'
+CREATE INDEX [IX_FK_AvisoFrequenciaCardiacaTipoAviso]
+ON [dbo].[AvisoFrequenciaCardiacaSet]
+    ([TipoAvisoSet_Id]);
+GO
+
+-- Creating foreign key on [TipoAvisoSet_Id] in table 'AvisoSaturacaoSet'
+ALTER TABLE [dbo].[AvisoSaturacaoSet]
+ADD CONSTRAINT [FK_AvisoSaturacaoTipoAviso]
+    FOREIGN KEY ([TipoAvisoSet_Id])
+    REFERENCES [dbo].[TipoAvisoSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AvisoSaturacaoTipoAviso'
+CREATE INDEX [IX_FK_AvisoSaturacaoTipoAviso]
+ON [dbo].[AvisoSaturacaoSet]
+    ([TipoAvisoSet_Id]);
+GO
+
+-- Creating foreign key on [TipoAvisoSet_Id] in table 'AvisoPressaoSanguineaSet'
+ALTER TABLE [dbo].[AvisoPressaoSanguineaSet]
+ADD CONSTRAINT [FK_AvisoPressaoSanguineaTipoAviso]
+    FOREIGN KEY ([TipoAvisoSet_Id])
+    REFERENCES [dbo].[TipoAvisoSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AvisoPressaoSanguineaTipoAviso'
+CREATE INDEX [IX_FK_AvisoPressaoSanguineaTipoAviso]
+ON [dbo].[AvisoPressaoSanguineaSet]
+    ([TipoAvisoSet_Id]);
+GO
+
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
 
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
-    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (1, N'HR')
-    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (2, N'SPO2')
-    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [Nome]) VALUES (3, N'BP')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (1, 60, 120, 30, 180, N'HR')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (2, 90, 100, 80, 100, N'SPO2')
+    INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (3, 90, 180, 60, 190, N'BP')
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] OFF
 
-SET IDENTITY_INSERT [dbo].[AlertaSet] ON
-    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (1, 60, 120, 30, 180, 1)
-    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (2, 90, 100, 80, 100, 2)
-    INSERT INTO [dbo].[AlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [TipoAlertas_Id]) VALUES (3, 90, 180, 60, 190, 3)
-SET IDENTITY_INSERT [dbo].[AlertaSet] OFF
+SET IDENTITY_INSERT [dbo].[TipoAvisoSet] ON
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (1, N'EAC')
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (2, N'EAI')
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (3, N'ECC')
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (4, N'ECI')
+	INSERT INTO [dbo].[TipoAvisoSet] ([Id], [Nome]) VALUES (5, N'ECA')
+SET IDENTITY_INSERT [dbo].[TipoAvisoSet] OFF

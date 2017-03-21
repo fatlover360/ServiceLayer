@@ -53,19 +53,19 @@ namespace ServiceLayerNew
         List<BloodPressure> BloodPressureList(int sns);
 
         [OperationContract]
-        Alert GetAlert(string type);
+        AlertType GetAlert(string type);
 
         [OperationContract]
-        List<Alert> GetAlertList();
+        List<AlertType> GetAlertList();
 
         [OperationContract]
-        bool InsertAlert(Alert _alert);
+        bool InsertAlert(AlertType alertType);
 
         [OperationContract]
-        bool UpdateAlert(Alert _alert);
+        bool UpdateAlert(AlertType alertType);
 
         [OperationContract]
-        bool DeleteAlert(Alert _alert);
+        bool DeleteAlert(AlertType alertType);
     }
 
     [DataContract]
@@ -329,7 +329,7 @@ namespace ServiceLayerNew
     }
 
     [DataContract]
-    public class Alert
+    public class AlertType
     {
         private string type;
         private int minimumValue;
