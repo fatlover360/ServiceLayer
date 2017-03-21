@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/21/2017 17:54:33
--- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
+-- Date Created: 03/21/2017 18:16:17
+-- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -154,7 +154,7 @@ CREATE TABLE [dbo].[UtenteSet] (
     [SNS] int  NOT NULL,
     [DataNascimento] datetime  NOT NULL,
     [Ativo] bit  NOT NULL,
-    [CodigoPaisTelefone] nvarchar(max)  NULL,
+    [CodigoPaisTelefone] nvarchar(max) NULL,
     [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL,
 	UNIQUE(SNS),
 	UNIQUE(NIF)
@@ -441,7 +441,6 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
-
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (1, 60, 120, 30, 180, N'HR')
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (2, 90, 100, 80, 100, N'SPO2')
