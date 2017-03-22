@@ -272,6 +272,8 @@ namespace ServiceLayerNew
                     ut.Altura = patient.Height;
                     ut.Alergias = patient.Alergies;
                     ut.SNS = patient.Sns;
+                    ut.CodigoPaisNumeroEmergencia = patient.EmergencyNumberCountryCode;
+                    ut.CodigoPaisTelefone = patient.PhoneCountryCode;
 
                     context.SaveChanges();
 
@@ -328,6 +330,8 @@ namespace ServiceLayerNew
                     patient.Alergies = ut.Alergias;
                     patient.Sns = ut.SNS;
                     patient.Ativo = ut.Ativo;
+                    patient.EmergencyNumberCountryCode = ut.CodigoPaisNumeroEmergencia;
+                    patient.PhoneCountryCode = ut.CodigoPaisTelefone;
 
                     return patient;
                 }
@@ -370,6 +374,8 @@ namespace ServiceLayerNew
                         patient.Alergies = ut.Alergias;
                         patient.Sns = ut.SNS;
                         patient.Ativo = ut.Ativo;
+                        patient.EmergencyNumberCountryCode = ut.CodigoPaisNumeroEmergencia;
+                        patient.PhoneCountryCode = ut.CodigoPaisTelefone;
 
                         patientList.Add(patient);
                     }
