@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/23/2017 10:16:13
--- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
+-- Date Created: 03/23/2017 10:52:37
+-- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -39,10 +39,10 @@ IF OBJECT_ID(N'[dbo].[FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]', 'F'
     ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet] DROP CONSTRAINT [FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca];
 GO
 IF OBJECT_ID(N'[dbo].[FK_AvisoSaturacaoSaturacaoValores]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SaturacaoValoresSet] DROP CONSTRAINT [FK_AvisoSaturacaoSaturacaoValores];
+    ALTER TABLE [dbo].[AvisoSaturacaoSet] DROP CONSTRAINT [FK_AvisoSaturacaoSaturacaoValores];
 GO
 IF OBJECT_ID(N'[dbo].[FK_AvisoPressaoSanguineaPressaoSanguineaValores]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[PressaoSanguineaValoresSet] DROP CONSTRAINT [FK_AvisoPressaoSanguineaPressaoSanguineaValores];
+    ALTER TABLE [dbo].[AvisoPressaoSanguineaSet] DROP CONSTRAINT [FK_AvisoPressaoSanguineaPressaoSanguineaValores];
 GO
 IF OBJECT_ID(N'[dbo].[FK_AvisoFrequenciaCardiacaTipoAviso]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet] DROP CONSTRAINT [FK_AvisoFrequenciaCardiacaTipoAviso];
@@ -441,6 +441,7 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
+
 
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (1, 60, 120, 30, 180, N'HR')
