@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/21/2017 18:16:17
--- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
+-- Date Created: 03/23/2017 10:16:13
+-- Generated from EDMX file: C:\Git\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -36,13 +36,13 @@ IF OBJECT_ID(N'[dbo].[FK_UtenteSaturacaoValores]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[SaturacaoValoresSet] DROP CONSTRAINT [FK_UtenteSaturacaoValores];
 GO
 IF OBJECT_ID(N'[dbo].[FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[FrequenciaCardiacaValoresSet] DROP CONSTRAINT [FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca];
+    ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet] DROP CONSTRAINT [FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca];
 GO
 IF OBJECT_ID(N'[dbo].[FK_AvisoSaturacaoSaturacaoValores]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[AvisoSaturacaoSet] DROP CONSTRAINT [FK_AvisoSaturacaoSaturacaoValores];
+    ALTER TABLE [dbo].[SaturacaoValoresSet] DROP CONSTRAINT [FK_AvisoSaturacaoSaturacaoValores];
 GO
 IF OBJECT_ID(N'[dbo].[FK_AvisoPressaoSanguineaPressaoSanguineaValores]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[AvisoPressaoSanguineaSet] DROP CONSTRAINT [FK_AvisoPressaoSanguineaPressaoSanguineaValores];
+    ALTER TABLE [dbo].[PressaoSanguineaValoresSet] DROP CONSTRAINT [FK_AvisoPressaoSanguineaPressaoSanguineaValores];
 GO
 IF OBJECT_ID(N'[dbo].[FK_AvisoFrequenciaCardiacaTipoAviso]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet] DROP CONSTRAINT [FK_AvisoFrequenciaCardiacaTipoAviso];
@@ -108,8 +108,7 @@ CREATE TABLE [dbo].[FrequenciaCardiacaValoresSet] (
     [Hora] time  NOT NULL,
     [Frequencia] int  NOT NULL,
     [Utente_Id] int  NOT NULL,
-    [Alertas_Id] int  NOT NULL,
-    [AvisoFrequenciaCardiacaSet_Id] int  NOT NULL
+    [Alertas_Id] int  NOT NULL
 );
 GO
 
@@ -154,7 +153,7 @@ CREATE TABLE [dbo].[UtenteSet] (
     [SNS] int  NOT NULL,
     [DataNascimento] datetime  NOT NULL,
     [Ativo] bit  NOT NULL,
-    [CodigoPaisTelefone] nvarchar(max) NULL,
+    [CodigoPaisTelefone] nvarchar(max)  NULL,
     [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL,
 	UNIQUE(SNS),
 	UNIQUE(NIF)
@@ -165,6 +164,7 @@ GO
 CREATE TABLE [dbo].[AvisoFrequenciaCardiacaSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [RegistoFinal] int  NOT NULL,
+    [FrequenciaCardiacaValorSet_Id] int  NOT NULL,
     [TipoAvisoSet_Id] int  NOT NULL
 );
 GO
@@ -348,19 +348,19 @@ ON [dbo].[SaturacaoValoresSet]
     ([Utente_Id]);
 GO
 
--- Creating foreign key on [AvisoFrequenciaCardiacaSet_Id] in table 'FrequenciaCardiacaValoresSet'
-ALTER TABLE [dbo].[FrequenciaCardiacaValoresSet]
+-- Creating foreign key on [FrequenciaCardiacaValorSet_Id] in table 'AvisoFrequenciaCardiacaSet'
+ALTER TABLE [dbo].[AvisoFrequenciaCardiacaSet]
 ADD CONSTRAINT [FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]
-    FOREIGN KEY ([AvisoFrequenciaCardiacaSet_Id])
-    REFERENCES [dbo].[AvisoFrequenciaCardiacaSet]
+    FOREIGN KEY ([FrequenciaCardiacaValorSet_Id])
+    REFERENCES [dbo].[FrequenciaCardiacaValoresSet]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca'
 CREATE INDEX [IX_FK_FrequenciaCardiacaValoresAvisoFrequenciaCardiaca]
-ON [dbo].[FrequenciaCardiacaValoresSet]
-    ([AvisoFrequenciaCardiacaSet_Id]);
+ON [dbo].[AvisoFrequenciaCardiacaSet]
+    ([FrequenciaCardiacaValorSet_Id]);
 GO
 
 -- Creating foreign key on [SaturacaoValorSet_Id] in table 'AvisoSaturacaoSet'
@@ -441,6 +441,7 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
+
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (1, 60, 120, 30, 180, N'HR')
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (2, 90, 100, 80, 100, N'SPO2')

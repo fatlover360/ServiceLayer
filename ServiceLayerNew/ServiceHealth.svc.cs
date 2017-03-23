@@ -25,6 +25,11 @@ namespace ServiceLayerNew
 
         #region IServiceHealth
 
+        public bool TestConnection()
+        {
+            return true;
+        }
+
         public bool ValidatePatient(int sns)
         {
             using (ModelMyHealth context = new ModelMyHealth())
@@ -63,27 +68,27 @@ namespace ServiceLayerNew
 
                     return true;
                 }
-                catch (ArgumentNullException)
+                catch (ArgumentNullException e)
                 {
                     return false;
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
                     return false;
                 }
-                catch (DbEntityValidationException)
+                catch (DbEntityValidationException e)
                 {
                     return false;
                 }
-                catch (NotSupportedException)
+                catch (NotSupportedException e)
                 {
                     return false;
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException e)
                 {
                     return false;
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException e)
                 {
                     return false;
                 }
@@ -112,27 +117,27 @@ namespace ServiceLayerNew
 
                     return true;
                 }
-                catch (ArgumentNullException)
+                catch (ArgumentNullException e)
                 {
                     return false;
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
                     return false;
                 }
-                catch (DbEntityValidationException)
+                catch (DbEntityValidationException e)
                 {
                     return false;
                 }
-                catch (NotSupportedException)
+                catch (NotSupportedException e)
                 {
                     return false;
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException e)
                 {
                     return false;
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException e)
                 {
                     return false;
                 }
@@ -160,7 +165,7 @@ namespace ServiceLayerNew
 
                     return true;
                 }
-                catch (ArgumentNullException)
+                catch (ArgumentNullException e)
                 {
                     return false;
                 }
@@ -168,19 +173,19 @@ namespace ServiceLayerNew
                 {
                     return false;
                 }
-                catch (DbEntityValidationException)
+                catch (DbEntityValidationException e)
                 {
                     return false;
                 }
-                catch (NotSupportedException)
+                catch (NotSupportedException e)
                 {
                     return false;
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException e)
                 {
                     return false;
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException e)
                 {
                     return false;
                 }
@@ -910,7 +915,7 @@ namespace ServiceLayerNew
             int criticalMinimum = fcRecord.AlertaSet.ValorCriticoMinimo;
             int criticalMaximum = fcRecord.AlertaSet.ValorCriticoMaximo;
 
-      #region CA - Com Alerta
+            #region CA - Com Alerta
 
             using (ModelMyHealth context = new ModelMyHealth())
             {

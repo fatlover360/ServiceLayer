@@ -13,6 +13,9 @@ namespace ServiceLayerNew
     public interface IServiceHealth
     {
         [OperationContract]
+        bool TestConnection();
+
+        [OperationContract]
         bool ValidatePatient(int sns);
 
         [OperationContract]

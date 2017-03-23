@@ -85,7 +85,6 @@
     <Property Name="Frequencia" Type="int" Nullable="false" />
     <Property Name="Utente_Id" Type="int" Nullable="false" />
     <Property Name="Alertas_Id" Type="int" Nullable="false" />
-    <Property Name="AvisoFrequenciaCardiacaSet_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="PressaoSanguineaValoresSet">
     <Key>
@@ -139,6 +138,7 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="RegistoFinal" Type="int" Nullable="false" />
+    <Property Name="FrequenciaCardiacaValorSet_Id" Type="int" Nullable="false" />
     <Property Name="TipoAvisoSet_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="AvisoSaturacaoSet">
@@ -241,14 +241,14 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
-    <End Role="FrequenciaCardiacaValores" Type="MyHealthDBModel.Store.FrequenciaCardiacaValoresSet" Multiplicity="*" />
-    <End Role="AvisoFrequenciaCardiaca" Type="MyHealthDBModel.Store.AvisoFrequenciaCardiacaSet" Multiplicity="1" />
+    <End Role="FrequenciaCardiacaValores" Type="MyHealthDBModel.Store.FrequenciaCardiacaValoresSet" Multiplicity="1" />
+    <End Role="AvisoFrequenciaCardiaca" Type="MyHealthDBModel.Store.AvisoFrequenciaCardiacaSet" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="AvisoFrequenciaCardiaca">
+      <Principal Role="FrequenciaCardiacaValores">
         <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="FrequenciaCardiacaValores">
-        <PropertyRef Name="AvisoFrequenciaCardiacaSet_Id" />
+      <Dependent Role="AvisoFrequenciaCardiaca">
+        <PropertyRef Name="FrequenciaCardiacaValorSet_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -559,14 +559,14 @@
         </EntityType>
         <Association Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca">
           <End Type="MyHealthDBModel.FrequenciaCardiacaValores" Role="FrequenciaCardiacaValores" Multiplicity="1" />
-          <End Type="MyHealthDBModel.AvisoFrequenciaCardiaca" Role="AvisoFrequenciaCardiaca" Multiplicity="1" />
+          <End Type="MyHealthDBModel.AvisoFrequenciaCardiaca" Role="AvisoFrequenciaCardiaca" Multiplicity="0..1" />
         </Association>
         <Association Name="AvisoSaturacaoSaturacaoValores">
-          <End Type="MyHealthDBModel.AvisoSaturacao" Role="AvisoSaturacao" Multiplicity="1" />
+          <End Type="MyHealthDBModel.AvisoSaturacao" Role="AvisoSaturacao" Multiplicity="0..1" />
           <End Type="MyHealthDBModel.SaturacaoValores" Role="SaturacaoValores" Multiplicity="1" />
         </Association>
         <Association Name="AvisoPressaoSanguineaPressaoSanguineaValores">
-          <End Type="MyHealthDBModel.AvisoPressaoSanguinea" Role="AvisoPressaoSanguinea" Multiplicity="1" />
+          <End Type="MyHealthDBModel.AvisoPressaoSanguinea" Role="AvisoPressaoSanguinea" Multiplicity="0..1" />
           <End Type="MyHealthDBModel.PressaoSanguineaValores" Role="PressaoSanguineaValores" Multiplicity="1" />
         </Association>
         <EntityType Name="TipoAviso">
@@ -706,11 +706,11 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" TypeName="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" StoreEntitySet="FrequenciaCardiacaValoresSet">
-      <EndProperty Name="AvisoFrequenciaCardiaca">
-        <ScalarProperty Name="Id" ColumnName="AvisoFrequenciaCardiacaSet_Id" />
-      </EndProperty>
+    <AssociationSetMapping Name="FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" TypeName="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" StoreEntitySet="AvisoFrequenciaCardiacaSet">
       <EndProperty Name="FrequenciaCardiacaValores">
+        <ScalarProperty Name="Id" ColumnName="FrequenciaCardiacaValorSet_Id" />
+      </EndProperty>
+      <EndProperty Name="AvisoFrequenciaCardiaca">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
