@@ -696,19 +696,9 @@ namespace ServiceLayerNew
             int maximum = psRecord.AlertaSet.ValorMaximo;
             int criticalMinimum = psRecord.AlertaSet.ValorCriticoMinimo;
             int criticalMaximum = psRecord.AlertaSet.ValorCriticoMaximo;
-
-            #region SA - Sem Alerta
-
-            if (diastolic >= minimum && systolic <= maximum) // diastolica >= 90mmHg e sistolica <= 180mmHg
-                return;
-
-            #endregion SA
-
-            #region CA - Com Alerta
-
+ 
             using (ModelMyHealth context = new ModelMyHealth())
             {
-
                 #region ECA - Evento Critico Anytime
 
                 if (diastolic < criticalMinimum || systolic > criticalMaximum)
@@ -724,7 +714,6 @@ namespace ServiceLayerNew
                 #endregion ECA
                 else
                 {
-
                     #region EAC - Evento Aviso Continuo 
 
                     /* 
@@ -735,6 +724,25 @@ namespace ServiceLayerNew
 
                     TipoAviso eac = GetWarning(WarningType.EAC);
                     int minimumTimeEAC = eac.TempoMinimo;
+                    DateTime dateForEAC =psRecord.Data.AddMinutes(-minimumTimeEAC);// Tempo compreendido entre Record e Record-TempoMinimo
+
+
+                    List<PressaoSanguineaValores> valuesForEAC =
+                        context.PressaoSanguineaValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= psRecord.Data)
+                            .OrderByDescending(i => i.Data).ToList();
+
+                    if (!valuesForEAC.Any())
+                        return;
+
+                    PressaoSanguineaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Distolica < minimum);
+
+                    if (verificationRecordEAC == null)
+                    {
+                       AvisoPressaoSanguinea avisoPressaoSanguinea = new AvisoPressaoSanguinea();
+                        avisoPressaoSanguinea.PressaoSanguineaValorSet = valuesForEAC.First();
+                        avisoPressaoSanguinea.RegistoFinal = valuesForEAC.Last().Id;
+                        avisoPressaoSanguinea.TipoAvisoSet = eac;
+                    }
 
                     #endregion EAC 
 
@@ -783,9 +791,6 @@ namespace ServiceLayerNew
                     #endregion ECI
                 }
             }
-
-            #endregion CA
-
         }
 
         private void SaturationWarnings(SaturacaoValores satRecord)
@@ -795,13 +800,6 @@ namespace ServiceLayerNew
             int maximum = satRecord.AlertaSet.ValorMaximo;
             int criticalMinimum = satRecord.AlertaSet.ValorCriticoMinimo;
             int criticalMaximum = satRecord.AlertaSet.ValorCriticoMaximo;
-
-            #region SA - Sem Alerta
-
-            if (saturation >= minimum) // >= 90%
-                return;
-
-            #endregion SA
 
             #region CA - Com Alerta
 
@@ -833,6 +831,25 @@ namespace ServiceLayerNew
 
                     TipoAviso eac = GetWarning(WarningType.EAC);
                     int minimumTimeEAC = eac.TempoMinimo;
+                    DateTime dateForEAC = satRecord.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<SaturacaoValores> valuesForEAC =
+                        context.SaturacaoValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= satRecord.Data)
+                            .OrderByDescending(i => i.Data).ToList();
+
+                    if (!valuesForEAC.Any())
+                        return;
+
+                    SaturacaoValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Saturacao < minimum);
+
+                    if (verificationRecordEAC == null)
+                    {
+                        AvisoSaturacao avisoSaturation = new AvisoSaturacao();
+                        avisoSaturation.SaturacaoValorSet = valuesForEAC.First();
+                        avisoSaturation.RegistoFinal = valuesForEAC.Last().Id;
+                        avisoSaturation.TipoAvisoSet = eac;
+                    }
+ 
 
                     #endregion EAC 
 
@@ -893,14 +910,7 @@ namespace ServiceLayerNew
             int criticalMinimum = fcRecord.AlertaSet.ValorCriticoMinimo;
             int criticalMaximum = fcRecord.AlertaSet.ValorCriticoMaximo;
 
-            #region SA - Sem Alerta
-
-            if (rate >= minimum && rate <= maximum)// 60bpm >= rate <= 120bpm
-                return;
-
-            #endregion SA
-
-            #region CA - Com Alerta
+      #region CA - Com Alerta
 
             using (ModelMyHealth context = new ModelMyHealth())
             {
