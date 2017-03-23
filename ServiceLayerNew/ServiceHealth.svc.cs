@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -7,6 +8,8 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Threading;
+using ServiceLayerNew.Warnings;
 
 namespace ServiceLayerNew
 {
@@ -14,15 +17,6 @@ namespace ServiceLayerNew
     // NOTE: In order to launch WCF Test Client for testing this service, please select ServiceHealth.svc or ServiceHealth.svc.cs at the Solution Explorer and start debugging.
     public class ServiceHealth : IServiceHealth, IServiceHealthAlert
     {
-        private enum WarningType
-        {
-            EAC,
-            EAI,
-            ECC,
-            ECI,
-            ECA
-        }
-
         #region IServiceHealth
 
         public bool TestConnection()
@@ -66,6 +60,8 @@ namespace ServiceLayerNew
                     context.SaturacaoValoresSet.Add(saturacao);
                     context.SaveChanges();
 
+                    //SaturationWarnings.Verify(saturacao);
+                    
                     return true;
                 }
                 catch (ArgumentNullException e)
@@ -115,6 +111,8 @@ namespace ServiceLayerNew
                     context.PressaoSanguineaValoresSet.Add(pressao);
                     context.SaveChanges();
 
+                    //BloodPressureWarnings.Verify(pressao);
+
                     return true;
                 }
                 catch (ArgumentNullException e)
@@ -162,6 +160,8 @@ namespace ServiceLayerNew
 
                     context.FrequenciaCardiacaValoresSet.Add(frequencia);
                     context.SaveChanges();
+
+                    //HeartRateWarnings.Verify(frequencia);
 
                     return true;
                 }
@@ -690,411 +690,6 @@ namespace ServiceLayerNew
         }
 
         #endregion IServiceHealthAlert
-
-        #region WARNIGS
-
-        private void BloodPressureWarnings(PressaoSanguineaValores psRecord)
-        {
-            int systolic = psRecord.Sistolica;
-            int diastolic = psRecord.Distolica;
-            int minimum = psRecord.AlertaSet.ValorMinimo;
-            int maximum = psRecord.AlertaSet.ValorMaximo;
-            int criticalMinimum = psRecord.AlertaSet.ValorCriticoMinimo;
-            int criticalMaximum = psRecord.AlertaSet.ValorCriticoMaximo;
- 
-            using (ModelMyHealth context = new ModelMyHealth())
-            {
-                #region ECA - Evento Critico Anytime
-
-                if (diastolic < criticalMinimum || systolic > criticalMaximum)
-                {
-                    AvisoPressaoSanguinea avPressao = new AvisoPressaoSanguinea();
-                    avPressao.PressaoSanguineaValorSet = psRecord;
-                    avPressao.RegistoFinal = psRecord.Id;
-                    avPressao.TipoAvisoSet = GetWarning(WarningType.ECA);
-
-                    context.AvisoPressaoSanguineaSet.Add(avPressao);
-                    context.SaveChanges();
-                }
-                #endregion ECA
-                else
-                {
-                    #region EAC - Evento Aviso Continuo 
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo minimo definido para o EAC
-                     */
-
-                    TipoAviso eac = GetWarning(WarningType.EAC);
-                    int minimumTimeEAC = eac.TempoMinimo;
-                    DateTime dateForEAC =psRecord.Data.AddMinutes(-minimumTimeEAC);// Tempo compreendido entre Record e Record-TempoMinimo
-
-
-                    List<PressaoSanguineaValores> valuesForEAC =
-                        context.PressaoSanguineaValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= psRecord.Data)
-                            .OrderByDescending(i => i.Data).ToList();
-
-                    if (!valuesForEAC.Any())
-                        return;
-
-                    PressaoSanguineaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Distolica < minimum);
-
-                    if (verificationRecordEAC == null)
-                    {
-                       AvisoPressaoSanguinea avisoPressaoSanguinea = new AvisoPressaoSanguinea();
-                        avisoPressaoSanguinea.PressaoSanguineaValorSet = valuesForEAC.First();
-                        avisoPressaoSanguinea.RegistoFinal = valuesForEAC.Last().Id;
-                        avisoPressaoSanguinea.TipoAvisoSet = eac;
-                    }
-
-                    #endregion EAC 
-
-
-                    #region EAI - Evento Aviso Intermitente
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
-                     */
-
-                    TipoAviso eai = GetWarning(WarningType.EAI);
-                    int minimumTimeEAI = eai.TempoMinimo;
-                    int maximumTimeEAI = eai.TempoMaximo;
-
-                    #endregion EAI
-
-
-                    #region ECC - Evento Critico Continuo
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo minimo definido para o ECC
-                     */
-
-                    TipoAviso ecc = GetWarning(WarningType.ECC);
-                    int minimumTimeECC = ecc.TempoMinimo;
-
-                    #endregion ECC
-
-
-                    #region ECI - Evento Critico Intermitente
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
-                     */
-
-                    TipoAviso eci = GetWarning(WarningType.ECI);
-                    int minimumTimeECI = eci.TempoMinimo;
-                    int maximumTimeECI = eci.TempoMaximo;
-
-                    #endregion ECI
-                }
-            }
-        }
-
-        private void SaturationWarnings(SaturacaoValores satRecord)
-        {
-            int saturation = satRecord.Saturacao;
-            int minimum = satRecord.AlertaSet.ValorMinimo;
-            int maximum = satRecord.AlertaSet.ValorMaximo;
-            int criticalMinimum = satRecord.AlertaSet.ValorCriticoMinimo;
-            int criticalMaximum = satRecord.AlertaSet.ValorCriticoMaximo;
-
-            #region CA - Com Alerta
-
-            using (ModelMyHealth context = new ModelMyHealth())
-            {
-
-                #region ECA - Evento Critico Anytime
-
-                if (saturation < criticalMinimum) // < 80%
-                {
-                    AvisoSaturacao avSaturacao = new AvisoSaturacao();
-                    avSaturacao.SaturacaoValorSet = satRecord;
-                    avSaturacao.RegistoFinal = satRecord.Id;
-                    avSaturacao.TipoAvisoSet = GetWarning(WarningType.ECA);
-
-                    context.AvisoSaturacaoSet.Add(avSaturacao);
-                    context.SaveChanges();
-                }
-                #endregion ECA
-                else
-                {
-                    #region EAC - Evento Aviso Continuo 
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo minimo definido para o EAC
-                     */
-
-                    TipoAviso eac = GetWarning(WarningType.EAC);
-                    int minimumTimeEAC = eac.TempoMinimo;
-                    DateTime dateForEAC = satRecord.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
-
-                    List<SaturacaoValores> valuesForEAC =
-                        context.SaturacaoValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= satRecord.Data)
-                            .OrderByDescending(i => i.Data).ToList();
-
-                    if (!valuesForEAC.Any())
-                        return;
-
-                    SaturacaoValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Saturacao < minimum);
-
-                    if (verificationRecordEAC == null)
-                    {
-                        AvisoSaturacao avisoSaturation = new AvisoSaturacao();
-                        avisoSaturation.SaturacaoValorSet = valuesForEAC.First();
-                        avisoSaturation.RegistoFinal = valuesForEAC.Last().Id;
-                        avisoSaturation.TipoAvisoSet = eac;
-                    }
- 
-
-                    #endregion EAC 
-
-
-                    #region EAI - Evento Aviso Intermitente
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
-                     */
-
-                    TipoAviso eai = GetWarning(WarningType.EAI);
-                    int minimumTimeEAI = eai.TempoMinimo;
-                    int maximumTimeEAI = eai.TempoMaximo;
-
-                    #endregion EAI
-
-
-                    #region ECC - Evento Critico Continuo
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo minimo definido para o ECC
-                     */
-
-                    TipoAviso ecc = GetWarning(WarningType.ECC);
-                    int minimumTimeECC = ecc.TempoMinimo;
-
-                    #endregion ECC
-
-
-                    #region ECI - Evento Critico Intermitente
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
-                     */
-
-                    TipoAviso eci = GetWarning(WarningType.ECI);
-                    int minimumTimeECI = eci.TempoMinimo;
-                    int maximumTimeECI = eci.TempoMaximo;
-
-                    #endregion ECI
-                }
-            }
-
-            #endregion CA
-        }
-
-        private void HeartRateWarnings(FrequenciaCardiacaValores fcRecord)
-        {
-            int rate = fcRecord.Frequencia;
-            int minimum = fcRecord.AlertaSet.ValorMinimo;
-            int maximum = fcRecord.AlertaSet.ValorMaximo;
-            int criticalMinimum = fcRecord.AlertaSet.ValorCriticoMinimo;
-            int criticalMaximum = fcRecord.AlertaSet.ValorCriticoMaximo;
-
-            #region CA - Com Alerta
-
-            using (ModelMyHealth context = new ModelMyHealth())
-            {
-
-                #region ECA - Evento Critico Anytime
-
-                if (rate < criticalMinimum || rate > criticalMaximum) // < 30bpm ou > 180bpm
-                {
-                    AvisoFrequenciaCardiaca avisoFrequenciaECA = new AvisoFrequenciaCardiaca();
-                    avisoFrequenciaECA.FrequenciaCardiacaValorSet = fcRecord;
-                    avisoFrequenciaECA.RegistoFinal = fcRecord.Id;
-                    avisoFrequenciaECA.TipoAvisoSet = GetWarning(WarningType.ECA);
-
-                    context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECA);
-                    context.SaveChanges();
-                }
-                #endregion ECA
-                else
-                {
-
-                    #region EAC - Evento Aviso Continuo 
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo minimo definido para o EAC
-                     */
-
-                    TipoAviso eac = GetWarning(WarningType.EAC);
-                    int minimumTimeEAC = eac.TempoMinimo;
-                    DateTime dateForEAC = fcRecord.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
-
-                    List<FrequenciaCardiacaValores> valuesForEAC = context.FrequenciaCardiacaValoresSet.
-                        Where(i => i.Data <= fcRecord.Data && i.Data >= dateForEAC).
-                        OrderByDescending(i => i.Data).ToList();
-
-                    if(!valuesForEAC.Any())
-                        return;
-
-                    FrequenciaCardiacaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Frequencia < minimum);
-
-                    if (verificationRecordEAC == null)
-                    {
-                        AvisoFrequenciaCardiaca avisoFrequenciaEAC = new AvisoFrequenciaCardiaca();
-                        avisoFrequenciaEAC.FrequenciaCardiacaValorSet = valuesForEAC.First();
-                        avisoFrequenciaEAC.RegistoFinal = valuesForEAC.Last().Id;
-                        avisoFrequenciaEAC.TipoAvisoSet = eac;
-
-                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAC);
-                        context.SaveChanges();
-                    }
-
-                    #endregion EAC 
-
-
-                    #region EAI - Evento Aviso Intermitente
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
-                     */
-
-                    TipoAviso eai = GetWarning(WarningType.EAI);
-                    int minimumTimeEAI = eai.TempoMinimo;
-                    int maximumTimeEAI = eai.TempoMaximo;
-                    DateTime dateForEAIMin = fcRecord.Data.AddMinutes(-minimumTimeEAI);
-                    DateTime dateForEAIMax = fcRecord.Data.AddMinutes(-maximumTimeEAI);
-
-                    List<FrequenciaCardiacaValores> valuesForEAI = context.FrequenciaCardiacaValoresSet.
-                        Where(i => i.Data <= dateForEAIMin && i.Data >= dateForEAIMax).
-                        OrderByDescending(i => i.Data).ToList();
-
-                    FrequenciaCardiacaValores verificationRecordEAI =
-                        valuesForEAI.FirstOrDefault(i => i.Frequencia < minimum);
-
-                    if (verificationRecordEAI == null)
-                    {
-                        AvisoFrequenciaCardiaca avisoFrequenciaEAI = new AvisoFrequenciaCardiaca();
-                        avisoFrequenciaEAI.FrequenciaCardiacaValorSet = valuesForEAI.First();
-                        avisoFrequenciaEAI.RegistoFinal = valuesForEAI.Last().Id;
-                        avisoFrequenciaEAI.TipoAvisoSet = eai;
-
-                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAI);
-                        context.SaveChanges();
-                    }
-
-                    #endregion EAI
-
-
-                    #region ECC - Evento Critico Continuo
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo minimo definido para o ECC
-                     */
-
-                    TipoAviso ecc = GetWarning(WarningType.ECC);
-                    int minimumTimeECC = ecc.TempoMinimo;
-                    DateTime dateForECC = fcRecord.Data.AddMinutes(-minimumTimeECC);// Tempo compreendido entre Record e Record-TempoMinimo
-
-                    List<FrequenciaCardiacaValores> valuesForECC = context.FrequenciaCardiacaValoresSet.
-                        Where(i => i.Data <= fcRecord.Data && i.Data >= dateForECC).
-                        OrderByDescending(i => i.Data).ToList();
-
-                    if (!valuesForEAC.Any())
-                        return;
-
-                    FrequenciaCardiacaValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Frequencia < minimum);
-
-                    if (verificationRecordECC == null)
-                    {
-                        AvisoFrequenciaCardiaca avisoFrequenciaECC = new AvisoFrequenciaCardiaca();
-                        avisoFrequenciaECC.FrequenciaCardiacaValorSet = valuesForEAC.First();
-                        avisoFrequenciaECC.RegistoFinal = valuesForEAC.Last().Id;
-                        avisoFrequenciaECC.TipoAvisoSet = eac;
-
-                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECC);
-                        context.SaveChanges();
-                    }
-
-                    #endregion ECC
-
-
-                    #region ECI - Evento Critico Intermitente
-
-                    /* 
-                     * Os parametros recebidos no metodo, 
-                     * tem de ter o seu valor fora dos limites definido para o mesmo,
-                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
-                     */
-
-                    TipoAviso eci = GetWarning(WarningType.ECI);
-                    int minimumTimeECI = eci.TempoMinimo;
-                    int maximumTimeECI = eci.TempoMaximo;
-                    DateTime dateForECIMin = fcRecord.Data.AddMinutes(-minimumTimeECI);
-                    DateTime dateForECIMax = fcRecord.Data.AddMinutes(-maximumTimeECI);
-
-                    List<FrequenciaCardiacaValores> valuesForECI = context.FrequenciaCardiacaValoresSet.
-                        Where(i => i.Data <= dateForECIMin && i.Data >= dateForECIMax).
-                        OrderByDescending(i => i.Data).ToList();
-
-                    FrequenciaCardiacaValores verificationRecordECI =
-                        valuesForECI.FirstOrDefault(i => i.Frequencia < minimum);
-
-                    if (verificationRecordECI == null)
-                    {
-                        AvisoFrequenciaCardiaca avisoFrequenciaECI = new AvisoFrequenciaCardiaca();
-                        avisoFrequenciaECI.FrequenciaCardiacaValorSet = valuesForEAI.First();
-                        avisoFrequenciaECI.RegistoFinal = valuesForEAI.Last().Id;
-                        avisoFrequenciaECI.TipoAvisoSet = eai;
-
-                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECI);
-                        context.SaveChanges();
-                    }
-                    #endregion ECI
-                }
-            }
-
-            #endregion CA
-        }
-
-        #endregion WARNIGS
-
-        #region Methods
-
-        private TipoAviso GetWarning(WarningType type)
-        {
-            TipoAviso av;
-
-            using (ModelMyHealth context = new ModelMyHealth())
-            {
-                av = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(type.ToString()));
-            }
-
-            return av;
-        }
-
-        #endregion
+        
     }
 }

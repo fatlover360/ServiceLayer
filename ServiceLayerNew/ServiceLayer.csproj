@@ -161,6 +161,10 @@
     <Compile Include="Utente.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
+    <Compile Include="Warnings\BloodPressureWarnings.cs" />
+    <Compile Include="Warnings\HeartRateWarnings.cs" />
+    <Compile Include="Warnings\SaturationWarnings.cs" />
+    <Compile Include="Warnings\Warning.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
