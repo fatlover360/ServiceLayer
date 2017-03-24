@@ -154,7 +154,8 @@ CREATE TABLE [dbo].[UtenteSet] (
     [DataNascimento] datetime  NOT NULL,
     [Ativo] bit  NOT NULL,
     [CodigoPaisTelefone] nvarchar(max)  NULL,
-    [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL
+    [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL,
+	
 );
 GO
 
