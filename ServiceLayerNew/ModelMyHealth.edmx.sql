@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/23/2017 10:52:37
+-- Date Created: 03/24/2017 13:51:08
 -- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
@@ -154,9 +154,7 @@ CREATE TABLE [dbo].[UtenteSet] (
     [DataNascimento] datetime  NOT NULL,
     [Ativo] bit  NOT NULL,
     [CodigoPaisTelefone] nvarchar(max)  NULL,
-    [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL,
-	UNIQUE(SNS),
-	UNIQUE(NIF)
+    [CodigoPaisNumeroEmergencia] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -441,7 +439,6 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
-
 
 SET IDENTITY_INSERT [dbo].[TipoAlertaSet] ON
     INSERT INTO [dbo].[TipoAlertaSet] ([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (1, 60, 120, 30, 180, N'HR')
