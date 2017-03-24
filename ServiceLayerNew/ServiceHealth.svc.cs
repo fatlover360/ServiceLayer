@@ -509,6 +509,37 @@ namespace ServiceLayerNew
             }
         }
 
+        public List<AlertType> GetAlertList()
+        {
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                try
+                {
+                    List<AlertType> alertList = new List<AlertType>();
+
+                    var alertas = context.TipoAlertaSet;
+
+                    foreach (TipoAlerta al in alertas)
+                    {
+                        AlertType alertType = new AlertType();
+                        alertType.Type = al.Nome;
+                        alertType.MinimumValue = al.ValorMinimo;
+                        alertType.MaximumValue = al.ValorMaximo;
+                        alertType.MinimumCriticalValue = al.ValorCriticoMinimo;
+                        alertType.MaximumCriticalValue = al.ValorCriticoMaximo;
+
+                        alertList.Add(alertType);
+                    }
+
+                    return alertList;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
+
         public bool InsertAlert(AlertType alertType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
@@ -658,38 +689,151 @@ namespace ServiceLayerNew
             }
         }
 
-        public List<AlertType> GetAlertList()
+        public bool InsertEvent(EventType eventType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    List<AlertType> alertList = new List<AlertType>();
+                    TipoAviso avisoVarificao = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
 
-                    var alertas = context.TipoAlertaSet;
+                    if (avisoVarificao != null)
+                        return false;
 
-                    foreach (TipoAlerta al in alertas)
-                    {
-                        AlertType alertType = new AlertType();
-                        alertType.Type = al.Nome;
-                        alertType.MinimumValue = al.ValorMinimo;
-                        alertType.MaximumValue = al.ValorMaximo;
-                        alertType.MinimumCriticalValue = al.ValorCriticoMinimo;
-                        alertType.MaximumCriticalValue = al.ValorCriticoMaximo;
+                    TipoAviso tipoAviso = new TipoAviso();
+                    tipoAviso.Nome = eventType.Name;
+                    tipoAviso.TempoMinimo = eventType.MinimumTime;
+                    tipoAviso.TempoMaximo= eventType.MaximumTime;
 
-                        alertList.Add(alertType);
-                    }
+                    context.TipoAvisoSet.Add(tipoAviso);
+                    context.SaveChanges();
 
-                    return alertList;
+                    return true;
                 }
-                catch (Exception)
+                catch (ArgumentNullException)
                 {
-                    return null;
+                    return false;
+                }
+                catch (DbUpdateException e)
+                {
+                    return false;
+                }
+                catch (DbEntityValidationException)
+                {
+                    return false;
+                }
+                catch (NotSupportedException)
+                {
+                    return false;
+                }
+                catch (ObjectDisposedException)
+                {
+                    return false;
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool UpdateEvent(EventType eventType)
+        {
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                try
+                {
+                    TipoAviso tipoAvisoVerificacao = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+
+                    if (tipoAvisoVerificacao == null)
+                        return false;
+
+                    TipoAviso tipoAviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+                    tipoAviso.Nome = eventType.Name;
+                    tipoAviso.TempoMinimo = eventType.MinimumTime;
+                    tipoAviso.TempoMaximo = eventType.MaximumTime;
+                    
+                    context.SaveChanges();
+
+                    return true;
+                }
+                catch (NullReferenceException)
+                {
+                    return false;
+                }
+                catch (ArgumentNullException)
+                {
+                    return false;
+                }
+                catch (DbUpdateException)
+                {
+                    return false;
+                }
+                catch (DbEntityValidationException)
+                {
+                    return false;
+                }
+                catch (NotSupportedException)
+                {
+                    return false;
+                }
+                catch (ObjectDisposedException)
+                {
+                    return false;
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool DeleteEvent(EventType eventType)
+        {
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                try
+                {
+                    TipoAviso tipoAviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+
+                    if (tipoAviso == null)
+                        return false;
+
+                    TipoAviso aviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+
+                    context.TipoAvisoSet.Remove(aviso);
+                    context.SaveChanges();
+
+                    return true;
+                }
+                catch (ArgumentNullException)
+                {
+                    return false;
+                }
+                catch (DbUpdateException)
+                {
+                    return false;
+                }
+                catch (DbEntityValidationException)
+                {
+                    return false;
+                }
+                catch (NotSupportedException)
+                {
+                    return false;
+                }
+                catch (ObjectDisposedException)
+                {
+                    return false;
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
                 }
             }
         }
 
         #endregion IServiceHealthAlert
-        
+
     }
 }

@@ -69,6 +69,15 @@ namespace ServiceLayerNew
 
         [OperationContract]
         bool DeleteAlert(AlertType alertType);
+
+        [OperationContract]
+        bool InsertEvent(EventType eventType);
+        
+        [OperationContract]
+        bool UpdateEvent(EventType eventType);
+        
+        [OperationContract]
+        bool DeleteEvent(EventType eventType);
     }
 
     [DataContract]
@@ -373,6 +382,35 @@ namespace ServiceLayerNew
         {
             get { return maximumCriticalValue; }
             set { maximumCriticalValue = value; }
+        }
+    }
+
+    [DataContract]
+    public class EventType
+    {
+        private string name;
+        private int minimumTime;
+        private int maximumTime;
+
+        [DataMember]
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        [DataMember]
+        public int MinimumTime
+        {
+            get { return minimumTime; }
+            set { minimumTime = value; }
+        }
+
+        [DataMember]
+        public int MaximumTime
+        {
+            get { return maximumTime; }
+            set { maximumTime = value; }
         }
     }
 }
