@@ -16,6 +16,7 @@ namespace ServiceLayerNew.Warnings
             satRecord = _sat;
 
             Thread th = new Thread(new ThreadStart(Run));
+            th.Name = "THREAD SAT WARNING";
             th.Start();
         }
 

@@ -14,6 +14,12 @@ namespace ServiceLayerNew
     
     public partial class FrequenciaCardiacaValores
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public FrequenciaCardiacaValores()
+        {
+            this.AvisoFrequenciaCardiacaSet = new HashSet<AvisoFrequenciaCardiaca>();
+        }
+    
         public int Id { get; set; }
         public System.DateTime Data { get; set; }
         public System.TimeSpan Hora { get; set; }
@@ -23,6 +29,7 @@ namespace ServiceLayerNew
     
         public virtual TipoAlerta AlertaSet { get; set; }
         public virtual Utente UtenteSet { get; set; }
-        public virtual AvisoFrequenciaCardiaca AvisoFrequenciaCardiacaSet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AvisoFrequenciaCardiaca> AvisoFrequenciaCardiacaSet { get; set; }
     }
 }

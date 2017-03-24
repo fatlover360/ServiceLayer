@@ -17,7 +17,7 @@
         <AssociationConnector Association="MyHealthDBModel.FK_UtenteFrequenciaCardiacaValores" />
         <AssociationConnector Association="MyHealthDBModel.FK_UtentePressaoSanguineaValores" />
         <AssociationConnector Association="MyHealthDBModel.FK_UtenteSaturacaoValores" />
-        <EntityTypeShape EntityType="MyHealthDBModel.AvisoFrequenciaCardiaca" Width="1.5" PointX="6.5" PointY="0.5" />
+        <EntityTypeShape EntityType="MyHealthDBModel.AvisoFrequenciaCardiaca" Width="1.5" PointX="7.625" PointY="0.5" />
         <EntityTypeShape EntityType="MyHealthDBModel.AvisoSaturacao" Width="1.5" PointX="6.625" PointY="4.25" />
         <EntityTypeShape EntityType="MyHealthDBModel.AvisoPressaoSanguinea" Width="1.5" PointX="6.75" PointY="6.75" />
         <AssociationConnector Association="MyHealthDBModel.FrequenciaCardiacaValoresAvisoFrequenciaCardiaca" />

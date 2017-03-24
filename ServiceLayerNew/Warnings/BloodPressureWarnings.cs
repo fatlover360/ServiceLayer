@@ -15,6 +15,7 @@ namespace ServiceLayerNew.Warnings
             psRecord = _ps;
 
             Thread th = new Thread(new ThreadStart(Run));
+            th.Name = "THREAD BP WARNING";
             th.Start();
         }
 

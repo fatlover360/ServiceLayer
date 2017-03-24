@@ -14,6 +14,12 @@ namespace ServiceLayerNew
     
     public partial class SaturacaoValores
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public SaturacaoValores()
+        {
+            this.AvisoSaturacaoSet = new HashSet<AvisoSaturacao>();
+        }
+    
         public int Id { get; set; }
         public System.DateTime Data { get; set; }
         public System.TimeSpan Hora { get; set; }
@@ -23,6 +29,7 @@ namespace ServiceLayerNew
     
         public virtual TipoAlerta AlertaSet { get; set; }
         public virtual Utente UtenteSet { get; set; }
-        public virtual AvisoSaturacao AvisoSaturacaoSet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AvisoSaturacao> AvisoSaturacaoSet { get; set; }
     }
 }

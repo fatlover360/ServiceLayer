@@ -60,7 +60,7 @@ namespace ServiceLayerNew
                     context.SaturacaoValoresSet.Add(saturacao);
                     context.SaveChanges();
 
-                    //SaturationWarnings.Verify(saturacao);
+                    SaturationWarnings.Verify(saturacao);
                     
                     return true;
                 }
@@ -111,7 +111,7 @@ namespace ServiceLayerNew
                     context.PressaoSanguineaValoresSet.Add(pressao);
                     context.SaveChanges();
 
-                    //BloodPressureWarnings.Verify(pressao);
+                    BloodPressureWarnings.Verify(pressao);
 
                     return true;
                 }
@@ -161,7 +161,7 @@ namespace ServiceLayerNew
                     context.FrequenciaCardiacaValoresSet.Add(frequencia);
                     context.SaveChanges();
 
-                    //HeartRateWarnings.Verify(frequencia);
+                    HeartRateWarnings.Verify(frequencia);
 
                     return true;
                 }

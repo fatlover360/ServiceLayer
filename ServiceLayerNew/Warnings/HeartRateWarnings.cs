@@ -15,6 +15,7 @@ namespace ServiceLayerNew.Warnings
             fcRecord = _fc;
             
             Thread th = new Thread(new ThreadStart(Run));
+            th.Name = "THREAD HR WARNING";
             th.Start();
         }
 
@@ -36,7 +37,8 @@ namespace ServiceLayerNew.Warnings
                 {
                     avFrequencia.FrequenciaCardiacaValorSet = fcRecord;
                     avFrequencia.RegistoFinal = fcRecord.Id;
-                    avFrequencia.TipoAvisoSet = Warning.Get(Warning.Types.ECA);
+                    avFrequencia.TipoAvisoSet = context.TipoAvisoSet.FirstOrDefault(i => i.Nome == "ECA");
+                        //Warning.Get(Warning.Types.ECA);
 
                     context.AvisoFrequenciaCardiacaSet.Add(avFrequencia);
                     context.SaveChanges();

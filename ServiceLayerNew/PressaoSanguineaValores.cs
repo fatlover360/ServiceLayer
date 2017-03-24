@@ -14,6 +14,12 @@ namespace ServiceLayerNew
     
     public partial class PressaoSanguineaValores
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PressaoSanguineaValores()
+        {
+            this.AvisoPressaoSanguineaSet = new HashSet<AvisoPressaoSanguinea>();
+        }
+    
         public int Id { get; set; }
         public System.DateTime Data { get; set; }
         public System.TimeSpan Hora { get; set; }
@@ -24,6 +30,7 @@ namespace ServiceLayerNew
     
         public virtual TipoAlerta AlertaSet { get; set; }
         public virtual Utente UtenteSet { get; set; }
-        public virtual AvisoPressaoSanguinea AvisoPressaoSanguineaSet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AvisoPressaoSanguinea> AvisoPressaoSanguineaSet { get; set; }
     }
 }
