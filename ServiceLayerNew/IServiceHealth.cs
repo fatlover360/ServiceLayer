@@ -19,6 +19,9 @@ namespace ServiceLayerNew
         bool ValidatePatient(int sns);
 
         [OperationContract]
+        bool ValidatePatientState(int sns);
+
+        [OperationContract]
         bool InsertHeartRateRecord(HeartRate heartRate);
 
         [OperationContract]
@@ -56,19 +59,19 @@ namespace ServiceLayerNew
         List<BloodPressure> BloodPressureList(int sns);
 
         [OperationContract]
-        AlertType GetAlert(string type);
+        ConfigurationLimitType GetConfigurationLimit(string type);
 
         [OperationContract]
-        List<AlertType> GetAlertList();
+        List<ConfigurationLimitType> GetConfigurationLimitList();
 
         [OperationContract]
-        bool InsertAlert(AlertType alertType);
+        bool InsertConfigurationLimit(ConfigurationLimitType configurationLimitType);
 
         [OperationContract]
-        bool UpdateAlert(AlertType alertType);
+        bool UpdateConfigurationLimit(ConfigurationLimitType configurationLimitType);
 
         [OperationContract]
-        bool DeleteAlert(AlertType alertType);
+        bool DeleteConfigurationLimit(ConfigurationLimitType configurationLimitType);
 
         [OperationContract]
         bool InsertEvent(EventType eventType);
@@ -341,7 +344,7 @@ namespace ServiceLayerNew
     }
 
     [DataContract]
-    public class AlertType
+    public class ConfigurationLimitType
     {
         private string type;
         private int minimumValue;

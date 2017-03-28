@@ -12,11 +12,13 @@ namespace ServiceLayerNew
     using System;
     using System.Collections.Generic;
     
-    public partial class AvisoSaturacao
+    public partial class ConfiguracoesLimites
     {
         public int Id { get; set; }
-    
-        public virtual SaturacaoValores SaturacaoValorSet { get; set; }
-        public virtual TipoAviso TipoAvisoSet { get; set; }
+        public int ValorMinimo { get; set; }
+        public int ValorMaximo { get; set; }
+        public int ValorCriticoMinimo { get; set; }
+        public int ValorCriticoMaximo { get; set; }
+        public string Nome { get; set; }
     }
 }

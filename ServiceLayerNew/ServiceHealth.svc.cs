@@ -9,7 +9,6 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
 using System.Threading;
-using ServiceLayerNew.Warnings;
 
 namespace ServiceLayerNew
 {
@@ -41,154 +40,633 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool InsertOxygenSaturationRecord(OxygenSaturation saturation)
+        public bool ValidatePatientState(int sns)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == saturation.PatientSNS);
-                    TipoAlerta al = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals("SPO2"));
+                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == sns);
 
-                    SaturacaoValores saturacao = new SaturacaoValores();
-                    saturacao.Data = saturation.Date;
-                    saturacao.Hora = saturation.Time;
-                    saturacao.Saturacao = saturation.Saturation;
-                    saturacao.UtenteSet = ut;
-                    saturacao.AlertaSet = al;
-
-                    context.SaturacaoValoresSet.Add(saturacao);
-                    context.SaveChanges();
-
-                    SaturationWarnings.Verify(saturacao);
-                    
-                    return true;
+                    return ut.Ativo;
                 }
-                catch (ArgumentNullException e)
-                {
-                    return false;
-                }
-                catch (DbUpdateException e)
-                {
-                    return false;
-                }
-                catch (DbEntityValidationException e)
-                {
-                    return false;
-                }
-                catch (NotSupportedException e)
-                {
-                    return false;
-                }
-                catch (ObjectDisposedException e)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException e)
+                catch (Exception e)
                 {
                     return false;
                 }
             }
         }
 
+        public bool InsertOxygenSaturationRecord(OxygenSaturation saturation)
+        {
+            try
+            {
+                using (ModelMyHealth context = new ModelMyHealth())
+                {
+                    SaturacaoValores saturacao = new SaturacaoValores();
+                    Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == saturation.PatientSNS);
+
+                    saturacao.Data = saturation.Date;
+                    saturacao.Hora = saturation.Time;
+                    saturacao.Saturacao = saturation.Saturation;
+                    saturacao.Utentes = ut;
+
+                    context.SaturacaoValoresSet.Add(saturacao);
+                    context.SaveChanges();
+
+                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals("SPO2"));
+
+                    int satValue = saturacao.Saturacao;
+                    int minimum = configuracao.ValorMinimo;
+                    int maximum = configuracao.ValorMaximo;
+                    int criticalMinimum = configuracao.ValorCriticoMinimo;
+                    int criticalMaximum = configuracao.ValorCriticoMaximo;
+
+                    #region ECA - Evento Critico Anytime
+
+                    if (satValue < criticalMinimum) // < 80%
+                    {
+                        AvisoSaturacao avisoSaturacaoECA = new AvisoSaturacao();
+                        avisoSaturacaoECA.SaturacaoValorSet = saturacao;
+                        avisoSaturacaoECA.TipoAvisoSet = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECA"));
+                        context.AvisoSaturacaoSet.Add(avisoSaturacaoECA);
+                        context.SaveChanges();
+                        return true;
+                    }
+                    #endregion ECA
+
+
+                    #region ECC - Evento Critico Continuo
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o ECC
+                     */
+
+                    TipoAviso ecc = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECC"));
+                    int minimumTimeECC = ecc.TempoMinimo;
+                    DateTime dateForECC = saturacao.Data.AddMinutes(-minimumTimeECC); // Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<SaturacaoValores> valuesForECC = context.SaturacaoValoresSet
+                        .Where(i => i.Data >= dateForECC && i.Data <= saturacao.Data).ToList();
+
+                    if (VerifyTimeOut(minimum, valuesForECC))
+                    {
+                        SaturacaoValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Saturacao < minimum);
+
+                        if (verificationRecordECC == null)
+                        {
+                            AvisoSaturacao avisoSaturacaoECC = new AvisoSaturacao();
+                            avisoSaturacaoECC.SaturacaoValorSet = valuesForECC.Last();
+                            avisoSaturacaoECC.TipoAvisoSet = ecc;
+                            context.AvisoSaturacaoSet.Add(avisoSaturacaoECC);
+                            context.SaveChanges();
+                            return true;
+                        }
+                    }
+
+                    #endregion ECC
+
+
+                    #region ECI - Evento Critico Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
+                     */
+
+                    TipoAviso eci = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECI"));
+                    int minimumTimeECI = eci.TempoMinimo;
+                    int maximumTimeECI = eci.TempoMaximo;
+                    DateTime dateForECI = saturacao.Data.AddMinutes(-maximumTimeECI);
+
+                    List<SaturacaoValores> valuesForECI = context.SaturacaoValoresSet
+                        .Where(i => i.Data >= dateForECI && i.Data <= saturacao.Data)
+                        .ToList();
+
+                    IEnumerable<IGrouping<bool, SaturacaoValores>> hashValuesForECI = valuesForECI
+                        .GroupBy(i => i.Saturacao < minimum).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECI, hashValuesForECI))
+                    {
+                        AvisoSaturacao avisoSaturacaoECI = new AvisoSaturacao();
+                        avisoSaturacaoECI.SaturacaoValorSet = valuesForECI.Last();
+                        avisoSaturacaoECI.TipoAvisoSet = eci;
+                        context.AvisoSaturacaoSet.Add(avisoSaturacaoECI);
+                        context.SaveChanges();
+                        return true;
+
+                    }
+
+                    #endregion ECI
+
+
+                    #region EAC - Evento Aviso Continuo 
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o EAC
+                     */
+
+                    TipoAviso eac = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("EAC"));
+                    int minimumTimeEAC = eac.TempoMinimo;
+                    DateTime dateForEAC = saturacao.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<SaturacaoValores> valuesForEAC =
+                        context.SaturacaoValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= saturacao.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAC, valuesForEAC))
+                    {
+                        SaturacaoValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Saturacao >= minimum);
+
+                        if (verificationRecordEAC == null)
+                        {
+                            AvisoSaturacao avisoSaturacaoEAC = new AvisoSaturacao();
+                            avisoSaturacaoEAC.SaturacaoValorSet = valuesForEAC.Last();
+                            avisoSaturacaoEAC.TipoAvisoSet = eac;
+                            context.AvisoSaturacaoSet.Add(avisoSaturacaoEAC);
+                            context.SaveChanges();
+                            return true;
+
+                        }
+                    }
+
+                    #endregion EAC 
+
+
+                    #region EAI - Evento Aviso Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
+                     */
+
+                    TipoAviso eai = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("EAI"));
+                    int minimumTimeEAI = eai.TempoMinimo;
+                    int maximumTimeEAI = eai.TempoMaximo;
+                    DateTime dateForEAI = saturacao.Data.AddMinutes(-maximumTimeEAI);
+
+                    List<SaturacaoValores> valuesForEAI = context.SaturacaoValoresSet
+                        .Where(i => i.Data >= dateForEAI && i.Data <= saturacao.Data)
+                        .ToList();
+
+                    IEnumerable<IGrouping<bool, SaturacaoValores>> hashValuesForEAI = valuesForEAI
+                        .GroupBy(i => i.Saturacao < minimum).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAI, hashValuesForEAI))
+                    {
+                        AvisoSaturacao avisoSaturacaoEAI = new AvisoSaturacao();
+                        avisoSaturacaoEAI.SaturacaoValorSet = valuesForEAI.Last();
+                        avisoSaturacaoEAI.TipoAvisoSet = eai;
+                        context.AvisoSaturacaoSet.Add(avisoSaturacaoEAI);
+                        context.SaveChanges();
+                        return true;
+
+                    }
+
+                    #endregion EAI
+
+                }
+
+                return true;
+            }
+            catch (ArgumentNullException e)
+            {
+                return false;
+            }
+            catch (DbUpdateException e)
+            {
+                return false;
+            }
+            catch (DbEntityValidationException e)
+            {
+                return false;
+            }
+            catch (NotSupportedException e)
+            {
+                return false;
+            }
+            catch (ObjectDisposedException e)
+            {
+                return false;
+            }
+            catch (InvalidOperationException e)
+            {
+                return false;
+            }
+
+        }
+
         public bool InsertBloodPressureRecord(BloodPressure bloodPressure)
         {
-            using (ModelMyHealth context = new ModelMyHealth())
+            try
             {
-                try
+                PressaoSanguineaValores pressao = new PressaoSanguineaValores();
+
+                using (ModelMyHealth context = new ModelMyHealth())
                 {
                     Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == bloodPressure.PatientSNS);
-                    TipoAlerta al = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals("BP"));
 
-                    PressaoSanguineaValores pressao = new PressaoSanguineaValores();
                     pressao.Data = bloodPressure.Date;
                     pressao.Hora = bloodPressure.Time;
                     pressao.Distolica = bloodPressure.Diastolic;
                     pressao.Sistolica = bloodPressure.Systolic;
-                    pressao.UtenteSet = ut;
-                    pressao.AlertaSet = al;
+                    pressao.Utentes = ut;
 
                     context.PressaoSanguineaValoresSet.Add(pressao);
                     context.SaveChanges();
 
-                    BloodPressureWarnings.Verify(pressao);
+                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals("BP"));
 
-                    return true;
+                    int systolic = pressao.Sistolica;
+                    int diastolic = pressao.Distolica;
+                    int minimum = configuracao.ValorMinimo;
+                    int maximum = configuracao.ValorMaximo;
+                    int criticalMinimum = configuracao.ValorCriticoMinimo;
+                    int criticalMaximum = configuracao.ValorCriticoMaximo;
+
+                    #region ECA - Evento Critico Anytime
+
+                    if (diastolic < criticalMinimum || systolic > criticalMaximum)
+                    {
+                        AvisoPressaoSanguinea avisoPressaoECA = new AvisoPressaoSanguinea();
+                        avisoPressaoECA.PressaoSanguineaValorSet = pressao;
+                        avisoPressaoECA.TipoAvisoSet = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECA"));
+                        context.AvisoPressaoSanguineaSet.Add(avisoPressaoECA);
+                        context.SaveChanges();
+                        return true;
+                    }
+                    #endregion ECA
+
+
+                    #region ECC - Evento Critico Continuo
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o ECC
+                     */
+
+                    TipoAviso ecc = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECC"));
+                    int minimumTimeECC = ecc.TempoMinimo;
+                    DateTime dateForECC = pressao.Data.AddMinutes(-minimumTimeECC); // Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<PressaoSanguineaValores> valuesForECC = context.PressaoSanguineaValoresSet
+                        .Where(i => i.Data >= dateForECC && i.Data <= pressao.Data)
+                        .ToList();
+
+                    if (VerifyTimeOut(minimumTimeECC, valuesForECC))
+                    {
+                        PressaoSanguineaValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Distolica < minimum);
+
+                        if (verificationRecordECC == null)
+                        {
+                            AvisoPressaoSanguinea avisoPressaoECC = new AvisoPressaoSanguinea();
+                            avisoPressaoECC.PressaoSanguineaValorSet = valuesForECC.Last();
+                            avisoPressaoECC.TipoAvisoSet = ecc;
+                            context.AvisoPressaoSanguineaSet.Add(avisoPressaoECC);
+                            context.SaveChanges();
+                            return true;
+                        }
+                    }
+
+                    #endregion ECC
+
+
+                    #region ECI - Evento Critico Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
+                     */
+
+                    TipoAviso eci = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECI"));
+                    int minimumTimeECI = eci.TempoMinimo;
+                    int maximumTimeECI = eci.TempoMaximo;
+                    DateTime dateForECI = pressao.Data.AddMinutes(-maximumTimeECI);
+
+                    List<PressaoSanguineaValores> valuesForECI = context.PressaoSanguineaValoresSet
+                        .Where(i => i.Data >= dateForECI && i.Data <= pressao.Data)
+                        .ToList();
+
+                    IEnumerable<IGrouping<bool, PressaoSanguineaValores>> hashValuesForECI = valuesForECI
+                        .GroupBy(i => i.Distolica < minimum).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECI, hashValuesForECI))
+                    {
+                        AvisoPressaoSanguinea avisoPressaoECI = new AvisoPressaoSanguinea();
+                        avisoPressaoECI.PressaoSanguineaValorSet = valuesForECI.Last();
+                        avisoPressaoECI.TipoAvisoSet = eci;
+                        context.AvisoPressaoSanguineaSet.Add(avisoPressaoECI);
+                        context.SaveChanges();
+                        return true;
+                    }
+
+                    #endregion ECI
+
+
+                    #region EAC - Evento Aviso Continuo 
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o EAC
+                     */
+
+                    TipoAviso eac = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("EAC"));
+                    int minimumTimeEAC = eac.TempoMinimo;
+                    DateTime dateForEAC = pressao.Data.AddMinutes(-minimumTimeEAC);// Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<PressaoSanguineaValores> valuesForEAC =
+                        context.PressaoSanguineaValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= pressao.Data)
+                            .ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAC, valuesForEAC))
+                    {
+                        PressaoSanguineaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Distolica < minimum);
+
+                        if (verificationRecordEAC == null)
+                        {
+                            AvisoPressaoSanguinea avisoPressaoEAC = new AvisoPressaoSanguinea();
+                            avisoPressaoEAC.PressaoSanguineaValorSet = valuesForEAC.Last();
+                            avisoPressaoEAC.TipoAvisoSet = eac;
+                            context.AvisoPressaoSanguineaSet.Add(avisoPressaoEAC);
+                            context.SaveChanges();
+                            return true;
+                        }
+                    }
+
+                    #endregion EAC 
+
+
+                    #region EAI - Evento Aviso Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
+                     */
+
+                    TipoAviso eai = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("EAI"));
+                    int minimumTimeEAI = eai.TempoMinimo;
+                    int maximumTimeEAI = eai.TempoMaximo;
+                    DateTime dateForEAI = pressao.Data.AddMinutes(-maximumTimeEAI);
+
+                    List<PressaoSanguineaValores> valuesForEAI = context.PressaoSanguineaValoresSet
+                        .Where(i => i.Data >= dateForEAI && i.Data <= pressao.Data)
+                        .ToList();
+
+                    IEnumerable<IGrouping<bool, PressaoSanguineaValores>> hashValuesForEAI = valuesForEAI
+                        .GroupBy(i => i.Distolica < minimum).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAI, hashValuesForEAI))
+                    {
+                        AvisoPressaoSanguinea avisoPressaoEAI = new AvisoPressaoSanguinea();
+                        avisoPressaoEAI.PressaoSanguineaValorSet = valuesForEAI.Last();
+                        avisoPressaoEAI.TipoAvisoSet = eai;
+                        context.AvisoPressaoSanguineaSet.Add(avisoPressaoEAI);
+                        context.SaveChanges();
+                        return true;
+                    }
+
+                    #endregion EAI
+
                 }
-                catch (ArgumentNullException e)
-                {
-                    return false;
-                }
-                catch (DbUpdateException e)
-                {
-                    return false;
-                }
-                catch (DbEntityValidationException e)
-                {
-                    return false;
-                }
-                catch (NotSupportedException e)
-                {
-                    return false;
-                }
-                catch (ObjectDisposedException e)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException e)
-                {
-                    return false;
-                }
+
+                return true;
+            }
+            catch (ArgumentNullException e)
+            {
+                return false;
+            }
+            catch (DbUpdateException e)
+            {
+                return false;
+            }
+            catch (DbEntityValidationException e)
+            {
+                return false;
+            }
+            catch (NotSupportedException e)
+            {
+                return false;
+            }
+            catch (ObjectDisposedException e)
+            {
+                return false;
+            }
+            catch (InvalidOperationException e)
+            {
+                return false;
             }
         }
 
         public bool InsertHeartRateRecord(HeartRate heartRate)
         {
-            using (ModelMyHealth context = new ModelMyHealth())
+            try
             {
-                try
+                FrequenciaCardiacaValores frequencia = new FrequenciaCardiacaValores();
+
+                using (ModelMyHealth context = new ModelMyHealth())
                 {
                     Utente ut = context.UtenteSet.FirstOrDefault(i => i.SNS == heartRate.PatientSNS);
-                    TipoAlerta al = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals("HR"));
 
-                    FrequenciaCardiacaValores frequencia = new FrequenciaCardiacaValores();
                     frequencia.Data = heartRate.Date;
                     frequencia.Hora = heartRate.Time;
                     frequencia.Frequencia = heartRate.Rate;
-                    frequencia.UtenteSet = ut;
-                    frequencia.AlertaSet = al;
+                    frequencia.Utentes = ut;
 
                     context.FrequenciaCardiacaValoresSet.Add(frequencia);
                     context.SaveChanges();
 
-                    HeartRateWarnings.Verify(frequencia);
+                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals("HR"));
 
-                    return true;
+                    int rate = frequencia.Frequencia;
+                    int minimum = configuracao.ValorMinimo;
+                    int maximum = configuracao.ValorMaximo;
+                    int criticalMinimum = configuracao.ValorCriticoMinimo;
+                    int criticalMaximum = configuracao.ValorCriticoMaximo;
+
+                    #region ECA - Evento Critico Anytime
+
+                    if (rate < criticalMinimum || rate > criticalMaximum) // < 30bpm ou > 180bpm
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaECA = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaECA.FrequenciaCardiacaValorSet = frequencia;
+                        avisoFrequenciaECA.TipoAvisoSet = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECA"));
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECA);
+                        context.SaveChanges();
+                        return true;
+                    }
+                    #endregion ECA
+
+
+                    #region ECC - Evento Critico Continuo
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o ECC
+                     */
+
+                    TipoAviso ecc = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECC"));
+                    int minimumTimeECC = ecc.TempoMinimo;
+                    DateTime dateForECC = frequencia.Data.AddMinutes(-minimumTimeECC);// Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<FrequenciaCardiacaValores> valuesForECC = context.FrequenciaCardiacaValoresSet.
+                        Where(i => i.Data <= frequencia.Data && i.Data >= dateForECC)
+                        .ToList();
+
+                    if (VerifyTimeOut(minimumTimeECC, valuesForECC))
+                    {
+                        FrequenciaCardiacaValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Frequencia < minimum || i.Frequencia > maximum);
+
+                        if (verificationRecordECC == null)
+                        {
+                            AvisoFrequenciaCardiaca avisoFrequenciaECC = new AvisoFrequenciaCardiaca();
+                            avisoFrequenciaECC.FrequenciaCardiacaValorSet = valuesForECC.Last();
+                            avisoFrequenciaECC.TipoAvisoSet = ecc;
+                            context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECC);
+                            context.SaveChanges();
+                            return true;
+                        }
+                    }
+
+                    #endregion ECC
+
+
+                    #region ECI - Evento Critico Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o ECI
+                     */
+
+                    TipoAviso eci = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("ECI"));
+                    int minimumTimeECI = eci.TempoMinimo;
+                    int maximumTimeECI = eci.TempoMaximo;
+                    DateTime dateForECI = frequencia.Data.AddMinutes(-maximumTimeECI);
+
+                    List<FrequenciaCardiacaValores> valuesForECI = context.FrequenciaCardiacaValoresSet
+                        .Where(i => i.Data >= dateForECI && i.Data <= frequencia.Data)
+                        .ToList();
+
+                    IEnumerable<IGrouping<bool, FrequenciaCardiacaValores>> hashValuesForECI = valuesForECI
+                        .GroupBy(i => i.Frequencia < minimum || i.Frequencia > maximum).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECI, hashValuesForECI))
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaECI = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaECI.FrequenciaCardiacaValorSet = valuesForECI.Last();
+                        avisoFrequenciaECI.TipoAvisoSet = eci;
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaECI);
+                        context.SaveChanges();
+                        return true;
+                    }
+
+                    #endregion ECI
+
+
+                    #region EAC - Evento Aviso Continuo 
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo minimo definido para o EAC
+                     */
+
+                    TipoAviso eac = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("EAC"));
+                    int minimumTimeEAC = eac.TempoMinimo;
+                    DateTime dateForEAC = frequencia.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
+
+                    List<FrequenciaCardiacaValores> valuesForEAC = context.FrequenciaCardiacaValoresSet.
+                        Where(i => i.Data <= frequencia.Data && i.Data >= dateForEAC)
+                        .ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAC, valuesForEAC))
+                    {
+                        FrequenciaCardiacaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Frequencia < minimum || i.Frequencia > maximum);
+
+                        if (verificationRecordEAC == null)
+                        {
+                            AvisoFrequenciaCardiaca avisoFrequenciaEAC = new AvisoFrequenciaCardiaca();
+                            avisoFrequenciaEAC.FrequenciaCardiacaValorSet = valuesForEAC.First();
+                            avisoFrequenciaEAC.TipoAvisoSet = eac;
+                            context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAC);
+                            context.SaveChanges();
+                            return true;
+                        }
+
+                    }
+
+                    #endregion EAC 
+
+
+                    #region EAI - Evento Aviso Intermitente
+
+                    /* 
+                     * Os parametros recebidos no metodo, 
+                     * tem de ter o seu valor fora dos limites definido para o mesmo,
+                     * durante o tempo compreendido (tempo minimo e tempo maximo) definido para o EAI
+                     */
+
+                    TipoAviso eai = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals("EAI"));
+                    int minimumTimeEAI = eai.TempoMinimo;
+                    int maximumTimeEAI = eai.TempoMaximo;
+                    DateTime dateForEAI = frequencia.Data.AddMinutes(-maximumTimeEAI);
+
+                    List<FrequenciaCardiacaValores> valuesForEAI = context.FrequenciaCardiacaValoresSet
+                        .Where(i => i.Data >= dateForEAI && i.Data <= frequencia.Data)
+                        .ToList();
+
+                    IEnumerable<IGrouping<bool, FrequenciaCardiacaValores>> hashValuesForEAI = valuesForEAI
+                        .GroupBy(i => i.Frequencia < minimum || i.Frequencia > maximum).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAI, hashValuesForEAI))
+                    {
+                        AvisoFrequenciaCardiaca avisoFrequenciaEAI = new AvisoFrequenciaCardiaca();
+                        avisoFrequenciaEAI.FrequenciaCardiacaValorSet = valuesForEAI.Last();
+                        avisoFrequenciaEAI.TipoAvisoSet = eai;
+                        context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAI);
+                        context.SaveChanges();
+                        return true;
+                    }
+
+                    #endregion EAI
+
                 }
-                catch (ArgumentNullException e)
-                {
-                    return false;
-                }
-                catch (DbUpdateException e)
-                {
-                    return false;
-                }
-                catch (DbEntityValidationException e)
-                {
-                    return false;
-                }
-                catch (NotSupportedException e)
-                {
-                    return false;
-                }
-                catch (ObjectDisposedException e)
-                {
-                    return false;
-                }
-                catch (InvalidOperationException e)
-                {
-                    return false;
-                }
+
+                return true;
+            }
+            catch (ArgumentNullException e)
+            {
+                return false;
+            }
+            catch (DbUpdateException e)
+            {
+                return false;
+            }
+            catch (DbEntityValidationException e)
+            {
+                return false;
+            }
+            catch (NotSupportedException e)
+            {
+                return false;
+            }
+            catch (ObjectDisposedException e)
+            {
+                return false;
+            }
+            catch (InvalidOperationException e)
+            {
+                return false;
             }
         }
 
@@ -198,41 +676,39 @@ namespace ServiceLayerNew
 
         public bool InsertPatient(Patient patient)
         {
-            using (ModelMyHealth context = new ModelMyHealth())
+            try
             {
-                try
-                {
-                    Utente ut = new Utente();
-                    ut.Nome = patient.Name;
-                    ut.Apelido = patient.Surname;
-                    ut.NIF = patient.Nif;
-                    ut.DataNascimento = patient.BirthDate;
-                    ut.Telefone = patient.Phone;
-                    ut.CodigoPaisTelefone = patient.PhoneCountryCode;
-                    ut.Email = patient.Email;
-                    ut.NumeroEmergencia = patient.EmergencyNumber;
-                    ut.CodigoPaisNumeroEmergencia = patient.EmergencyNumberCountryCode;
-                    ut.NomeEmergencia = patient.EmergencyName;
-                    ut.Sexo = patient.Gender;
-                    ut.Morada = patient.Adress;
-                    ut.Peso = patient.Weight;
-                    ut.Altura = patient.Height;
-                    ut.Alergias = patient.Alergies;
-                    ut.SNS = patient.Sns;
-                    ut.Ativo = patient.Ativo;
+                Utente ut = new Utente();
+                ut.Nome = patient.Name;
+                ut.Apelido = patient.Surname;
+                ut.NIF = patient.Nif;
+                ut.DataNascimento = patient.BirthDate;
+                ut.Telefone = patient.Phone;
+                ut.CodigoPaisTelefone = patient.PhoneCountryCode;
+                ut.Email = patient.Email;
+                ut.NumeroEmergencia = patient.EmergencyNumber;
+                ut.CodigoPaisNumeroEmergencia = patient.EmergencyNumberCountryCode;
+                ut.NomeEmergencia = patient.EmergencyName;
+                ut.Sexo = patient.Gender;
+                ut.Morada = patient.Adress;
+                ut.Peso = patient.Weight;
+                ut.Altura = patient.Height;
+                ut.Alergias = patient.Alergies;
+                ut.SNS = patient.Sns;
+                ut.Ativo = patient.Ativo;
 
+                using (ModelMyHealth context = new ModelMyHealth())
+                {
                     context.UtenteSet.Add(ut);
                     context.SaveChanges();
 
                     return true;
-
                 }
-                catch (Exception x)
-                {
-                    Console.WriteLine(x.Message + "  " + x.GetBaseException());
-
-                    return false;
-                }
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine(x.Message + "  " + x.GetBaseException());
+                return false;
             }
         }
 
@@ -252,6 +728,7 @@ namespace ServiceLayerNew
             }
 
         }
+
         public bool UpdatePatient(Patient patient, int sns)
         {
             using (ModelMyHealth context = new ModelMyHealth())
@@ -402,12 +879,12 @@ namespace ServiceLayerNew
                 {
                     List<HeartRate> heartRateList = new List<HeartRate>();
 
-                    var frequencias = context.FrequenciaCardiacaValoresSet.Where(i => i.UtenteSet.SNS == sns);
+                    var frequencias = context.FrequenciaCardiacaValoresSet.Where(i => i.Utentes.SNS == sns);
 
                     foreach (FrequenciaCardiacaValores freq in frequencias)
                     {
                         HeartRate heartRate = new HeartRate();
-                        heartRate.PatientSNS = freq.UtenteSet.SNS;
+                        heartRate.PatientSNS = freq.Utentes.SNS;
                         heartRate.Date = freq.Data;
                         heartRate.Time = freq.Hora;
                         heartRate.Rate = freq.Frequencia;
@@ -432,12 +909,12 @@ namespace ServiceLayerNew
                 {
                     List<OxygenSaturation> oxygenSaturationsList = new List<OxygenSaturation>();
 
-                    var saturacoes = context.SaturacaoValoresSet.Where(i => i.UtenteSet.SNS == sns);
+                    var saturacoes = context.SaturacaoValoresSet.Where(i => i.Utentes.SNS == sns);
 
                     foreach (SaturacaoValores sat in saturacoes)
                     {
                         OxygenSaturation saturation = new OxygenSaturation();
-                        saturation.PatientSNS = sat.UtenteSet.SNS;
+                        saturation.PatientSNS = sat.Utentes.SNS;
                         saturation.Date = sat.Data;
                         saturation.Time = sat.Hora;
                         saturation.Saturation = sat.Saturacao;
@@ -462,12 +939,12 @@ namespace ServiceLayerNew
                 {
                     List<BloodPressure> bloodPressureList = new List<BloodPressure>();
 
-                    var pressoes = context.PressaoSanguineaValoresSet.Where(i => i.UtenteSet.SNS == sns);
+                    var pressoes = context.PressaoSanguineaValoresSet.Where(i => i.Utentes.SNS == sns);
 
                     foreach (PressaoSanguineaValores pss in pressoes)
                     {
                         BloodPressure bp = new BloodPressure();
-                        bp.PatientSNS = pss.UtenteSet.SNS;
+                        bp.PatientSNS = pss.Utentes.SNS;
                         bp.Date = pss.Data;
                         bp.Time = pss.Hora;
                         bp.Systolic = pss.Sistolica;
@@ -485,22 +962,22 @@ namespace ServiceLayerNew
             }
         }
 
-        public AlertType GetAlert(string type)
+        public ConfigurationLimitType GetConfigurationLimit(string type)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta alerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(type));
+                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(type));
 
-                    AlertType alert = new AlertType();
-                    alert.Type = alerta.Nome;
-                    alert.MinimumValue = alerta.ValorMinimo;
-                    alert.MaximumValue = alerta.ValorMaximo;
-                    alert.MinimumCriticalValue = alerta.ValorCriticoMinimo;
-                    alert.MaximumCriticalValue = alerta.ValorCriticoMaximo;
+                    ConfigurationLimitType conf = new ConfigurationLimitType();
+                    conf.Type = configuracao.Nome;
+                    conf.MinimumValue = configuracao.ValorMinimo;
+                    conf.MaximumValue = configuracao.ValorMaximo;
+                    conf.MinimumCriticalValue = configuracao.ValorCriticoMinimo;
+                    conf.MaximumCriticalValue = configuracao.ValorCriticoMaximo;
 
-                    return alert;
+                    return conf;
                 }
                 catch (Exception e)
                 {
@@ -509,29 +986,29 @@ namespace ServiceLayerNew
             }
         }
 
-        public List<AlertType> GetAlertList()
+        public List<ConfigurationLimitType> GetConfigurationLimitList()
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    List<AlertType> alertList = new List<AlertType>();
+                    List<ConfigurationLimitType> configurationList = new List<ConfigurationLimitType>();
 
-                    var alertas = context.TipoAlertaSet;
+                    var configuracoes = context.ConfiguracoesLimitesSet;
 
-                    foreach (TipoAlerta al in alertas)
+                    foreach (ConfiguracoesLimites configuracao in configuracoes)
                     {
-                        AlertType alertType = new AlertType();
-                        alertType.Type = al.Nome;
-                        alertType.MinimumValue = al.ValorMinimo;
-                        alertType.MaximumValue = al.ValorMaximo;
-                        alertType.MinimumCriticalValue = al.ValorCriticoMinimo;
-                        alertType.MaximumCriticalValue = al.ValorCriticoMaximo;
+                        ConfigurationLimitType conf = new ConfigurationLimitType();
+                        conf.Type = configuracao.Nome;
+                        conf.MinimumValue = configuracao.ValorMinimo;
+                        conf.MaximumValue = configuracao.ValorMaximo;
+                        conf.MinimumCriticalValue = configuracao.ValorCriticoMinimo;
+                        conf.MaximumCriticalValue = configuracao.ValorCriticoMaximo;
 
-                        alertList.Add(alertType);
+                        configurationList.Add(conf);
                     }
 
-                    return alertList;
+                    return configurationList;
                 }
                 catch (Exception)
                 {
@@ -540,25 +1017,25 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool InsertAlert(AlertType alertType)
+        public bool InsertConfigurationLimit(ConfigurationLimitType configurationLimitType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta alertaVarificao = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
+                    ConfiguracoesLimites configuracaoVerificao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.Type));
 
-                    if (alertaVarificao != null)
+                    if (configuracaoVerificao != null)
                         return false;
 
-                    TipoAlerta tipoAlerta = new TipoAlerta();
-                    tipoAlerta.Nome = alertType.Type;
-                    tipoAlerta.ValorMaximo = alertType.MaximumValue;
-                    tipoAlerta.ValorMinimo = alertType.MinimumValue;
-                    tipoAlerta.ValorCriticoMaximo = alertType.MaximumCriticalValue;
-                    tipoAlerta.ValorCriticoMinimo = alertType.MinimumCriticalValue;
+                    ConfiguracoesLimites configuracaoLimite = new ConfiguracoesLimites();
+                    configuracaoLimite.Nome = configurationLimitType.Type;
+                    configuracaoLimite.ValorMaximo = configurationLimitType.MaximumValue;
+                    configuracaoLimite.ValorMinimo = configurationLimitType.MinimumValue;
+                    configuracaoLimite.ValorCriticoMaximo = configurationLimitType.MaximumCriticalValue;
+                    configuracaoLimite.ValorCriticoMinimo = configurationLimitType.MinimumCriticalValue;
 
-                    context.TipoAlertaSet.Add(tipoAlerta);
+                    context.ConfiguracoesLimitesSet.Add(configuracaoLimite);
                     context.SaveChanges();
 
                     return true;
@@ -590,23 +1067,25 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool UpdateAlert(AlertType alertType)
+        public bool UpdateConfigurationLimit(ConfigurationLimitType configurationLimitType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta tipoAlerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
+                    ConfiguracoesLimites confifuracaoLimite = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.Type));
 
-                    if (tipoAlerta == null)
+                    if (confifuracaoLimite == null)
+                    {
                         return false;
-
-                    TipoAlerta alerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
-
-                    alerta.ValorMinimo = alertType.MinimumValue;
-                    alerta.ValorMaximo = alertType.MaximumValue;
-                    alerta.ValorCriticoMinimo = alertType.MinimumCriticalValue;
-                    alerta.ValorCriticoMaximo = alertType.MaximumCriticalValue;
+                    }
+                    else
+                    {
+                        confifuracaoLimite.ValorMinimo = configurationLimitType.MinimumValue;
+                        confifuracaoLimite.ValorMaximo = configurationLimitType.MaximumValue;
+                        confifuracaoLimite.ValorCriticoMinimo = configurationLimitType.MinimumCriticalValue;
+                        confifuracaoLimite.ValorCriticoMaximo = configurationLimitType.MaximumCriticalValue;
+                    }
 
                     context.SaveChanges();
 
@@ -643,22 +1122,23 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool DeleteAlert(AlertType alertType)
+        public bool DeleteConfigurationLimit(ConfigurationLimitType configurationLimitType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAlerta tipoAlerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
+                    ConfiguracoesLimites configuracaoLimite = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.Type));
 
-                    if (tipoAlerta == null)
+                    if (configuracaoLimite == null)
+                    {
                         return false;
-
-                    TipoAlerta alerta = context.TipoAlertaSet.FirstOrDefault(i => i.Nome.Equals(alertType.Type));
-
-                    context.TipoAlertaSet.Remove(alerta);
-                    context.TipoAlertaSet.Remove(tipoAlerta);
-                    context.SaveChanges();
+                    }
+                    else
+                    {
+                        context.ConfiguracoesLimitesSet.Remove(configuracaoLimite);
+                        context.SaveChanges();
+                    }
 
                     return true;
                 }
@@ -703,7 +1183,7 @@ namespace ServiceLayerNew
                     TipoAviso tipoAviso = new TipoAviso();
                     tipoAviso.Nome = eventType.Name;
                     tipoAviso.TempoMinimo = eventType.MinimumTime;
-                    tipoAviso.TempoMaximo= eventType.MaximumTime;
+                    tipoAviso.TempoMaximo = eventType.MaximumTime;
 
                     context.TipoAvisoSet.Add(tipoAviso);
                     context.SaveChanges();
@@ -752,7 +1232,7 @@ namespace ServiceLayerNew
                     tipoAviso.Nome = eventType.Name;
                     tipoAviso.TempoMinimo = eventType.MinimumTime;
                     tipoAviso.TempoMaximo = eventType.MaximumTime;
-                    
+
                     context.SaveChanges();
 
                     return true;
@@ -835,5 +1315,116 @@ namespace ServiceLayerNew
 
         #endregion IServiceHealthAlert
 
+        #region TimeOuts
+
+        private bool VerifyTimeOut(int range, IEnumerable<IGrouping<bool, SaturacaoValores>> hash)
+        {
+            List<SaturacaoValores> valuesBelowMinimumEAI = hash
+                        .Where(i => i.Key)
+                        .SelectMany(sat => sat.ToList()).ToList();
+
+            int timespan = 0;
+
+            for (int index = 0; index < valuesBelowMinimumEAI.Count; index++)
+            {
+                if (index + 1 == valuesBelowMinimumEAI.Count)
+                    break;
+
+                timespan += valuesBelowMinimumEAI[index + 1].Data.Minute -
+                            valuesBelowMinimumEAI[index].Data.Minute;
+            }
+
+            return timespan >= range;
+        }
+
+        private bool VerifyTimeOut(int range, IEnumerable<IGrouping<bool, PressaoSanguineaValores>> hash)
+        {
+            List<PressaoSanguineaValores> valuesBelowMinimumEAI = hash
+                        .Where(i => i.Key)
+                        .SelectMany(sat => sat.ToList()).ToList();
+
+            int timespan = 0;
+
+            for (int index = 0; index < valuesBelowMinimumEAI.Count; index++)
+            {
+                if (index + 1 == valuesBelowMinimumEAI.Count)
+                    break;
+
+                timespan += valuesBelowMinimumEAI[index + 1].Data.Minute -
+                            valuesBelowMinimumEAI[index].Data.Minute;
+            }
+
+            return timespan >= range;
+        }
+
+        private bool VerifyTimeOut(int range, IEnumerable<IGrouping<bool, FrequenciaCardiacaValores>> hash)
+        {
+            List<FrequenciaCardiacaValores> valuesBelowMinimumEAI = hash
+                        .Where(i => i.Key)
+                        .SelectMany(sat => sat.ToList()).ToList();
+
+            int timespan = 0;
+
+            for (int index = 0; index < valuesBelowMinimumEAI.Count; index++)
+            {
+                if (index + 1 == valuesBelowMinimumEAI.Count)
+                    break;
+
+                timespan += valuesBelowMinimumEAI[index + 1].Data.Minute -
+                            valuesBelowMinimumEAI[index].Data.Minute;
+            }
+
+            return timespan >= range;
+        }
+
+        private bool VerifyTimeOut(int range, List<SaturacaoValores> list)
+        {
+            int timespan = 0;
+
+            for (int index = 0; index < list.Count; index++)
+            {
+                if (index + 1 == list.Count)
+                    break;
+
+                timespan += list[index + 1].Data.Minute -
+                            list[index].Data.Minute;
+            }
+
+            return timespan >= range;
+        }
+
+        private bool VerifyTimeOut(int range, List<PressaoSanguineaValores> list)
+        {
+            int timespan = 0;
+
+            for (int index = 0; index < list.Count; index++)
+            {
+                if (index + 1 == list.Count)
+                    break;
+
+                timespan += list[index + 1].Data.Minute -
+                            list[index].Data.Minute;
+            }
+
+            return timespan >= range;
+        }
+
+        private bool VerifyTimeOut(int range, List<FrequenciaCardiacaValores> list)
+        {
+            int timespan = 0;
+
+            for (int index = 0; index < list.Count; index++)
+            {
+                if (index + 1 == list.Count)
+                    break;
+
+                timespan += list[index + 1].Data.Minute -
+                            list[index].Data.Minute;
+            }
+
+            return timespan >= range;
+        }
+
+        #endregion TimeOuts
     }
 }

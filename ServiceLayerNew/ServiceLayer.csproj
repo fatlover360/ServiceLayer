@@ -123,6 +123,9 @@
     <Compile Include="AvisoSaturacao.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
+    <Compile Include="ConfiguracoesLimites.cs">
+      <DependentUpon>ModelMyHealth.tt</DependentUpon>
+    </Compile>
     <Compile Include="FrequenciaCardiacaValores.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
@@ -152,19 +155,12 @@
     </Compile>
     <Compile Include="IServiceHealth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TipoAlerta.cs">
-      <DependentUpon>ModelMyHealth.tt</DependentUpon>
-    </Compile>
     <Compile Include="TipoAviso.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
     <Compile Include="Utente.cs">
       <DependentUpon>ModelMyHealth.tt</DependentUpon>
     </Compile>
-    <Compile Include="Warnings\BloodPressureWarnings.cs" />
-    <Compile Include="Warnings\HeartRateWarnings.cs" />
-    <Compile Include="Warnings\SaturationWarnings.cs" />
-    <Compile Include="Warnings\Warning.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
