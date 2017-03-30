@@ -111,7 +111,9 @@ namespace ServiceLayerNew
                     List<SaturacaoValores> valuesForECC = context.SaturacaoValoresSet
                         .Where(i => i.Data >= dateForECC && i.Data <= saturacao.Data).ToList();
 
-                    if (VerifyTimeOut(minimum, valuesForECC))
+                    List<DateTime> dateECCList = valuesForECC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimum, dateECCList))
                     {
                         SaturacaoValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Saturacao < minimum);
 
@@ -125,6 +127,13 @@ namespace ServiceLayerNew
                             return true;
                         }
                     }
+
+                    /*
+                    var x = from i in context.SaturacaoValoresSet
+                            select new { i.Data, i.Hora };
+                    */
+
+
 
                     #endregion ECC
 
@@ -149,7 +158,13 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, SaturacaoValores>> hashValuesForECI = valuesForECI
                         .GroupBy(i => i.Saturacao < minimum).ToList();
 
-                    if (VerifyTimeOut(minimumTimeECI, hashValuesForECI))
+                    List<SaturacaoValores> valuesBelowMinimumECC = hashValuesForECI
+                        .Where(i => i.Key)
+                        .SelectMany(sat => sat.ToList()).ToList();
+
+                    List<DateTime> datesECIList = valuesBelowMinimumECC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECI, datesECIList))
                     {
                         AvisoSaturacao avisoSaturacaoECI = new AvisoSaturacao();
                         avisoSaturacaoECI.SaturacaoValorSet = valuesForECI.Last();
@@ -159,6 +174,9 @@ namespace ServiceLayerNew
                         return true;
 
                     }
+
+
+
 
                     #endregion ECI
 
@@ -178,7 +196,9 @@ namespace ServiceLayerNew
                     List<SaturacaoValores> valuesForEAC =
                         context.SaturacaoValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= saturacao.Data).ToList();
 
-                    if (VerifyTimeOut(minimumTimeEAC, valuesForEAC))
+                    List<DateTime> datesEACList = valuesForEAC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAC, datesEACList))
                     {
                         SaturacaoValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Saturacao >= minimum);
 
@@ -217,7 +237,13 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, SaturacaoValores>> hashValuesForEAI = valuesForEAI
                         .GroupBy(i => i.Saturacao < minimum).ToList();
 
-                    if (VerifyTimeOut(minimumTimeEAI, hashValuesForEAI))
+                    List<SaturacaoValores> valuesBelowMinimumEAI = hashValuesForEAI
+                        .Where(i => i.Key)
+                        .SelectMany(sat => sat.ToList()).ToList();
+
+                    List<DateTime> datesEAIList = valuesBelowMinimumEAI.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAI, datesEAIList))
                     {
                         AvisoSaturacao avisoSaturacaoEAI = new AvisoSaturacao();
                         avisoSaturacaoEAI.SaturacaoValorSet = valuesForEAI.Last();
@@ -319,7 +345,9 @@ namespace ServiceLayerNew
                         .Where(i => i.Data >= dateForECC && i.Data <= pressao.Data)
                         .ToList();
 
-                    if (VerifyTimeOut(minimumTimeECC, valuesForECC))
+                    List<DateTime> datesECCList = valuesForECC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECC, datesECCList))
                     {
                         PressaoSanguineaValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Distolica < minimum);
 
@@ -357,7 +385,13 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, PressaoSanguineaValores>> hashValuesForECI = valuesForECI
                         .GroupBy(i => i.Distolica < minimum).ToList();
 
-                    if (VerifyTimeOut(minimumTimeECI, hashValuesForECI))
+                    List<PressaoSanguineaValores> valuesBelowMinimumECI = hashValuesForECI
+                        .Where(i => i.Key)
+                        .SelectMany(ps => ps.ToList()).ToList();
+
+                    List<DateTime> datesECIList = valuesBelowMinimumECI.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECI, datesECIList))
                     {
                         AvisoPressaoSanguinea avisoPressaoECI = new AvisoPressaoSanguinea();
                         avisoPressaoECI.PressaoSanguineaValorSet = valuesForECI.Last();
@@ -386,7 +420,9 @@ namespace ServiceLayerNew
                         context.PressaoSanguineaValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= pressao.Data)
                             .ToList();
 
-                    if (VerifyTimeOut(minimumTimeEAC, valuesForEAC))
+                    List<DateTime> datesEACList = valuesForEAC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAC, datesEACList))
                     {
                         PressaoSanguineaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Distolica < minimum);
 
@@ -424,7 +460,13 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, PressaoSanguineaValores>> hashValuesForEAI = valuesForEAI
                         .GroupBy(i => i.Distolica < minimum).ToList();
 
-                    if (VerifyTimeOut(minimumTimeEAI, hashValuesForEAI))
+                    List<PressaoSanguineaValores> valuesBelowMinimumEAI = hashValuesForEAI
+                        .Where(i => i.Key)
+                        .SelectMany(ps => ps.ToList()).ToList();
+                    
+                    List<DateTime> datesEAIList = valuesBelowMinimumEAI.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAI, datesEAIList))
                     {
                         AvisoPressaoSanguinea avisoPressaoEAI = new AvisoPressaoSanguinea();
                         avisoPressaoEAI.PressaoSanguineaValorSet = valuesForEAI.Last();
@@ -522,7 +564,9 @@ namespace ServiceLayerNew
                         Where(i => i.Data <= frequencia.Data && i.Data >= dateForECC)
                         .ToList();
 
-                    if (VerifyTimeOut(minimumTimeECC, valuesForECC))
+                    List<DateTime> datesECCList = valuesForECC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECC, datesECCList))
                     {
                         FrequenciaCardiacaValores verificationRecordECC = valuesForECC.FirstOrDefault(i => i.Frequencia < minimum || i.Frequencia > maximum);
 
@@ -560,7 +604,13 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, FrequenciaCardiacaValores>> hashValuesForECI = valuesForECI
                         .GroupBy(i => i.Frequencia < minimum || i.Frequencia > maximum).ToList();
 
-                    if (VerifyTimeOut(minimumTimeECI, hashValuesForECI))
+                    List<FrequenciaCardiacaValores> valuesBelowMinimumECI = hashValuesForECI
+                        .Where(i => i.Key)
+                        .SelectMany(fc => fc.ToList()).ToList();
+
+                    List<DateTime> datesECIList = valuesBelowMinimumECI.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeECI, datesECIList))
                     {
                         AvisoFrequenciaCardiaca avisoFrequenciaECI = new AvisoFrequenciaCardiaca();
                         avisoFrequenciaECI.FrequenciaCardiacaValorSet = valuesForECI.Last();
@@ -589,7 +639,9 @@ namespace ServiceLayerNew
                         Where(i => i.Data <= frequencia.Data && i.Data >= dateForEAC)
                         .ToList();
 
-                    if (VerifyTimeOut(minimumTimeEAC, valuesForEAC))
+                    List<DateTime> datesEACList = valuesForEAC.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAC, datesEACList))
                     {
                         FrequenciaCardiacaValores verificationRecordEAC = valuesForEAC.FirstOrDefault(i => i.Frequencia < minimum || i.Frequencia > maximum);
 
@@ -628,7 +680,13 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, FrequenciaCardiacaValores>> hashValuesForEAI = valuesForEAI
                         .GroupBy(i => i.Frequencia < minimum || i.Frequencia > maximum).ToList();
 
-                    if (VerifyTimeOut(minimumTimeEAI, hashValuesForEAI))
+                    List<FrequenciaCardiacaValores> valuesBelowMinimumEAI = hashValuesForEAI
+                        .Where(i => i.Key)
+                        .SelectMany(fc => fc.ToList()).ToList();
+
+                    List<DateTime> datesEAIList = valuesBelowMinimumEAI.Select(i => i.Data).ToList();
+
+                    if (VerifyTimeOut(minimumTimeEAI, datesEAIList))
                     {
                         AvisoFrequenciaCardiaca avisoFrequenciaEAI = new AvisoFrequenciaCardiaca();
                         avisoFrequenciaEAI.FrequenciaCardiacaValorSet = valuesForEAI.Last();
@@ -1317,114 +1375,22 @@ namespace ServiceLayerNew
 
         #region TimeOuts
 
-        private bool VerifyTimeOut(int range, IEnumerable<IGrouping<bool, SaturacaoValores>> hash)
+        private bool VerifyTimeOut(int range, List<DateTime> dates)
         {
-            List<SaturacaoValores> valuesBelowMinimumEAI = hash
-                        .Where(i => i.Key)
-                        .SelectMany(sat => sat.ToList()).ToList();
-
             int timespan = 0;
 
-            for (int index = 0; index < valuesBelowMinimumEAI.Count; index++)
+            for (int index = 0; index < dates.Count; index++)
             {
-                if (index + 1 == valuesBelowMinimumEAI.Count)
+                if (index + 1 == dates.Count)
                     break;
 
-                timespan += valuesBelowMinimumEAI[index + 1].Data.Minute -
-                            valuesBelowMinimumEAI[index].Data.Minute;
+                timespan += dates[index + 1].Minute -
+                            dates[index].Minute;
             }
 
             return timespan >= range;
         }
-
-        private bool VerifyTimeOut(int range, IEnumerable<IGrouping<bool, PressaoSanguineaValores>> hash)
-        {
-            List<PressaoSanguineaValores> valuesBelowMinimumEAI = hash
-                        .Where(i => i.Key)
-                        .SelectMany(sat => sat.ToList()).ToList();
-
-            int timespan = 0;
-
-            for (int index = 0; index < valuesBelowMinimumEAI.Count; index++)
-            {
-                if (index + 1 == valuesBelowMinimumEAI.Count)
-                    break;
-
-                timespan += valuesBelowMinimumEAI[index + 1].Data.Minute -
-                            valuesBelowMinimumEAI[index].Data.Minute;
-            }
-
-            return timespan >= range;
-        }
-
-        private bool VerifyTimeOut(int range, IEnumerable<IGrouping<bool, FrequenciaCardiacaValores>> hash)
-        {
-            List<FrequenciaCardiacaValores> valuesBelowMinimumEAI = hash
-                        .Where(i => i.Key)
-                        .SelectMany(sat => sat.ToList()).ToList();
-
-            int timespan = 0;
-
-            for (int index = 0; index < valuesBelowMinimumEAI.Count; index++)
-            {
-                if (index + 1 == valuesBelowMinimumEAI.Count)
-                    break;
-
-                timespan += valuesBelowMinimumEAI[index + 1].Data.Minute -
-                            valuesBelowMinimumEAI[index].Data.Minute;
-            }
-
-            return timespan >= range;
-        }
-
-        private bool VerifyTimeOut(int range, List<SaturacaoValores> list)
-        {
-            int timespan = 0;
-
-            for (int index = 0; index < list.Count; index++)
-            {
-                if (index + 1 == list.Count)
-                    break;
-
-                timespan += list[index + 1].Data.Minute -
-                            list[index].Data.Minute;
-            }
-
-            return timespan >= range;
-        }
-
-        private bool VerifyTimeOut(int range, List<PressaoSanguineaValores> list)
-        {
-            int timespan = 0;
-
-            for (int index = 0; index < list.Count; index++)
-            {
-                if (index + 1 == list.Count)
-                    break;
-
-                timespan += list[index + 1].Data.Minute -
-                            list[index].Data.Minute;
-            }
-
-            return timespan >= range;
-        }
-
-        private bool VerifyTimeOut(int range, List<FrequenciaCardiacaValores> list)
-        {
-            int timespan = 0;
-
-            for (int index = 0; index < list.Count; index++)
-            {
-                if (index + 1 == list.Count)
-                    break;
-
-                timespan += list[index + 1].Data.Minute -
-                            list[index].Data.Minute;
-            }
-
-            return timespan >= range;
-        }
-
+        
         #endregion TimeOuts
     }
 }
