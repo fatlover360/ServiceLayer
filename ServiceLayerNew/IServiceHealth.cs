@@ -81,6 +81,9 @@ namespace ServiceLayerNew
         
         [OperationContract]
         bool DeleteEvent(EventType eventType);
+
+        [OperationContract]
+        List<AvisoSaturacao> getOxySatAlertList();
     }
 
     [DataContract]

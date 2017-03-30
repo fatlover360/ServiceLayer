@@ -1371,6 +1371,28 @@ namespace ServiceLayerNew
             }
         }
 
+        ///getAlertas
+        /// 
+        /// 
+
+        public List<AvisoSaturacao> getOxySatAlertList(
+           )
+        {
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+               // Utente ut = context.UtenteSet.First(i => i.SNS == patientOnMonitoring.Sns);
+               
+                List<AvisoSaturacao> alerts =
+                    context.AvisoSaturacaoSet.Where(i => i.SaturacaoValorSet.Utentes.Id == 1).ToList();
+                //foreach (SaturacaoValores sV in satList)
+                //{
+                //    context.AvisoSaturacaoSet.Where(i => i.SaturacaoValorSet.Id == sV.Id);
+                //}
+
+
+                return alerts;
+            }
+        }
         #endregion IServiceHealthAlert
 
         #region TimeOuts
