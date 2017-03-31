@@ -59,7 +59,7 @@ namespace ServiceLayerNew
         List<BloodPressure> BloodPressureList(int sns);
 
         [OperationContract]
-        ConfigurationLimitType GetConfigurationLimit(string type);
+        ConfigurationLimitType GetConfigurationLimit(ConfigurationLimitType type);
 
         [OperationContract]
         List<ConfigurationLimitType> GetConfigurationLimitList();
@@ -74,16 +74,22 @@ namespace ServiceLayerNew
         bool DeleteConfigurationLimit(ConfigurationLimitType configurationLimitType);
 
         [OperationContract]
-        bool InsertEvent(EventType eventType);
+        bool InsertEvent(Event eventType);
         
         [OperationContract]
-        bool UpdateEvent(EventType eventType);
+        bool UpdateEvent(Event eventType);
         
         [OperationContract]
-        bool DeleteEvent(EventType eventType);
+        bool DeleteEvent(Event eventType);
 
         [OperationContract]
-        List<AvisoSaturacao> getOxySatAlertList();
+        List<OxygenSaturation> GetWarningListOxygenSaturation(Event type);
+
+        [OperationContract]
+        List<BloodPressure> GetWarningListBloodPressure(Event type);
+
+        [OperationContract]
+        List<HeartRate> GetWarningListHeartRate(Event type);
     }
 
     [DataContract]
@@ -349,17 +355,24 @@ namespace ServiceLayerNew
     [DataContract]
     public class ConfigurationLimitType
     {
-        private string type;
+        private Type configurationType;
         private int minimumValue;
         private int maximumValue;
         private int minimumCriticalValue;
         private int maximumCriticalValue;
 
-        [DataMember]
-        public string Type
+        public enum Type
         {
-            get { return type; }
-            set { type = value; }
+            HR,
+            SPO2,
+            BP
+        }
+
+        [DataMember]
+        public Type ConfigurationType
+        {
+            get { return configurationType; }
+            set { configurationType = value; }
         }
 
         [DataMember]
@@ -392,17 +405,26 @@ namespace ServiceLayerNew
     }
 
     [DataContract]
-    public class EventType
+    public class Event
     {
-        private string name;
         private int minimumTime;
         private int maximumTime;
+        private Type evenType;
+
+        public enum Type
+        {
+            ECA,
+            ECC,
+            ECI,
+            EAC,
+            EAI
+        }
 
         [DataMember]
-        public string Name
+        public Type EvenType
         {
-            get { return name; }
-            set { name = value; }
+            get { return evenType; }
+            set { evenType = value; }
         }
 
         [DataMember]

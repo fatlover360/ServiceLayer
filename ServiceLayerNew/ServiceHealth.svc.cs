@@ -109,7 +109,8 @@ namespace ServiceLayerNew
                     DateTime dateForECC = saturacao.Data.AddMinutes(-minimumTimeECC); // Tempo compreendido entre Record e Record-TempoMinimo
 
                     List<SaturacaoValores> valuesForECC = context.SaturacaoValoresSet
-                        .Where(i => i.Data >= dateForECC && i.Data <= saturacao.Data).ToList();
+                        .Where(i => i.Data >= dateForECC && i.Data <= saturacao.Data)
+                        .ToList();
 
                     List<DateTime> dateECCList = valuesForECC.Select(i => i.Data).ToList();
 
@@ -132,8 +133,6 @@ namespace ServiceLayerNew
                     var x = from i in context.SaturacaoValoresSet
                             select new { i.Data, i.Hora };
                     */
-
-
 
                     #endregion ECC
 
@@ -193,8 +192,9 @@ namespace ServiceLayerNew
                     int minimumTimeEAC = eac.TempoMinimo;
                     DateTime dateForEAC = saturacao.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
 
-                    List<SaturacaoValores> valuesForEAC =
-                        context.SaturacaoValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= saturacao.Data).ToList();
+                    List<SaturacaoValores> valuesForEAC = context.SaturacaoValoresSet
+                        .Where(i => i.Data >= dateForEAC && i.Data <= saturacao.Data)
+                        .ToList();
 
                     List<DateTime> datesEACList = valuesForEAC.Select(i => i.Data).ToList();
 
@@ -210,7 +210,6 @@ namespace ServiceLayerNew
                             context.AvisoSaturacaoSet.Add(avisoSaturacaoEAC);
                             context.SaveChanges();
                             return true;
-
                         }
                     }
 
@@ -416,9 +415,9 @@ namespace ServiceLayerNew
                     int minimumTimeEAC = eac.TempoMinimo;
                     DateTime dateForEAC = pressao.Data.AddMinutes(-minimumTimeEAC);// Tempo compreendido entre Record e Record-TempoMinimo
 
-                    List<PressaoSanguineaValores> valuesForEAC =
-                        context.PressaoSanguineaValoresSet.Where(i => i.Data >= dateForEAC && i.Data <= pressao.Data)
-                            .ToList();
+                    List<PressaoSanguineaValores> valuesForEAC = context.PressaoSanguineaValoresSet
+                        .Where(i => i.Data >= dateForEAC && i.Data <= pressao.Data)
+                        .ToList();
 
                     List<DateTime> datesEACList = valuesForEAC.Select(i => i.Data).ToList();
 
@@ -463,7 +462,7 @@ namespace ServiceLayerNew
                     List<PressaoSanguineaValores> valuesBelowMinimumEAI = hashValuesForEAI
                         .Where(i => i.Key)
                         .SelectMany(ps => ps.ToList()).ToList();
-                    
+
                     List<DateTime> datesEAIList = valuesBelowMinimumEAI.Select(i => i.Data).ToList();
 
                     if (VerifyTimeOut(minimumTimeEAI, datesEAIList))
@@ -560,8 +559,8 @@ namespace ServiceLayerNew
                     int minimumTimeECC = ecc.TempoMinimo;
                     DateTime dateForECC = frequencia.Data.AddMinutes(-minimumTimeECC);// Tempo compreendido entre Record e Record-TempoMinimo
 
-                    List<FrequenciaCardiacaValores> valuesForECC = context.FrequenciaCardiacaValoresSet.
-                        Where(i => i.Data <= frequencia.Data && i.Data >= dateForECC)
+                    List<FrequenciaCardiacaValores> valuesForECC = context.FrequenciaCardiacaValoresSet
+                        .Where(i => i.Data <= frequencia.Data && i.Data >= dateForECC)
                         .ToList();
 
                     List<DateTime> datesECCList = valuesForECC.Select(i => i.Data).ToList();
@@ -635,8 +634,8 @@ namespace ServiceLayerNew
                     int minimumTimeEAC = eac.TempoMinimo;
                     DateTime dateForEAC = frequencia.Data.AddMinutes(-minimumTimeEAC); // Tempo compreendido entre Record e Record-TempoMinimo
 
-                    List<FrequenciaCardiacaValores> valuesForEAC = context.FrequenciaCardiacaValoresSet.
-                        Where(i => i.Data <= frequencia.Data && i.Data >= dateForEAC)
+                    List<FrequenciaCardiacaValores> valuesForEAC = context.FrequenciaCardiacaValoresSet
+                        .Where(i => i.Data <= frequencia.Data && i.Data >= dateForEAC)
                         .ToList();
 
                     List<DateTime> datesEACList = valuesForEAC.Select(i => i.Data).ToList();
@@ -648,7 +647,7 @@ namespace ServiceLayerNew
                         if (verificationRecordEAC == null)
                         {
                             AvisoFrequenciaCardiaca avisoFrequenciaEAC = new AvisoFrequenciaCardiaca();
-                            avisoFrequenciaEAC.FrequenciaCardiacaValorSet = valuesForEAC.First();
+                            avisoFrequenciaEAC.FrequenciaCardiacaValorSet = valuesForEAC.Last();
                             avisoFrequenciaEAC.TipoAvisoSet = eac;
                             context.AvisoFrequenciaCardiacaSet.Add(avisoFrequenciaEAC);
                             context.SaveChanges();
@@ -1020,16 +1019,30 @@ namespace ServiceLayerNew
             }
         }
 
-        public ConfigurationLimitType GetConfigurationLimit(string type)
+        public ConfigurationLimitType GetConfigurationLimit(ConfigurationLimitType type)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(type));
+                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(type.ConfigurationType.ToString()));
 
                     ConfigurationLimitType conf = new ConfigurationLimitType();
-                    conf.Type = configuracao.Nome;
+                    
+                    switch (configuracao.Nome)
+                    {
+                        case "HR":
+                            conf.ConfigurationType = ConfigurationLimitType.Type.HR;
+                            break;
+
+                        case "BP":
+                            conf.ConfigurationType = ConfigurationLimitType.Type.BP;
+                            break;
+
+                        case "SP02":
+                            conf.ConfigurationType = ConfigurationLimitType.Type.SPO2;
+                            break;
+                    }
                     conf.MinimumValue = configuracao.ValorMinimo;
                     conf.MaximumValue = configuracao.ValorMaximo;
                     conf.MinimumCriticalValue = configuracao.ValorCriticoMinimo;
@@ -1057,7 +1070,20 @@ namespace ServiceLayerNew
                     foreach (ConfiguracoesLimites configuracao in configuracoes)
                     {
                         ConfigurationLimitType conf = new ConfigurationLimitType();
-                        conf.Type = configuracao.Nome;
+                        switch (configuracao.Nome)
+                        {
+                            case "HR":
+                                conf.ConfigurationType = ConfigurationLimitType.Type.HR;
+                                break;
+
+                            case "BP":
+                                conf.ConfigurationType = ConfigurationLimitType.Type.BP;
+                                break;
+
+                            case "SP02":
+                                conf.ConfigurationType = ConfigurationLimitType.Type.SPO2;
+                                break;
+                        }
                         conf.MinimumValue = configuracao.ValorMinimo;
                         conf.MaximumValue = configuracao.ValorMaximo;
                         conf.MinimumCriticalValue = configuracao.ValorCriticoMinimo;
@@ -1081,13 +1107,13 @@ namespace ServiceLayerNew
             {
                 try
                 {
-                    ConfiguracoesLimites configuracaoVerificao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.Type));
+                    ConfiguracoesLimites configuracaoVerificao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.ConfigurationType.ToString()));
 
                     if (configuracaoVerificao != null)
                         return false;
 
                     ConfiguracoesLimites configuracaoLimite = new ConfiguracoesLimites();
-                    configuracaoLimite.Nome = configurationLimitType.Type;
+                    configuracaoLimite.Nome = configurationLimitType.ConfigurationType.ToString();
                     configuracaoLimite.ValorMaximo = configurationLimitType.MaximumValue;
                     configuracaoLimite.ValorMinimo = configurationLimitType.MinimumValue;
                     configuracaoLimite.ValorCriticoMaximo = configurationLimitType.MaximumCriticalValue;
@@ -1131,7 +1157,7 @@ namespace ServiceLayerNew
             {
                 try
                 {
-                    ConfiguracoesLimites confifuracaoLimite = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.Type));
+                    ConfiguracoesLimites confifuracaoLimite = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.ConfigurationType.ToString()));
 
                     if (confifuracaoLimite == null)
                     {
@@ -1186,7 +1212,7 @@ namespace ServiceLayerNew
             {
                 try
                 {
-                    ConfiguracoesLimites configuracaoLimite = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.Type));
+                    ConfiguracoesLimites configuracaoLimite = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(configurationLimitType.ConfigurationType.ToString()));
 
                     if (configuracaoLimite == null)
                     {
@@ -1227,19 +1253,19 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool InsertEvent(EventType eventType)
+        public bool InsertEvent(Event eventType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAviso avisoVarificao = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+                    TipoAviso avisoVarificao = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.EvenType.ToString()));
 
                     if (avisoVarificao != null)
                         return false;
 
                     TipoAviso tipoAviso = new TipoAviso();
-                    tipoAviso.Nome = eventType.Name;
+                    tipoAviso.Nome = eventType.EvenType.ToString();
                     tipoAviso.TempoMinimo = eventType.MinimumTime;
                     tipoAviso.TempoMaximo = eventType.MaximumTime;
 
@@ -1275,19 +1301,20 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool UpdateEvent(EventType eventType)
+        public bool UpdateEvent(Event eventType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAviso tipoAvisoVerificacao = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+                    TipoAviso tipoAviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.EvenType.ToString()));
 
-                    if (tipoAvisoVerificacao == null)
+                    if (tipoAviso == null)
+                    {
                         return false;
+                    }
 
-                    TipoAviso tipoAviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
-                    tipoAviso.Nome = eventType.Name;
+                    tipoAviso.Nome = eventType.EvenType.ToString();
                     tipoAviso.TempoMinimo = eventType.MinimumTime;
                     tipoAviso.TempoMaximo = eventType.MaximumTime;
 
@@ -1326,20 +1353,18 @@ namespace ServiceLayerNew
             }
         }
 
-        public bool DeleteEvent(EventType eventType)
+        public bool DeleteEvent(Event eventType)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    TipoAviso tipoAviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
+                    TipoAviso tipoAviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.EvenType.ToString()));
 
                     if (tipoAviso == null)
                         return false;
-
-                    TipoAviso aviso = context.TipoAvisoSet.FirstOrDefault(i => i.Nome.Equals(eventType.Name));
-
-                    context.TipoAvisoSet.Remove(aviso);
+                    
+                    context.TipoAvisoSet.Remove(tipoAviso);
                     context.SaveChanges();
 
                     return true;
@@ -1371,28 +1396,88 @@ namespace ServiceLayerNew
             }
         }
 
-        ///getAlertas
-        /// 
-        /// 
-
-        public List<AvisoSaturacao> getOxySatAlertList(
-           )
+        public List<OxygenSaturation> GetWarningListOxygenSaturation(Event type)
         {
+            List<OxygenSaturation> oxygenSaturationWarningList = new List<OxygenSaturation>();
+
             using (ModelMyHealth context = new ModelMyHealth())
             {
-               // Utente ut = context.UtenteSet.First(i => i.SNS == patientOnMonitoring.Sns);
-               
-                List<AvisoSaturacao> alerts =
-                    context.AvisoSaturacaoSet.Where(i => i.SaturacaoValorSet.Utentes.Id == 1).ToList();
-                //foreach (SaturacaoValores sV in satList)
-                //{
-                //    context.AvisoSaturacaoSet.Where(i => i.SaturacaoValorSet.Id == sV.Id);
-                //}
+                List<AvisoSaturacao> avisosSaturacao = context.AvisoSaturacaoSet
+                    .Where(i => i.TipoAvisoSet.Nome.Equals(type.EvenType.ToString()))
+                    .ToList();
 
+                foreach (AvisoSaturacao avSat in avisosSaturacao)
+                {
+                    SaturacaoValores satValor = avSat.SaturacaoValorSet;
 
-                return alerts;
+                    OxygenSaturation oxyegnSatObject = new OxygenSaturation();
+                    oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
+                    oxyegnSatObject.Date = satValor.Data;
+                    oxyegnSatObject.Time = satValor.Hora;
+                    oxyegnSatObject.Saturation = satValor.Saturacao;
+
+                    oxygenSaturationWarningList.Add(oxyegnSatObject);
+                }
             }
+
+            return oxygenSaturationWarningList;
         }
+
+        public List<BloodPressure> GetWarningListBloodPressure(Event type)
+        {
+            List<BloodPressure> bloodPressureWarningList = new List<BloodPressure>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoPressaoSanguinea> avisosPressaoSanguinea = context.AvisoPressaoSanguineaSet
+                    .Where(i => i.TipoAvisoSet.Nome.Equals(type.EvenType.ToString()))
+                    .ToList();
+
+                foreach (AvisoPressaoSanguinea avPS in avisosPressaoSanguinea)
+                {
+                    PressaoSanguineaValores psValor = avPS.PressaoSanguineaValorSet;
+
+                    BloodPressure blodPressureObject = new BloodPressure();
+                    blodPressureObject.PatientSNS = psValor.Utentes.SNS;
+                    blodPressureObject.Date = psValor.Data;
+                    blodPressureObject.Time = psValor.Hora;
+                    blodPressureObject.Systolic = psValor.Sistolica;
+                    blodPressureObject.Diastolic = psValor.Distolica;
+
+                    bloodPressureWarningList.Add(blodPressureObject);
+                }
+            }
+
+            return bloodPressureWarningList;
+        }
+
+        public List<HeartRate> GetWarningListHeartRate(Event type)
+        {
+            List<HeartRate> heartRateWarningList = new List<HeartRate>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoFrequenciaCardiaca> avisosFrequenciaCardiaca = context.AvisoFrequenciaCardiacaSet
+                    .Where(i => i.TipoAvisoSet.Nome.Equals(type.EvenType.ToString()))
+                    .ToList();
+
+                foreach (AvisoFrequenciaCardiaca avFreq in avisosFrequenciaCardiaca)
+                {
+                    FrequenciaCardiacaValores freqValor = avFreq.FrequenciaCardiacaValorSet;
+
+                    HeartRate heartRateObject = new HeartRate();
+                    heartRateObject.PatientSNS = freqValor.Utentes.SNS;
+                    heartRateObject.Date = freqValor.Data;
+                    heartRateObject.Time = freqValor.Hora;
+                    heartRateObject.Rate = freqValor.Frequencia;
+
+                    heartRateWarningList.Add(heartRateObject);
+                }
+            }
+
+            return heartRateWarningList;
+        }
+
         #endregion IServiceHealthAlert
 
         #region TimeOuts
