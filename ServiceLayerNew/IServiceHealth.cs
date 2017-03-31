@@ -83,13 +83,13 @@ namespace ServiceLayerNew
         bool DeleteEvent(Event eventType);
 
         [OperationContract]
-        List<OxygenSaturation> GetWarningListOxygenSaturation(Event type);
+        List<OxygenSaturation> GetWarningListOxygenSaturation(Event type, DateTime dataInicio, DateTime dataFim);
 
         [OperationContract]
-        List<BloodPressure> GetWarningListBloodPressure(Event type);
+        List<BloodPressure> GetWarningListBloodPressure(Event type, DateTime dataInicio, DateTime dataFim);
 
         [OperationContract]
-        List<HeartRate> GetWarningListHeartRate(Event type);
+        List<HeartRate> GetWarningListHeartRate(Event type, DateTime dataInicio, DateTime dataFim);
     }
 
     [DataContract]

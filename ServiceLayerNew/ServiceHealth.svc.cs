@@ -1028,7 +1028,7 @@ namespace ServiceLayerNew
                     ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(type.ConfigurationType.ToString()));
 
                     ConfigurationLimitType conf = new ConfigurationLimitType();
-                    
+
                     switch (configuracao.Nome)
                     {
                         case "HR":
@@ -1363,7 +1363,7 @@ namespace ServiceLayerNew
 
                     if (tipoAviso == null)
                         return false;
-                    
+
                     context.TipoAvisoSet.Remove(tipoAviso);
                     context.SaveChanges();
 
@@ -1396,7 +1396,7 @@ namespace ServiceLayerNew
             }
         }
 
-        public List<OxygenSaturation> GetWarningListOxygenSaturation(Event type)
+        public List<OxygenSaturation> GetWarningListOxygenSaturation(Event type, DateTime dataInicio, DateTime dataFim)
         {
             List<OxygenSaturation> oxygenSaturationWarningList = new List<OxygenSaturation>();
 
@@ -1410,20 +1410,23 @@ namespace ServiceLayerNew
                 {
                     SaturacaoValores satValor = avSat.SaturacaoValorSet;
 
-                    OxygenSaturation oxyegnSatObject = new OxygenSaturation();
-                    oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
-                    oxyegnSatObject.Date = satValor.Data;
-                    oxyegnSatObject.Time = satValor.Hora;
-                    oxyegnSatObject.Saturation = satValor.Saturacao;
+                    if (satValor.Data >= dataInicio && satValor.Data <= dataFim)
+                    {
+                        OxygenSaturation oxyegnSatObject = new OxygenSaturation();
+                        oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
+                        oxyegnSatObject.Date = satValor.Data;
+                        oxyegnSatObject.Time = satValor.Hora;
+                        oxyegnSatObject.Saturation = satValor.Saturacao;
 
-                    oxygenSaturationWarningList.Add(oxyegnSatObject);
+                        oxygenSaturationWarningList.Add(oxyegnSatObject);
+                    }
                 }
             }
 
             return oxygenSaturationWarningList;
         }
 
-        public List<BloodPressure> GetWarningListBloodPressure(Event type)
+        public List<BloodPressure> GetWarningListBloodPressure(Event type, DateTime dataInicio, DateTime dataFim)
         {
             List<BloodPressure> bloodPressureWarningList = new List<BloodPressure>();
 
@@ -1437,7 +1440,9 @@ namespace ServiceLayerNew
                 {
                     PressaoSanguineaValores psValor = avPS.PressaoSanguineaValorSet;
 
-                    BloodPressure blodPressureObject = new BloodPressure();
+                    if (psValor.Data >= dataInicio && psValor.Data <= dataFim)
+                    {
+                        BloodPressure blodPressureObject = new BloodPressure();
                     blodPressureObject.PatientSNS = psValor.Utentes.SNS;
                     blodPressureObject.Date = psValor.Data;
                     blodPressureObject.Time = psValor.Hora;
@@ -1445,13 +1450,15 @@ namespace ServiceLayerNew
                     blodPressureObject.Diastolic = psValor.Distolica;
 
                     bloodPressureWarningList.Add(blodPressureObject);
+                    }
+                    
                 }
             }
 
             return bloodPressureWarningList;
         }
 
-        public List<HeartRate> GetWarningListHeartRate(Event type)
+        public List<HeartRate> GetWarningListHeartRate(Event type, DateTime dataInicio, DateTime dataFim)
         {
             List<HeartRate> heartRateWarningList = new List<HeartRate>();
 
@@ -1465,13 +1472,18 @@ namespace ServiceLayerNew
                 {
                     FrequenciaCardiacaValores freqValor = avFreq.FrequenciaCardiacaValorSet;
 
-                    HeartRate heartRateObject = new HeartRate();
+                    if (freqValor.Data >= dataInicio && freqValor.Data <= dataFim)
+                    {
+                        HeartRate heartRateObject = new HeartRate();
                     heartRateObject.PatientSNS = freqValor.Utentes.SNS;
                     heartRateObject.Date = freqValor.Data;
                     heartRateObject.Time = freqValor.Hora;
                     heartRateObject.Rate = freqValor.Frequencia;
 
                     heartRateWarningList.Add(heartRateObject);
+                    }
+
+                    
                 }
             }
 
@@ -1497,7 +1509,7 @@ namespace ServiceLayerNew
 
             return timespan >= range;
         }
-        
+
         #endregion TimeOuts
     }
 }
