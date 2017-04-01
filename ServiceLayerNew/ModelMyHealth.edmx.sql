@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 03/29/2017 10:46:43
--- Generated from EDMX file: C:\Users\j17vi\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
+-- Date Created: 04/01/2017 17:04:34
+-- Generated from EDMX file: C:\Users\Joao\Source\Repos\ServiceLayer\ServiceLayerNew\ModelMyHealth.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -379,7 +379,6 @@ GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------
-
 SET IDENTITY_INSERT [dbo].[ConfiguracoesLimitesSet]ON
     INSERT INTO [dbo].[ConfiguracoesLimitesSet]([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (1, 60, 120, 30, 180, N'HR')
     INSERT INTO [dbo].[ConfiguracoesLimitesSet]([Id], [ValorMinimo], [ValorMaximo], [ValorCriticoMinimo], [ValorCriticoMaximo], [Nome]) VALUES (2, 90, 100, 80, 100, N'SPO2')
