@@ -942,7 +942,8 @@ namespace ServiceLayerNew
                     {
                         HeartRate heartRate = new HeartRate();
                         heartRate.PatientSNS = freq.Utentes.SNS;
-                        heartRate.Date = freq.Data;
+                        DateTime dateformated = new DateTime(freq.Data.Year, freq.Data.Month, freq.Data.Day);
+                        heartRate.Date = dateformated;
                         heartRate.Time = freq.Hora;
                         heartRate.Rate = freq.Frequencia;
 
@@ -1002,7 +1003,8 @@ namespace ServiceLayerNew
                     {
                         BloodPressure bp = new BloodPressure();
                         bp.PatientSNS = pss.Utentes.SNS;
-                        bp.Date = pss.Data;
+                        DateTime dateformated = new DateTime(pss.Data.Year, pss.Data.Month, pss.Data.Day);
+                        bp.Date = dateformated;
                         bp.Time = pss.Hora;
                         bp.Systolic = pss.Sistolica;
                         bp.Diastolic = pss.Distolica;
@@ -1414,7 +1416,8 @@ namespace ServiceLayerNew
                     {
                         OxygenSaturation oxyegnSatObject = new OxygenSaturation();
                         oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
-                        oxyegnSatObject.Date = satValor.Data;
+                        DateTime dateformated = new DateTime(satValor.Data.Year, satValor.Data.Month, satValor.Data.Day);
+                        oxyegnSatObject.Date = dateformated;
                         oxyegnSatObject.Time = satValor.Hora;
                         oxyegnSatObject.Saturation = satValor.Saturacao;
 
@@ -1444,7 +1447,8 @@ namespace ServiceLayerNew
                     {
                         BloodPressure blodPressureObject = new BloodPressure();
                     blodPressureObject.PatientSNS = psValor.Utentes.SNS;
-                    blodPressureObject.Date = psValor.Data;
+                    DateTime dateformated = new DateTime(psValor.Data.Year, psValor.Data.Month,psValor.Data.Day);
+                    blodPressureObject.Date = dateformated;
                     blodPressureObject.Time = psValor.Hora;
                     blodPressureObject.Systolic = psValor.Sistolica;
                     blodPressureObject.Diastolic = psValor.Distolica;
@@ -1476,7 +1480,8 @@ namespace ServiceLayerNew
                     {
                         HeartRate heartRateObject = new HeartRate();
                     heartRateObject.PatientSNS = freqValor.Utentes.SNS;
-                    heartRateObject.Date = freqValor.Data;
+                        DateTime dateformated = new DateTime(freqValor.Data.Year, freqValor.Data.Month, freqValor.Data.Day);
+                        heartRateObject.Date = dateformated;
                     heartRateObject.Time = freqValor.Hora;
                     heartRateObject.Rate = freqValor.Frequencia;
 
