@@ -942,8 +942,7 @@ namespace ServiceLayerNew
                     {
                         HeartRate heartRate = new HeartRate();
                         heartRate.PatientSNS = freq.Utentes.SNS;
-                        DateTime dateformated = new DateTime(freq.Data.Year, freq.Data.Month, freq.Data.Day);
-                        heartRate.Date = dateformated;
+                        heartRate.Date = freq.Data;
                         heartRate.Time = freq.Hora;
                         heartRate.Rate = freq.Frequencia;
 
@@ -1003,8 +1002,7 @@ namespace ServiceLayerNew
                     {
                         BloodPressure bp = new BloodPressure();
                         bp.PatientSNS = pss.Utentes.SNS;
-                        DateTime dateformated = new DateTime(pss.Data.Year, pss.Data.Month, pss.Data.Day);
-                        bp.Date = dateformated;
+                        bp.Date = pss.Data;
                         bp.Time = pss.Hora;
                         bp.Systolic = pss.Sistolica;
                         bp.Diastolic = pss.Distolica;
@@ -1416,8 +1414,7 @@ namespace ServiceLayerNew
                     {
                         OxygenSaturation oxyegnSatObject = new OxygenSaturation();
                         oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
-                        DateTime dateformated = new DateTime(satValor.Data.Year, satValor.Data.Month, satValor.Data.Day);
-                        oxyegnSatObject.Date = dateformated;
+                        oxyegnSatObject.Date = satValor.Data;
                         oxyegnSatObject.Time = satValor.Hora;
                         oxyegnSatObject.Saturation = satValor.Saturacao;
 
@@ -1446,16 +1443,15 @@ namespace ServiceLayerNew
                     if (psValor.Data >= dataInicio && psValor.Data <= dataFim)
                     {
                         BloodPressure blodPressureObject = new BloodPressure();
-                    blodPressureObject.PatientSNS = psValor.Utentes.SNS;
-                    DateTime dateformated = new DateTime(psValor.Data.Year, psValor.Data.Month,psValor.Data.Day);
-                    blodPressureObject.Date = dateformated;
-                    blodPressureObject.Time = psValor.Hora;
-                    blodPressureObject.Systolic = psValor.Sistolica;
-                    blodPressureObject.Diastolic = psValor.Distolica;
+                        blodPressureObject.PatientSNS = psValor.Utentes.SNS;
+                        blodPressureObject.Date = psValor.Data;
+                        blodPressureObject.Time = psValor.Hora;
+                        blodPressureObject.Systolic = psValor.Sistolica;
+                        blodPressureObject.Diastolic = psValor.Distolica;
 
-                    bloodPressureWarningList.Add(blodPressureObject);
+                        bloodPressureWarningList.Add(blodPressureObject);
                     }
-                    
+
                 }
             }
 
@@ -1479,16 +1475,16 @@ namespace ServiceLayerNew
                     if (freqValor.Data >= dataInicio && freqValor.Data <= dataFim)
                     {
                         HeartRate heartRateObject = new HeartRate();
-                    heartRateObject.PatientSNS = freqValor.Utentes.SNS;
-                        DateTime dateformated = new DateTime(freqValor.Data.Year, freqValor.Data.Month, freqValor.Data.Day);
-                        heartRateObject.Date = dateformated;
-                    heartRateObject.Time = freqValor.Hora;
-                    heartRateObject.Rate = freqValor.Frequencia;
+                        heartRateObject.PatientSNS = freqValor.Utentes.SNS;
 
-                    heartRateWarningList.Add(heartRateObject);
+                        heartRateObject.Date = freqValor.Data;
+                        heartRateObject.Time = freqValor.Hora;
+                        heartRateObject.Rate = freqValor.Frequencia;
+
+                        heartRateWarningList.Add(heartRateObject);
                     }
 
-                    
+
                 }
             }
 
