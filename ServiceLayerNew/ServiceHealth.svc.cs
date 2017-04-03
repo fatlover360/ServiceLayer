@@ -1417,6 +1417,7 @@ namespace ServiceLayerNew
                     {
                         OxygenSaturation oxyegnSatObject = new OxygenSaturation();
                         oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
+
                         oxyegnSatObject.Date = satValor.Data;
                         oxyegnSatObject.Time = satValor.Hora;
                         oxyegnSatObject.Saturation = satValor.Saturacao;
@@ -1446,13 +1447,11 @@ namespace ServiceLayerNew
                     if (psValor.Data >= dataInicio && psValor.Data <= dataFim)
                     {
                         BloodPressure blodPressureObject = new BloodPressure();
-                        blodPressureObject.PatientSNS = psValor.Utentes.SNS;
-                        DateTime dateConverted = DateTime.ParseExact(Convert.ToString(psValor.Data), format, provider)
-                        blodPressureObject.Date = dateConverted;
+                        blodPressureObject.PatientSNS = psValor.Utentes.SNS;                      
+                        blodPressureObject.Date = psValor.Data;
                         blodPressureObject.Time = psValor.Hora;
                         blodPressureObject.Systolic = psValor.Sistolica;
                         blodPressureObject.Diastolic = psValor.Distolica;
-
                         bloodPressureWarningList.Add(blodPressureObject);
                     }
 
