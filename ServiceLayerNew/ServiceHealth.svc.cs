@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -16,6 +17,8 @@ namespace ServiceLayerNew
     // NOTE: In order to launch WCF Test Client for testing this service, please select ServiceHealth.svc or ServiceHealth.svc.cs at the Solution Explorer and start debugging.
     public class ServiceHealth : IServiceHealth, IServiceHealthAlert
     {
+        private string format = "dd / MM / yyyy HH: mm: ss";
+        private CultureInfo provider = new CultureInfo("pt-PT");
         #region IServiceHealth
 
         public bool TestConnection()
@@ -1444,7 +1447,8 @@ namespace ServiceLayerNew
                     {
                         BloodPressure blodPressureObject = new BloodPressure();
                         blodPressureObject.PatientSNS = psValor.Utentes.SNS;
-                        blodPressureObject.Date = psValor.Data;
+                        DateTime dateConverted = DateTime.ParseExact(Convert.ToString(psValor.Data), format, provider)
+                        blodPressureObject.Date = dateConverted;
                         blodPressureObject.Time = psValor.Hora;
                         blodPressureObject.Systolic = psValor.Sistolica;
                         blodPressureObject.Diastolic = psValor.Distolica;
