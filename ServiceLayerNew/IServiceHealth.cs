@@ -59,7 +59,7 @@ namespace ServiceLayerNew
         List<BloodPressure> BloodPressureList(int sns);
 
         [OperationContract]
-        ConfigurationLimitType GetConfigurationLimit(ConfigurationLimitType type);
+        ConfigurationLimitType GetConfigurationLimit(ConfigurationLimitType.Type type);
 
         [OperationContract]
         List<ConfigurationLimitType> GetConfigurationLimitList();

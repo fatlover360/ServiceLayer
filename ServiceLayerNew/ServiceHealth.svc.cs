@@ -1022,13 +1022,13 @@ namespace ServiceLayerNew
             }
         }
 
-        public ConfigurationLimitType GetConfigurationLimit(ConfigurationLimitType type)
+        public ConfigurationLimitType GetConfigurationLimit(ConfigurationLimitType.Type type)
         {
             using (ModelMyHealth context = new ModelMyHealth())
             {
                 try
                 {
-                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(type.ConfigurationType.ToString()));
+                    ConfiguracoesLimites configuracao = context.ConfiguracoesLimitesSet.FirstOrDefault(i => i.Nome.Equals(type.ToString()));
 
                     ConfigurationLimitType conf = new ConfigurationLimitType();
 
