@@ -90,6 +90,15 @@ namespace ServiceLayerNew
 
         [OperationContract]
         List<HeartRate> GetWarningListHeartRate(Event type, DateTime dataInicio, DateTime dataFim);
+
+        [OperationContract]
+        List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim, Patient patient);
+
+        [OperationContract]
+        List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim, Patient patient);
+
+        [OperationContract]
+        List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim, Patient patient);
     }
 
     [DataContract]
@@ -439,6 +448,122 @@ namespace ServiceLayerNew
         {
             get { return maximumTime; }
             set { maximumTime = value; }
+        }
+    }
+    [DataContract]
+    public class BloodPressureWarning
+    {
+        private int patientSNS;
+        private DateTime date;
+        private int diastolic;
+        private int systolic;
+        private string evenType;
+
+
+        [DataMember]
+        public int PatientSNS
+        {
+            get { return patientSNS; }
+            set { patientSNS = value; }
+        }
+
+        [DataMember]
+        public DateTime Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
+
+        [DataMember]
+        public int Diastolic
+        {
+            get { return diastolic; }
+            set { diastolic = value; }
+        }
+
+        [DataMember]
+        public int Systolic
+        {
+            get { return systolic; }
+            set { systolic = value; }
+        }
+
+        [DataMember]
+        public string EvenType
+        {
+            get { return evenType; }
+            set { evenType = value; }
+        }
+
+    }
+
+    [DataContract]
+    public class HeartRateWarning
+    {
+        private int patientSNS;
+        private DateTime date;
+        private int rate;
+        private string evenType;
+        [DataMember]
+        public int PatientSNS
+        {
+            get { return patientSNS; }
+            set { patientSNS = value; }
+        }
+
+        [DataMember]
+        public DateTime Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
+
+        [DataMember]
+        public int Rate
+        {
+            get { return rate; }
+            set { rate = value; }
+        }
+        [DataMember]
+        public string EvenType
+        {
+            get { return evenType; }
+            set { evenType = value; }
+        }
+    }
+
+    [DataContract]
+    public class OxygenSaturationWarning
+    {
+        private int patientSNS;
+        private DateTime date;
+        private int saturation;
+        private string evenType;
+        [DataMember]
+        public int PatientSNS
+        {
+            get { return patientSNS; }
+            set { patientSNS = value; }
+        }
+
+        [DataMember]
+        public DateTime Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
+
+        [DataMember]
+        public int Saturation
+        {
+            get { return saturation; }
+            set { saturation = value; }
+        }
+        [DataMember]
+        public string EvenType
+        {
+            get { return evenType; }
+            set { evenType = value; }
         }
     }
 }

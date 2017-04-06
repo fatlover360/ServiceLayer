@@ -1494,6 +1494,87 @@ namespace ServiceLayerNew
             return heartRateWarningList;
         }
 
+        public List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        {
+            List<BloodPressureWarning> bloodPressureWarningList = new List<BloodPressureWarning>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoPressaoSanguinea> avisosPressaoSanguinea = context.AvisoPressaoSanguineaSet.ToList();
+                   
+                foreach (AvisoPressaoSanguinea avPS in avisosPressaoSanguinea)
+                {
+                    PressaoSanguineaValores psValor = avPS.PressaoSanguineaValorSet;
+
+                    if (psValor.Data >= dataInicio && psValor.Data <= dataFim)
+                    {
+                        BloodPressureWarning warning = new BloodPressureWarning();
+                        warning.Date = psValor.Data;
+                        warning.PatientSNS = psValor.Utentes.SNS;
+                        warning.Diastolic = psValor.Distolica;
+                        warning.Systolic = psValor.Sistolica;
+                        warning.EvenType = avPS.TipoAvisoSet.Nome; 
+                        bloodPressureWarningList.Add(warning);
+                    }
+                }
+            }
+            return bloodPressureWarningList.Where(i => i.PatientSNS == patient.Sns).ToList();
+        }
+
+        public List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        {
+            List<OxygenSaturationWarning> oxygenSaturationWarningList = new List<OxygenSaturationWarning>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoSaturacao> avisosSaturacao = context.AvisoSaturacaoSet.ToList();
+                    
+                foreach (AvisoSaturacao avSat in avisosSaturacao)
+                {
+                    SaturacaoValores satValor = avSat.SaturacaoValorSet;
+
+                    if (satValor.Data >= dataInicio && satValor.Data <= dataFim)
+                    {
+                        OxygenSaturationWarning oxyegnSatObject = new OxygenSaturationWarning();
+                        oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
+                        oxyegnSatObject.Date = satValor.Data;
+                        oxyegnSatObject.Saturation = satValor.Saturacao;
+                        oxyegnSatObject.EvenType = avSat.TipoAvisoSet.Nome;
+                        oxygenSaturationWarningList.Add(oxyegnSatObject);
+                    }
+                }
+            }
+            return oxygenSaturationWarningList.Where(i=> i.PatientSNS == patient.Sns).ToList();
+        }
+
+        public List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        {
+            List<HeartRateWarning> heartRateWarningList = new List<HeartRateWarning>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoFrequenciaCardiaca> avisosFrequenciaCardiaca = context.AvisoFrequenciaCardiacaSet.ToList();
+                    
+                foreach (AvisoFrequenciaCardiaca avFreq in avisosFrequenciaCardiaca)
+                {
+                    FrequenciaCardiacaValores freqValor = avFreq.FrequenciaCardiacaValorSet;
+
+                    if (freqValor.Data >= dataInicio && freqValor.Data <= dataFim)
+                    {
+                        HeartRateWarning heartRateObject = new HeartRateWarning();
+                        heartRateObject.PatientSNS = freqValor.Utentes.SNS;
+
+                        heartRateObject.Date = freqValor.Data;
+                        heartRateObject.EvenType = avFreq.TipoAvisoSet.Nome; 
+                        heartRateObject.Rate = freqValor.Frequencia;
+
+                        heartRateWarningList.Add(heartRateObject);
+                    }
+                }
+            }
+
+            return heartRateWarningList.Where(i=> i.PatientSNS == patient.Sns).ToList();
+        }
         #endregion IServiceHealthAlert
 
         #region TimeOuts
