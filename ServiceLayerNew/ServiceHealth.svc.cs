@@ -17,9 +17,8 @@ namespace ServiceLayerNew
     // NOTE: In order to launch WCF Test Client for testing this service, please select ServiceHealth.svc or ServiceHealth.svc.cs at the Solution Explorer and start debugging.
     public class ServiceHealth : IServiceHealth, IServiceHealthAlert
     {
-        private string format = "dd/MM/yyyy HH:mm:ss";
+        private string format = "dd / MM / yyyy HH: mm: ss";
         private CultureInfo provider = new CultureInfo("pt-PT");
-
         #region IServiceHealth
 
         public bool TestConnection()
@@ -1256,50 +1255,6 @@ namespace ServiceLayerNew
                 }
             }
         }
-        
-        public List<Event> GetEventList()
-        {
-            List<Event> events = new List<Event>();
-
-            using (ModelMyHealth context= new ModelMyHealth())
-            {
-                List<TipoAviso> listaAvisos = context.TipoAvisoSet.ToList();
-
-                foreach (TipoAviso aviso in listaAvisos)
-                {
-                    Event eventType = new Event();
-                    switch (aviso.Nome)
-                    {
-                        case "ECA":
-                            eventType.EvenType = Event.Type.ECA;
-                            break;
-
-                        case "ECI":
-                            eventType.EvenType = Event.Type.ECI;
-                            break;
-
-                        case "ECC":
-                            eventType.EvenType = Event.Type.ECC;
-                            break;
-
-                        case "EAI":
-                            eventType.EvenType = Event.Type.EAI;
-                            break;
-
-                        case "EAC":
-                            eventType.EvenType = Event.Type.EAC;
-                            break;
-                    }
-
-                    eventType.MinimumTime = aviso.TempoMinimo;
-                    eventType.MaximumTime = aviso.TempoMaximo;
-
-                    events.Add(eventType);
-                }
-            }
-
-            return events;
-        }
 
         public bool InsertEvent(Event eventType)
         {
@@ -1462,6 +1417,7 @@ namespace ServiceLayerNew
                     {
                         OxygenSaturation oxyegnSatObject = new OxygenSaturation();
                         oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
+
                         oxyegnSatObject.Date = satValor.Data;
                         oxyegnSatObject.Time = satValor.Hora;
                         oxyegnSatObject.Saturation = satValor.Saturacao;
@@ -1491,14 +1447,11 @@ namespace ServiceLayerNew
                     if (psValor.Data >= dataInicio && psValor.Data <= dataFim)
                     {
                         BloodPressure blodPressureObject = new BloodPressure();
-                        blodPressureObject.PatientSNS = psValor.Utentes.SNS;
-                        string d = psValor.Data.ToString(format, provider);
-                        DateTime dateConverted = DateTime.Parse(d);
-                        blodPressureObject.Date = dateConverted;
+                        blodPressureObject.PatientSNS = psValor.Utentes.SNS;                      
+                        blodPressureObject.Date = psValor.Data;
                         blodPressureObject.Time = psValor.Hora;
                         blodPressureObject.Systolic = psValor.Sistolica;
                         blodPressureObject.Diastolic = psValor.Distolica;
-
                         bloodPressureWarningList.Add(blodPressureObject);
                     }
 
@@ -1541,6 +1494,87 @@ namespace ServiceLayerNew
             return heartRateWarningList;
         }
 
+        public List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        {
+            List<BloodPressureWarning> bloodPressureWarningList = new List<BloodPressureWarning>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoPressaoSanguinea> avisosPressaoSanguinea = context.AvisoPressaoSanguineaSet.ToList();
+                   
+                foreach (AvisoPressaoSanguinea avPS in avisosPressaoSanguinea)
+                {
+                    PressaoSanguineaValores psValor = avPS.PressaoSanguineaValorSet;
+
+                    if (psValor.Data >= dataInicio && psValor.Data <= dataFim)
+                    {
+                        BloodPressureWarning warning = new BloodPressureWarning();
+                        warning.Date = psValor.Data;
+                        warning.PatientSNS = psValor.Utentes.SNS;
+                        warning.Diastolic = psValor.Distolica;
+                        warning.Systolic = psValor.Sistolica;
+                        warning.EvenType = avPS.TipoAvisoSet.Nome; 
+                        bloodPressureWarningList.Add(warning);
+                    }
+                }
+            }
+            return bloodPressureWarningList.Where(i => i.PatientSNS == patient.Sns).ToList();
+        }
+
+        public List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        {
+            List<OxygenSaturationWarning> oxygenSaturationWarningList = new List<OxygenSaturationWarning>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoSaturacao> avisosSaturacao = context.AvisoSaturacaoSet.ToList();
+                    
+                foreach (AvisoSaturacao avSat in avisosSaturacao)
+                {
+                    SaturacaoValores satValor = avSat.SaturacaoValorSet;
+
+                    if (satValor.Data >= dataInicio && satValor.Data <= dataFim)
+                    {
+                        OxygenSaturationWarning oxyegnSatObject = new OxygenSaturationWarning();
+                        oxyegnSatObject.PatientSNS = satValor.Utentes.SNS;
+                        oxyegnSatObject.Date = satValor.Data;
+                        oxyegnSatObject.Saturation = satValor.Saturacao;
+                        oxyegnSatObject.EvenType = avSat.TipoAvisoSet.Nome;
+                        oxygenSaturationWarningList.Add(oxyegnSatObject);
+                    }
+                }
+            }
+            return oxygenSaturationWarningList.Where(i=> i.PatientSNS == patient.Sns).ToList();
+        }
+
+        public List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        {
+            List<HeartRateWarning> heartRateWarningList = new List<HeartRateWarning>();
+
+            using (ModelMyHealth context = new ModelMyHealth())
+            {
+                List<AvisoFrequenciaCardiaca> avisosFrequenciaCardiaca = context.AvisoFrequenciaCardiacaSet.ToList();
+                    
+                foreach (AvisoFrequenciaCardiaca avFreq in avisosFrequenciaCardiaca)
+                {
+                    FrequenciaCardiacaValores freqValor = avFreq.FrequenciaCardiacaValorSet;
+
+                    if (freqValor.Data >= dataInicio && freqValor.Data <= dataFim)
+                    {
+                        HeartRateWarning heartRateObject = new HeartRateWarning();
+                        heartRateObject.PatientSNS = freqValor.Utentes.SNS;
+
+                        heartRateObject.Date = freqValor.Data;
+                        heartRateObject.EvenType = avFreq.TipoAvisoSet.Nome; 
+                        heartRateObject.Rate = freqValor.Frequencia;
+
+                        heartRateWarningList.Add(heartRateObject);
+                    }
+                }
+            }
+
+            return heartRateWarningList.Where(i=> i.PatientSNS == patient.Sns).ToList();
+        }
         #endregion IServiceHealthAlert
 
         #region TimeOuts
@@ -1560,7 +1594,7 @@ namespace ServiceLayerNew
 
             return timespan >= range;
         }
-        
+
         #endregion TimeOuts
     }
 }
