@@ -1083,7 +1083,7 @@ namespace ServiceLayerNew
                                 conf.ConfigurationType = ConfigurationLimitType.Type.BP;
                                 break;
 
-                            case "SP02":
+                            case "SPO2":
                                 conf.ConfigurationType = ConfigurationLimitType.Type.SPO2;
                                 break;
                         }
