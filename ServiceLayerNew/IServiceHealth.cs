@@ -74,6 +74,9 @@ namespace ServiceLayerNew
         bool DeleteConfigurationLimit(ConfigurationLimitType configurationLimitType);
 
         [OperationContract]
+        List<Event> GetEventList();
+
+        [OperationContract]
         bool InsertEvent(Event eventType);
         
         [OperationContract]

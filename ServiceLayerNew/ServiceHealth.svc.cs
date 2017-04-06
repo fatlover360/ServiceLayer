@@ -1256,6 +1256,50 @@ namespace ServiceLayerNew
                 }
             }
         }
+        
+        public List<Event> GetEventList()
+        {
+            List<Event> events = new List<Event>();
+
+            using (ModelMyHealth context= new ModelMyHealth())
+            {
+                List<TipoAviso> listaAvisos = context.TipoAvisoSet.ToList();
+
+                foreach (TipoAviso aviso in listaAvisos)
+                {
+                    Event eventType = new Event();
+                    switch (aviso.Nome)
+                    {
+                        case "ECA":
+                            eventType.EvenType = Event.Type.ECA;
+                            break;
+
+                        case "ECI":
+                            eventType.EvenType = Event.Type.ECI;
+                            break;
+
+                        case "ECC":
+                            eventType.EvenType = Event.Type.ECC;
+                            break;
+
+                        case "EAI":
+                            eventType.EvenType = Event.Type.EAI;
+                            break;
+
+                        case "EAC":
+                            eventType.EvenType = Event.Type.EAC;
+                            break;
+                    }
+
+                    eventType.MinimumTime = aviso.TempoMinimo;
+                    eventType.MaximumTime = aviso.TempoMaximo;
+
+                    events.Add(eventType);
+                }
+            }
+
+            return events;
+        }
 
         public bool InsertEvent(Event eventType)
         {
@@ -1516,7 +1560,7 @@ namespace ServiceLayerNew
 
             return timespan >= range;
         }
-
+        
         #endregion TimeOuts
     }
 }
