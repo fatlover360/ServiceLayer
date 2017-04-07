@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="ServiceLayerNew.Patient">
+    <Position X="7.5" Y="2.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIEQAABDCgAASghAEEgAQBBCgUAAAoEAAAJAAACAU=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.HeartRate">
+    <Position X="10.75" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>QAABAEAAAAAAAAAAAAAgAAAAAAAAAAABAAAgAQAAAQA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.OxygenSaturation" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAARAAAAEAAAAAAAAAAgAAAAAAAAAAABAAAgAQAAAQA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.BloodPressure" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAABAAAAAAAAAAAAAAAgAAAAAAAAAAgBAAAoASAAAQA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.ConfigurationLimitType" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EBAAAAAQAAAAQAAAAEBAAAAAQAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.Event" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAIDAAAAAwAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.BloodPressureWarning" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAABAAAgAQAAAAAAAAgBAAAoASAAAAA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.HeartRateWarning" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAEAAAAAAAAABAAAgAQAAAAAAAAABAAAgAQAAAAA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.OxygenSaturationWarning">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAEAAAAAABAAAgAQAAAAAAAAABAAAgAQAAAAA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.ModelMyHealth" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAIAAAAABAIAAAIACAAAAAMgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ModelMyHealth.Context.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.AvisoFrequenciaCardiaca" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAQAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AvisoFrequenciaCardiaca.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.AvisoPressaoSanguinea" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AvisoPressaoSanguinea.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.AvisoSaturacao" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AvisoSaturacao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.ConfiguracoesLimites" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAAAAAAAAgAAAAgACAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>ConfiguracoesLimites.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.FrequenciaCardiacaValores" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAACAAAAAAAEAAAAAAAAAAAAAEBAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>FrequenciaCardiacaValores.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.PressaoSanguineaValores" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAIAAAAAAAAEBAABAAAAgAEAAAAAA=</HashCode>
+      <FileName>PressaoSanguineaValores.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.SaturacaoValores" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAgAABAAAAAAAAAAAAAAEBAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>SaturacaoValores.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.TipoAviso" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAACAAAAAABAAAAAIAAAAAAAAAAAAAAAAAAACAEIAAA=</HashCode>
+      <FileName>TipoAviso.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.Utente" Collapsed="true">
+    <Position X="10.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAgGFAAAQAgAEIAAAAiAIAIAAAAgEAAAEgAAI=</HashCode>
+      <FileName>Utente.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServiceLayerNew.ServiceHealth" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAwqAAAOKICCAAEgGQgCBAAAIAAAASAAFSAgACQ=</HashCode>
+      <FileName>ServiceHealth.svc.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="ServiceLayerNew.IServiceHealth">
+    <Position X="0.5" Y="4.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAIAAAAAAAAAAAAAAAIAAAAAAABCAAAAQ=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ServiceLayerNew.IServiceHealthAlert">
+    <Position X="4" Y="4.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgoAAAMCICCAAEgEQgCBAAAAAAAASAAEQAgACA=</HashCode>
+      <FileName>IServiceHealth.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
