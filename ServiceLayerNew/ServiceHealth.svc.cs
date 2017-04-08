@@ -160,11 +160,11 @@ namespace ServiceLayerNew
                     IEnumerable<IGrouping<bool, SaturacaoValores>> hashValuesForECI = valuesForECI
                         .GroupBy(i => i.Saturacao < minimum).ToList();
 
-                    List<SaturacaoValores> valuesBelowMinimumECC = hashValuesForECI
+                    List<SaturacaoValores> valuesBelowMinimumECI = hashValuesForECI
                         .Where(i => i.Key)
                         .SelectMany(sat => sat.ToList()).ToList();
 
-                    List<DateTime> datesECIList = valuesBelowMinimumECC.Select(i => i.Data).ToList();
+                    List<DateTime> datesECIList = valuesBelowMinimumECI.Select(i => i.Data).ToList();
 
                     if (VerifyTimeOut(minimumTimeECI, datesECIList))
                     {
