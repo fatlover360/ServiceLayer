@@ -95,13 +95,13 @@ namespace ServiceLayerNew
         List<HeartRate> GetWarningListHeartRate(Event type, DateTime dataInicio, DateTime dataFim);
 
         [OperationContract]
-        List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim, Patient patient);
+        List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim);
 
         [OperationContract]
-        List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim, Patient patient);
+        List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim);
 
         [OperationContract]
-        List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim, Patient patient);
+        List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim);
     }
 
     [DataContract]

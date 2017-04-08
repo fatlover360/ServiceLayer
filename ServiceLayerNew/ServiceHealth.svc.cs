@@ -1538,7 +1538,7 @@ namespace ServiceLayerNew
             return heartRateWarningList;
         }
 
-        public List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        public List<BloodPressureWarning> GetWarningListBloodPressureALL(DateTime dataInicio, DateTime dataFim)
         {
             List<BloodPressureWarning> bloodPressureWarningList = new List<BloodPressureWarning>();
 
@@ -1562,10 +1562,10 @@ namespace ServiceLayerNew
                     }
                 }
             }
-            return bloodPressureWarningList.Where(i => i.PatientSNS == patient.Sns).ToList();
+            return bloodPressureWarningList;
         }
 
-        public List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        public List<OxygenSaturationWarning> GetWarningListOxygenSaturationALL(DateTime dataInicio, DateTime dataFim)
         {
             List<OxygenSaturationWarning> oxygenSaturationWarningList = new List<OxygenSaturationWarning>();
 
@@ -1588,10 +1588,10 @@ namespace ServiceLayerNew
                     }
                 }
             }
-            return oxygenSaturationWarningList.Where(i=> i.PatientSNS == patient.Sns).ToList();
+            return oxygenSaturationWarningList;
         }
 
-        public List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim, Patient patient)
+        public List<HeartRateWarning> GetWarningListHeartRateALL(DateTime dataInicio, DateTime dataFim)
         {
             List<HeartRateWarning> heartRateWarningList = new List<HeartRateWarning>();
 
@@ -1617,7 +1617,7 @@ namespace ServiceLayerNew
                 }
             }
 
-            return heartRateWarningList.Where(i=> i.PatientSNS == patient.Sns).ToList();
+            return heartRateWarningList;
         }
         #endregion IServiceHealthAlert
 
